@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>saleSystem</title>
+</head>
+<body>
+    <h1>saleSystem</h1>
+    <h2>小林西高等学校 広報支援システム</h2>
+
+    <p>中学校情報や宛名シール作成を行うシステムです。</p>
+
+    <p>
+        <a href="{% url 'publicity:school_list' %}">
+            <button>中学校一覧</button>
+        </a>
+    </p>
+    <p>
+        <a href="{% url 'publicity:label_pdf' %}" target="_blank">
+            <button>宛名シールPDFを作成</button>
+        </a>
+    </p>
+    <p>
+        <a href="{% url 'publicity:label_select' %}">
+            <button>宛名シールを作成する</button>
+        </a>
+    </p>
+</body>
+</html>

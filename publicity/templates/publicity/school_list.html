@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>中学校情報一覧</title>
+</head>
+<body>
+    <h1>中学校情報一覧</h1>
+    <p>
+        <a href="{% url 'publicity:label_select' %}">
+            <button>宛名シールを作成する</button>
+        </a>
+    </p>
+    <table border="1" cellpadding="8">
+        <tr>
+            <th>No</th>
+            <th>学校名</th>
+            <th>市町村</th>
+            <th>校長</th>
+            <th>電話番号</th>
+            <th>住所</th>
+            <th>3年合計</th>
+        </tr>
+
+        {% for school in schools %}
+        <tr>
+            <td>{{ school.number }}</td>
+            <td>{{ school.name }}</td>
+            <td>{{ school.city }}</td>
+            <td>{{ school.principal_name }}</td>
+            <td>{{ school.tel }}</td>
+            <td>{{ school.address }}</td>
+            <td>{{ school.third_grade_total }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

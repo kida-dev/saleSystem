@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>宛名シール作成</title>
+</head>
+<body>
+    <h1>宛名シール作成</h1>
+
+    <p>
+        シールに印刷したい中学校を選択してください。
+    </p>
+
+    <p>
+        <a href="{% url 'publicity:top' %}">トップへ戻る</a>
+    </p>
+
+    <form method="get" action="{% url 'publicity:label_pdf' %}" target="_blank">
+
+        <p>
+            <button type="button" onclick="checkAll()">全選択</button>
+            <button type="button" onclick="uncheckAll()">全解除</button>
+            <button type="submit">選択した中学校でPDF作成</button>
+        </p>
+
+        <table border="1" cellpadding="8">
+            <tr>
+                <th>選択</th>
+                <th>No</th>
+                <th>学校名</th>
+                <th>市町村</th>
+                <th>校長</th>
+                <th>住所</th>
+                <th>3年合計</th>
+            </tr>
+
+            {% for school in schools %}
+            <tr>
+                <td>
+                    <input type="checkbox" name="school_ids" value="{{ school.id }}">
+                </td>
+                <td>{{ school.number }}</td>
+                <td>{{ school.name }}</td>
+                <td>{{ school.city }}</td>
+                <td>{{ school.principal_name }}</td>
+                <td>{{ school.address }}</td>
+                <td>{{ school.third_grade_total }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+
+        <p>
+            <button type="submit">選択した中学校でPDF作成</button>
+        </p>
+
+    </form>
+
+    <script>
+        function checkAll() {
+            const boxes = document.querySelectorAll('input[name="school_ids"]');
+            boxes.forEach(box => box.checked = true);
+        }
+
+        function uncheckAll() {
+            const boxes = document.querySelectorAll('input[name="school_ids"]');
+            boxes.forEach(box => box.checked = false);
+        }
+    </script>
+</body>
+</html>
