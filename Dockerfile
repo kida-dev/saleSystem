@@ -14,4 +14,4 @@ COPY . /app/
 
 RUN python manage.py collectstatic --noinput
 
-CMD ["sh", "-c", "gunicorn saleSystem.wsgi:application --bind 0.0.0.0:${PORT}"]
+CMD ["sh", "-c", "python manage.py migrate --noinput && gunicorn saleSystem.wsgi:application --bind 0.0.0.0:${PORT}"]
