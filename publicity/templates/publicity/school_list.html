@@ -3,16 +3,112 @@
 <head>
     <meta charset="UTF-8">
     <title>中学校情報一覧</title>
+
+    <style>
+        body{
+            font-family: "Yu Gothic", sans-serif;
+            margin:20px;
+        }
+
+        h1{
+            margin-bottom:20px;
+        }
+
+        table{
+            border-collapse: collapse;
+            width:100%;
+        }
+
+        th{
+            background:#f0f0f0;
+        }
+
+        th,td{
+            border:1px solid #999;
+            padding:6px;
+            vertical-align: top;
+        }
+
+        .btn-area{
+            margin-bottom:15px;
+        }
+
+        .btn-area button{
+            margin-right:5px;
+            margin-bottom:5px;
+        }
+
+        .class-box{
+            border-bottom:1px dotted #ccc;
+            padding:3px 0;
+            margin-bottom:3px;
+            font-size:13px;
+        }
+
+        .class-box:last-child{
+            border-bottom:none;
+        }
+
+        .edit-link{
+            color:blue;
+            text-decoration:none;
+        }
+
+        .delete-link{
+            color:red;
+            text-decoration:none;
+        }
+
+        .class-edit-link{
+            margin-left:10px;
+            font-size:12px;
+        }
+    </style>
 </head>
 <body>
-    <h1>中学校情報一覧</h1>
-    <p>
-        <a href="{% url 'publicity:label_select' %}">
-            <button>宛名シールを作成する</button>
-        </a>
-    </p>
-    <table border="1" cellpadding="8">
+
+<h1>中学校情報一覧</h1>
+
+<div class="btn-area">
+    <a href="{% url 'publicity:label_select' %}">
+        <button type="button">
+            宛名シールを作成する
+        </button>
+    </a>
+</div>
+
+<form method="get" target="_blank">
+
+    <div class="btn-area">
+
+        <button type="button" onclick="checkAll()">
+            全選択
+        </button>
+
+        <button type="button" onclick="uncheckAll()">
+            全解除
+        </button>
+
+        <button
+            type="submit"
+            formaction="{% url 'publicity:school_print' %}"
+        >
+            選択した中学校一覧を印刷
+        </button>
+
+        <button
+            type="submit"
+            formaction="{% url 'publicity:class_label_pdf' %}"
+        >
+            選択した中学校のクラス別ラベルを作成
+        </button>
+
+    </div>
+
+    <table>
+
         <tr>
+            <th>選択</th>
             <th>No</th>
             <th>学校名</th>
             <th>市町村</th>
@@ -20,19 +116,95 @@
             <th>電話番号</th>
             <th>住所</th>
             <th>3年合計</th>
+            <th>クラス別人数</th>
+            <th>編集</th>
+            <th>削除</th>
         </tr>
 
         {% for school in schools %}
         <tr>
+
+            <td>
+                <input
+                    type="checkbox"
+                    name="school_ids"
+                    value="{{ school.id }}"
+                >
+            </td>
+
             <td>{{ school.number }}</td>
-            <td>{{ school.name }}</td>
+
+            <td>
+                <strong>{{ school.name }}</strong>
+            </td>
+
             <td>{{ school.city }}</td>
+
             <td>{{ school.principal_name }}</td>
+
             <td>{{ school.tel }}</td>
+
             <td>{{ school.address }}</td>
+
             <td>{{ school.third_grade_total }}</td>
+
+            <td>
+                {% for cls in school.classes.all %}
+                    <div class="class-box">
+                        <strong>{{ cls.class_name }}</strong><br>
+                        男子：{{ cls.boys }}名<br>
+                        女子：{{ cls.girls }}名<br>
+                        合計：{{ cls.total }}名<br>
+
+                        <a
+                            href="{% url 'publicity:class_edit' cls.id %}"
+                            class="class-edit-link"
+                        >
+                            クラス編集
+                        </a>
+                    </div>
+                {% empty %}
+                    クラス情報なし
+                {% endfor %}
+            </td>
+
+            <td>
+                <a
+                    href="{% url 'publicity:school_edit' school.id %}"
+                    class="edit-link"
+                >
+                    編集
+                </a>
+            </td>
+
+            <td>
+                <a
+                    href="{% url 'publicity:school_delete' school.id %}"
+                    class="delete-link"
+                    onclick="return confirm('削除しますか？');"
+                >
+                    削除
+                </a>
+            </td>
+
         </tr>
         {% endfor %}
+
     </table>
+
+</form>
+
+<script>
+function checkAll(){
+    const boxes = document.querySelectorAll('input[name="school_ids"]');
+    boxes.forEach(box => box.checked = true);
+}
+
+function uncheckAll(){
+    const boxes = document.querySelectorAll('input[name="school_ids"]');
+    boxes.forEach(box => box.checked = false);
+}
+</script>
+
 </body>
 </html>

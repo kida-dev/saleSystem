@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>クラス人数編集</title>
+</head>
+<body>
+    <h1>クラス人数編集</h1>
+
+    <h2>{{ school_class.school.name }}</h2>
+
+    <form method="post">
+        {% csrf_token %}
+
+        {{ form.as_p }}
+
+        <button type="submit">保存</button>
+
+        <a href="{% url 'publicity:school_list' %}">
+            戻る
+        </a>
+    </form>
+</body>
+</html>

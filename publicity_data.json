@@ -1,0 +1,6202 @@
+[
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 65,
+  "fields": {
+    "number": 1,
+    "name": "宮崎市立宮崎東中学校",
+    "city": "宮崎市",
+    "principal_name": "永井 章造",
+    "tel": "0985-24-2898",
+    "address": "〒880-0816 宮崎市江平東２丁目７番９号",
+    "third_grade_total": 111,
+    "created_at": "2026-05-26T23:18:34.656Z",
+    "updated_at": "2026-05-26T23:18:34.656Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 66,
+  "fields": {
+    "number": 2,
+    "name": "宮崎市立宮崎中学校",
+    "city": "宮崎市",
+    "principal_name": "黒木 倫徳",
+    "tel": "0985-24-3380",
+    "address": "〒880-0021 宮崎市永楽町43番地",
+    "third_grade_total": 157,
+    "created_at": "2026-05-26T23:18:34.690Z",
+    "updated_at": "2026-05-26T23:18:34.690Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 67,
+  "fields": {
+    "number": 3,
+    "name": "宮崎市立宮崎西中学校",
+    "city": "宮崎市",
+    "principal_name": "押川 幸廣",
+    "tel": "0985-24-2646",
+    "address": "〒880-0007 宮崎市原町１番４号",
+    "third_grade_total": 166,
+    "created_at": "2026-05-26T23:18:34.716Z",
+    "updated_at": "2026-05-26T23:18:34.716Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 68,
+  "fields": {
+    "number": 4,
+    "name": "宮崎市立大淀中学校",
+    "city": "宮崎市",
+    "principal_name": "永井 敬雄",
+    "tel": "0985-51-3700",
+    "address": "〒880-0936 宮崎市天満１丁目２番６号",
+    "third_grade_total": 209,
+    "created_at": "2026-05-26T23:18:34.759Z",
+    "updated_at": "2026-05-26T23:18:34.759Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 69,
+  "fields": {
+    "number": 5,
+    "name": "宮崎市立大宮中学校",
+    "city": "宮崎市",
+    "principal_name": "小坂 芳文",
+    "tel": "0985-24-4518",
+    "address": "〒880-0035 宮崎市下北方町横小路5945",
+    "third_grade_total": 171,
+    "created_at": "2026-05-26T23:18:34.779Z",
+    "updated_at": "2026-05-26T23:18:34.779Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 70,
+  "fields": {
+    "number": 6,
+    "name": "宮崎市立檍中学校",
+    "city": "宮崎市",
+    "principal_name": "谷口 千尋",
+    "tel": "0985-23-2225",
+    "address": "〒880-0841 宮崎市吉村町江田原甲265番地",
+    "third_grade_total": 208,
+    "created_at": "2026-05-26T23:18:34.810Z",
+    "updated_at": "2026-05-26T23:18:34.810Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 71,
+  "fields": {
+    "number": 7,
+    "name": "宮崎市立赤江中学校",
+    "city": "宮崎市",
+    "principal_name": "重盛 文人",
+    "tel": "0985-51-2981",
+    "address": "〒880-0926 宮崎市月見ケ丘１丁目25番１号",
+    "third_grade_total": 152,
+    "created_at": "2026-05-26T23:18:34.856Z",
+    "updated_at": "2026-05-26T23:18:34.856Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 72,
+  "fields": {
+    "number": 8,
+    "name": "宮崎市立木花中学校",
+    "city": "宮崎市",
+    "principal_name": "川﨑 昌彦",
+    "tel": "0985-58-0004",
+    "address": "〒889-2153 宮崎市学園木花台南１−１",
+    "third_grade_total": 106,
+    "created_at": "2026-05-26T23:18:34.871Z",
+    "updated_at": "2026-05-26T23:18:34.871Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 73,
+  "fields": {
+    "number": 9,
+    "name": "宮崎市立青島中学校",
+    "city": "宮崎市",
+    "principal_name": "湯地 健一郎",
+    "tel": "0985-65-1248",
+    "address": "〒889-2164 宮崎市大字青島4828番地",
+    "third_grade_total": 19,
+    "created_at": "2026-05-26T23:18:34.887Z",
+    "updated_at": "2026-05-26T23:18:34.887Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 74,
+  "fields": {
+    "number": 10,
+    "name": "宮崎市立宮崎北中学校",
+    "city": "宮崎市",
+    "principal_name": "向江 修一",
+    "tel": "0985-41-1087",
+    "address": "〒880-0045 宮崎市大字大瀬町247番地",
+    "third_grade_total": 44,
+    "created_at": "2026-05-26T23:18:34.903Z",
+    "updated_at": "2026-05-26T23:18:34.903Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 75,
+  "fields": {
+    "number": 11,
+    "name": "宮崎市立住吉中学校",
+    "city": "宮崎市",
+    "principal_name": "山内 昭弘",
+    "tel": "0985-39-1512",
+    "address": "〒880-0121 宮崎市大字島之内7608",
+    "third_grade_total": 215,
+    "created_at": "2026-05-26T23:18:34.922Z",
+    "updated_at": "2026-05-26T23:18:34.922Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 76,
+  "fields": {
+    "number": 12,
+    "name": "宮崎市立生目中学校",
+    "city": "宮崎市",
+    "principal_name": "三田 明生",
+    "tel": "0985-48-1101",
+    "address": "〒880-2101 宮崎市大字跡江3131",
+    "third_grade_total": 170,
+    "created_at": "2026-05-26T23:18:34.951Z",
+    "updated_at": "2026-05-26T23:18:34.951Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 77,
+  "fields": {
+    "number": 13,
+    "name": "宮崎市立本郷中学校",
+    "city": "宮崎市",
+    "principal_name": "石井 豊久",
+    "tel": "0985-56-7585",
+    "address": "〒880-0921 宮崎市大字本郷南方5460番地",
+    "third_grade_total": 211,
+    "created_at": "2026-05-26T23:18:34.982Z",
+    "updated_at": "2026-05-26T23:18:34.982Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 78,
+  "fields": {
+    "number": 14,
+    "name": "宮崎市立大塚中学校",
+    "city": "宮崎市",
+    "principal_name": "原田 昭彦",
+    "tel": "0985-47-1130",
+    "address": "〒880-0951 宮崎市大塚町鎌ヶ迫2296番地",
+    "third_grade_total": 187,
+    "created_at": "2026-05-26T23:18:35.028Z",
+    "updated_at": "2026-05-26T23:18:35.028Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 79,
+  "fields": {
+    "number": 15,
+    "name": "宮崎市立東大宮中学校",
+    "city": "宮崎市",
+    "principal_name": "宮崎 誠",
+    "tel": "0985-29-8881",
+    "address": "〒880-0837 宮崎市村角町島ノ前346番地１",
+    "third_grade_total": 202,
+    "created_at": "2026-05-26T23:18:35.061Z",
+    "updated_at": "2026-05-26T23:18:35.061Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 80,
+  "fields": {
+    "number": 16,
+    "name": "宮崎市立生目南中学校",
+    "city": "宮崎市",
+    "principal_name": "木幡 伊知郎",
+    "tel": "0985-47-1102",
+    "address": "〒880-2104 宮崎市大字浮田662番地",
+    "third_grade_total": 34,
+    "created_at": "2026-05-26T23:18:35.092Z",
+    "updated_at": "2026-05-26T23:18:35.092Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 81,
+  "fields": {
+    "number": 17,
+    "name": "宮崎市立赤江東中学校",
+    "city": "宮崎市",
+    "principal_name": "国生 尚",
+    "tel": "0985-54-2233",
+    "address": "〒880-0911 宮崎市大字田吉1031番地",
+    "third_grade_total": 117,
+    "created_at": "2026-05-26T23:18:35.108Z",
+    "updated_at": "2026-05-26T23:18:35.108Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 82,
+  "fields": {
+    "number": 18,
+    "name": "宮崎市立生目台中学校",
+    "city": "宮崎市",
+    "principal_name": "東迫 健一",
+    "tel": "0985-54-6000",
+    "address": "〒880-0942 宮崎市生目台東４丁目１番地１",
+    "third_grade_total": 54,
+    "created_at": "2026-05-26T23:18:35.136Z",
+    "updated_at": "2026-05-26T23:18:35.136Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 83,
+  "fields": {
+    "number": 19,
+    "name": "宮崎市立田野中学校",
+    "city": "宮崎市",
+    "principal_name": "長友 正明",
+    "tel": "0985-86-1200",
+    "address": "〒889-1701 宮崎市田野町甲2826-3",
+    "third_grade_total": 105,
+    "created_at": "2026-05-26T23:18:35.137Z",
+    "updated_at": "2026-05-26T23:18:35.137Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 84,
+  "fields": {
+    "number": 20,
+    "name": "宮崎市立佐土原中学校",
+    "city": "宮崎市",
+    "principal_name": "度会 洋一",
+    "tel": "0985-74-1177",
+    "address": "〒880-0310 宮崎市佐土原町上田島8476",
+    "third_grade_total": 79,
+    "created_at": "2026-05-26T23:18:35.169Z",
+    "updated_at": "2026-05-26T23:18:35.169Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 85,
+  "fields": {
+    "number": 21,
+    "name": "宮崎市立広瀬中学校",
+    "city": "宮崎市",
+    "principal_name": "藤井 寛史",
+    "tel": "0985-73-1818",
+    "address": "〒880-0211 宮崎市佐土原町下田島20305-12",
+    "third_grade_total": 104,
+    "created_at": "2026-05-26T23:18:35.169Z",
+    "updated_at": "2026-05-26T23:18:35.169Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 86,
+  "fields": {
+    "number": 22,
+    "name": "宮崎市立久峰中学校",
+    "city": "宮崎市",
+    "principal_name": "岩本 喜樹",
+    "tel": "0985-73-1188",
+    "address": "〒880-0211 宮崎市佐土原町下田島21341番地",
+    "third_grade_total": 134,
+    "created_at": "2026-05-26T23:18:35.185Z",
+    "updated_at": "2026-05-26T23:18:35.185Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 87,
+  "fields": {
+    "number": 23,
+    "name": "宮崎市立高岡中学校",
+    "city": "宮崎市",
+    "principal_name": "川越 章三",
+    "tel": "0985-82-1012",
+    "address": "〒880-2221 宮崎市高岡町内山2700番地",
+    "third_grade_total": 82,
+    "created_at": "2026-05-26T23:18:35.217Z",
+    "updated_at": "2026-05-26T23:18:35.217Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 88,
+  "fields": {
+    "number": 24,
+    "name": "宮崎市立清武中学校",
+    "city": "宮崎市",
+    "principal_name": "久峩 秀隆",
+    "tel": "0985-85-2011",
+    "address": "〒889-1602 宮崎市清武町今泉甲6980",
+    "third_grade_total": 127,
+    "created_at": "2026-05-26T23:18:35.244Z",
+    "updated_at": "2026-05-26T23:18:35.244Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 89,
+  "fields": {
+    "number": 25,
+    "name": "宮崎市立加納中学校",
+    "city": "宮崎市",
+    "principal_name": "中邨 浩一郎",
+    "tel": "0985-84-2121",
+    "address": "〒880-0826 宮崎市清武町加納乙1040",
+    "third_grade_total": 148,
+    "created_at": "2026-05-26T23:18:35.267Z",
+    "updated_at": "2026-05-26T23:18:35.267Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 90,
+  "fields": {
+    "number": 26,
+    "name": "宮崎市立ひなた中学校(昼間部)",
+    "city": "宮崎市",
+    "principal_name": "横山 貢一",
+    "tel": "0985-26-6521",
+    "address": "〒880-0803 宮崎市旭１丁目４番１号",
+    "third_grade_total": 14,
+    "created_at": "2026-05-26T23:18:35.295Z",
+    "updated_at": "2026-05-26T23:18:35.295Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 91,
+  "fields": {
+    "number": 27,
+    "name": "宮崎市立ひなた中学校(夜間部)",
+    "city": "宮崎市",
+    "principal_name": "横山 貢一",
+    "tel": "0985-31-0027",
+    "address": "〒880-0803 宮崎市旭１丁目４番１号",
+    "third_grade_total": 15,
+    "created_at": "2026-05-26T23:18:35.298Z",
+    "updated_at": "2026-05-26T23:18:35.298Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 92,
+  "fields": {
+    "number": 28,
+    "name": "国富町立本庄中学校",
+    "city": "国富町",
+    "principal_name": "押川 由美惠",
+    "tel": "0985-75-2557",
+    "address": "〒880-1101 東諸県郡国富町大字本庄6686番地",
+    "third_grade_total": 75,
+    "created_at": "2026-05-26T23:18:35.311Z",
+    "updated_at": "2026-05-26T23:18:35.311Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 93,
+  "fields": {
+    "number": 29,
+    "name": "国富町立八代中学校",
+    "city": "国富町",
+    "principal_name": "太田 誠治",
+    "tel": "0985-75-2558",
+    "address": "〒880-1223 東諸県郡国富町大字八代南俣1710番地",
+    "third_grade_total": 16,
+    "created_at": "2026-05-26T23:18:35.311Z",
+    "updated_at": "2026-05-26T23:18:35.311Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 94,
+  "fields": {
+    "number": 30,
+    "name": "国富町立木脇中学校",
+    "city": "国富町",
+    "principal_name": "小侍 祐一",
+    "tel": "0985-75-2559",
+    "address": "〒880-1113 東諸県郡国富町大字木脇1707番地",
+    "third_grade_total": 48,
+    "created_at": "2026-05-26T23:18:35.333Z",
+    "updated_at": "2026-05-26T23:18:35.333Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 95,
+  "fields": {
+    "number": 31,
+    "name": "綾町立綾中学校",
+    "city": "綾町",
+    "principal_name": "由浅 公章",
+    "tel": "0985-77-0015",
+    "address": "〒880-1302 東諸県郡綾町大字北俣497番地１",
+    "third_grade_total": 79,
+    "created_at": "2026-05-26T23:18:35.352Z",
+    "updated_at": "2026-05-26T23:18:35.352Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 96,
+  "fields": {
+    "number": 32,
+    "name": "日南市立飫肥中学校",
+    "city": "日南市",
+    "principal_name": "梅田 一明",
+    "tel": "0987-25-1181",
+    "address": "〒889-2535 日南市飫肥10丁目２番３号",
+    "third_grade_total": 67,
+    "created_at": "2026-05-26T23:18:35.373Z",
+    "updated_at": "2026-05-26T23:18:35.373Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 97,
+  "fields": {
+    "number": 33,
+    "name": "日南市立油津中学校",
+    "city": "日南市",
+    "principal_name": "鶴丸 夕子",
+    "tel": "0987-23-1149",
+    "address": "〒887-0017 日南市梅ヶ浜二丁目２番１号",
+    "third_grade_total": 36,
+    "created_at": "2026-05-26T23:18:35.384Z",
+    "updated_at": "2026-05-26T23:18:35.384Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 98,
+  "fields": {
+    "number": 34,
+    "name": "日南市立吾田中学校",
+    "city": "日南市",
+    "principal_name": "今城 真美",
+    "tel": "0987-23-1139",
+    "address": "〒887-0041 日南市吾田東４丁目９−１",
+    "third_grade_total": 150,
+    "created_at": "2026-05-26T23:18:35.392Z",
+    "updated_at": "2026-05-26T23:18:35.392Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 99,
+  "fields": {
+    "number": 35,
+    "name": "日南市立東郷中学校",
+    "city": "日南市",
+    "principal_name": "西岡 雅弘",
+    "tel": "0987-23-1478",
+    "address": "〒889-2521 日南市大字東弁分乙22番地",
+    "third_grade_total": 36,
+    "created_at": "2026-05-26T23:18:35.405Z",
+    "updated_at": "2026-05-26T23:18:35.405Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 100,
+  "fields": {
+    "number": 36,
+    "name": "日南市立細田中学校",
+    "city": "日南市",
+    "principal_name": "清 俊一",
+    "tel": "0987-27-0497",
+    "address": "〒889-3151 日南市大字上方1211番地",
+    "third_grade_total": 15,
+    "created_at": "2026-05-26T23:18:35.421Z",
+    "updated_at": "2026-05-26T23:18:35.421Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 101,
+  "fields": {
+    "number": 37,
+    "name": "日南市立鵜戸中学校",
+    "city": "日南市",
+    "principal_name": "武田 大和",
+    "tel": "0987-29-1150",
+    "address": "〒887-0101 日南市大字宮浦2385番地",
+    "third_grade_total": 3,
+    "created_at": "2026-05-26T23:18:35.427Z",
+    "updated_at": "2026-05-26T23:18:35.427Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 102,
+  "fields": {
+    "number": 38,
+    "name": "日南市立北郷中学校",
+    "city": "日南市",
+    "principal_name": "土持 光司",
+    "tel": "0987-55-2014",
+    "address": "〒889-2402 日南市北郷町郷之原甲50番地",
+    "third_grade_total": 30,
+    "created_at": "2026-05-26T23:18:35.437Z",
+    "updated_at": "2026-05-26T23:18:35.437Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 103,
+  "fields": {
+    "number": 39,
+    "name": "日南市立南郷中学校",
+    "city": "日南市",
+    "principal_name": "冨田 兼三",
+    "tel": "0987-64-0223",
+    "address": "〒889-3204 日南市南郷町中村乙6008番地",
+    "third_grade_total": 61,
+    "created_at": "2026-05-26T23:18:35.455Z",
+    "updated_at": "2026-05-26T23:18:35.455Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 104,
+  "fields": {
+    "number": 40,
+    "name": "日南市立榎原中学校",
+    "city": "日南市",
+    "principal_name": "吉永 登志孝",
+    "tel": "0987-68-1004",
+    "address": "〒889-3215 日南市南郷町榎原甲482番地6",
+    "third_grade_total": 5,
+    "created_at": "2026-05-26T23:18:35.466Z",
+    "updated_at": "2026-05-26T23:18:35.466Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 105,
+  "fields": {
+    "number": 41,
+    "name": "串間市立串間中学校",
+    "city": "串間市",
+    "principal_name": "米原 浩司",
+    "tel": "0987-72-0115",
+    "address": "〒888-0001 串間市大字西方8607番地",
+    "third_grade_total": 144,
+    "created_at": "2026-05-26T23:18:35.477Z",
+    "updated_at": "2026-05-26T23:18:35.477Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 106,
+  "fields": {
+    "number": 42,
+    "name": "西都市立西都中学校",
+    "city": "西都市",
+    "principal_name": "伊東 泰彦",
+    "tel": "0983-43-3219",
+    "address": "〒881-0003 西都市大字右松2534",
+    "third_grade_total": 232,
+    "created_at": "2026-05-26T23:18:35.495Z",
+    "updated_at": "2026-05-26T23:18:35.495Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 107,
+  "fields": {
+    "number": 43,
+    "name": "西都市立銀鏡中学校",
+    "city": "西都市",
+    "principal_name": "横山 一憲",
+    "tel": "0983-46-2333",
+    "address": "〒881-1232 西都市大字銀鏡466番地",
+    "third_grade_total": 2,
+    "created_at": "2026-05-26T23:18:35.531Z",
+    "updated_at": "2026-05-26T23:18:35.531Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 108,
+  "fields": {
+    "number": 44,
+    "name": "高鍋町立高鍋東中学校",
+    "city": "高鍋町",
+    "principal_name": "宮越 康晴",
+    "tel": "0983-23-0046",
+    "address": "〒884-0002 児湯郡高鍋町大字北高鍋3321番地",
+    "third_grade_total": 98,
+    "created_at": "2026-05-26T23:18:35.531Z",
+    "updated_at": "2026-05-26T23:18:35.531Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 109,
+  "fields": {
+    "number": 45,
+    "name": "高鍋町立高鍋西中学校",
+    "city": "高鍋町",
+    "principal_name": "明松 伸浩",
+    "tel": "0983-23-0872",
+    "address": "〒884-0005 児湯郡高鍋町大字持田1524番地",
+    "third_grade_total": 83,
+    "created_at": "2026-05-26T23:18:35.563Z",
+    "updated_at": "2026-05-26T23:18:35.563Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 110,
+  "fields": {
+    "number": 46,
+    "name": "新富町立富田中学校",
+    "city": "新富町",
+    "principal_name": "二宮 正志",
+    "tel": "0983-33-1012",
+    "address": "〒889-1412 新富町富田東2-30",
+    "third_grade_total": 78,
+    "created_at": "2026-05-26T23:18:35.576Z",
+    "updated_at": "2026-05-26T23:18:35.576Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 111,
+  "fields": {
+    "number": 47,
+    "name": "新富町立新田中学校",
+    "city": "新富町",
+    "principal_name": "原田 誠",
+    "tel": "0983-33-1015",
+    "address": "〒889-1406 児湯郡新富町大字新田5795",
+    "third_grade_total": 38,
+    "created_at": "2026-05-26T23:18:35.592Z",
+    "updated_at": "2026-05-26T23:18:35.592Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 112,
+  "fields": {
+    "number": 48,
+    "name": "新富町立上新田中学校",
+    "city": "新富町",
+    "principal_name": "勢井 利彦",
+    "tel": "0983-35-1017",
+    "address": "〒889-1406 児湯郡新富町新田17053-8",
+    "third_grade_total": 26,
+    "created_at": "2026-05-26T23:18:35.608Z",
+    "updated_at": "2026-05-26T23:18:35.608Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 113,
+  "fields": {
+    "number": 49,
+    "name": "西米良村立西米良中学校",
+    "city": "西米良村",
+    "principal_name": "岩崎 真己",
+    "tel": "0983-36-1224",
+    "address": "〒881-1411 児湯郡西米良村村所270-1",
+    "third_grade_total": 4,
+    "created_at": "2026-05-26T23:18:35.608Z",
+    "updated_at": "2026-05-26T23:18:35.608Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 114,
+  "fields": {
+    "number": 50,
+    "name": "木城町立みどりの杜木城学園",
+    "city": "木城町",
+    "principal_name": "渡邊 常介",
+    "tel": "0983-32-2004",
+    "address": "〒884-0102 児湯郡木城町大字椎木2210番地１",
+    "third_grade_total": 50,
+    "created_at": "2026-05-26T23:18:35.624Z",
+    "updated_at": "2026-05-26T23:18:35.624Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 115,
+  "fields": {
+    "number": 51,
+    "name": "川南町立唐瀬原中学校",
+    "city": "川南町",
+    "principal_name": "三浦 哲也",
+    "tel": "0983-27-0044",
+    "address": "〒889-1301 川南町大字川南19664-1",
+    "third_grade_total": 90,
+    "created_at": "2026-05-26T23:18:35.640Z",
+    "updated_at": "2026-05-26T23:18:35.640Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 116,
+  "fields": {
+    "number": 52,
+    "name": "川南町立国光原中学校",
+    "city": "川南町",
+    "principal_name": "藤田 雅元",
+    "tel": "0983-27-0046",
+    "address": "〒889-1301 児湯郡川南町大字川南23566-1",
+    "third_grade_total": 57,
+    "created_at": "2026-05-26T23:18:35.655Z",
+    "updated_at": "2026-05-26T23:18:35.655Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 117,
+  "fields": {
+    "number": 53,
+    "name": "都農町立都農中学校",
+    "city": "都農町",
+    "principal_name": "上中別府 利一",
+    "tel": "0983-25-0046",
+    "address": "〒889-1201 児湯郡都農町川北14120",
+    "third_grade_total": 83,
+    "created_at": "2026-05-26T23:18:35.676Z",
+    "updated_at": "2026-05-26T23:18:35.676Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 118,
+  "fields": {
+    "number": 54,
+    "name": "都城市立姫城中学校",
+    "city": "都城市",
+    "principal_name": "深江 祐史",
+    "tel": "0986-22-4281",
+    "address": "〒885-0073 都城市姫城町25-71",
+    "third_grade_total": 104,
+    "created_at": "2026-05-26T23:18:35.684Z",
+    "updated_at": "2026-05-26T23:18:35.684Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 119,
+  "fields": {
+    "number": 55,
+    "name": "都城市立小松原中学校",
+    "city": "都城市",
+    "principal_name": "伊地知 憲文",
+    "tel": "0986-22-0645",
+    "address": "〒885-0026 都城市大王町19街区１号",
+    "third_grade_total": 97,
+    "created_at": "2026-05-26T23:18:35.718Z",
+    "updated_at": "2026-05-26T23:18:35.718Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 120,
+  "fields": {
+    "number": 56,
+    "name": "都城市立妻ケ丘中学校",
+    "city": "都城市",
+    "principal_name": "飯干 裕二",
+    "tel": "0986-22-0283",
+    "address": "〒885-0033 都城市妻ケ丘町13街区3号",
+    "third_grade_total": 208,
+    "created_at": "2026-05-26T23:18:35.732Z",
+    "updated_at": "2026-05-26T23:18:35.732Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 121,
+  "fields": {
+    "number": 57,
+    "name": "都城市立五十市中学校",
+    "city": "都城市",
+    "principal_name": "川越 広幸",
+    "tel": "0986-23-0126",
+    "address": "〒885-0086 都城市久保原町２街区６号",
+    "third_grade_total": 162,
+    "created_at": "2026-05-26T23:18:35.765Z",
+    "updated_at": "2026-05-26T23:18:35.765Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 122,
+  "fields": {
+    "number": 58,
+    "name": "都城市立祝吉中学校",
+    "city": "都城市",
+    "principal_name": "鈴木 一成",
+    "tel": "0986-22-0697",
+    "address": "〒885-0015 都城市千町4962番地",
+    "third_grade_total": 208,
+    "created_at": "2026-05-26T23:18:35.789Z",
+    "updated_at": "2026-05-26T23:18:35.789Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 123,
+  "fields": {
+    "number": 59,
+    "name": "都城市立沖水中学校",
+    "city": "都城市",
+    "principal_name": "串間 由香里",
+    "tel": "0986-38-1335",
+    "address": "〒885-0004 都城市都北町5615番地",
+    "third_grade_total": 130,
+    "created_at": "2026-05-26T23:18:35.813Z",
+    "updated_at": "2026-05-26T23:18:35.813Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 124,
+  "fields": {
+    "number": 60,
+    "name": "都城市立志和池中学校",
+    "city": "都城市",
+    "principal_name": "松下 綾",
+    "tel": "0986-36-3037",
+    "address": "〒885-1103 都城市上水流町4323-1",
+    "third_grade_total": 78,
+    "created_at": "2026-05-26T23:18:35.842Z",
+    "updated_at": "2026-05-26T23:18:35.842Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 125,
+  "fields": {
+    "number": 61,
+    "name": "都城市立庄内中学校",
+    "city": "都城市",
+    "principal_name": "西 洋和",
+    "tel": "0986-37-0526",
+    "address": "〒885-0114 都城市庄内町8976番地",
+    "third_grade_total": 69,
+    "created_at": "2026-05-26T23:18:35.858Z",
+    "updated_at": "2026-05-26T23:18:35.858Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 126,
+  "fields": {
+    "number": 62,
+    "name": "都城市立西岳中学校",
+    "city": "都城市",
+    "principal_name": "松下 将大",
+    "tel": "0986-33-1601",
+    "address": "〒885-0222 都城市美川町2927番地",
+    "third_grade_total": 2,
+    "created_at": "2026-05-26T23:18:35.874Z",
+    "updated_at": "2026-05-26T23:18:35.874Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 127,
+  "fields": {
+    "number": 63,
+    "name": "都城市立夏尾中学校",
+    "city": "都城市",
+    "principal_name": "中川 浩伸",
+    "tel": "0986-33-1600",
+    "address": "〒885-0225 都城市夏尾町6673番地4",
+    "third_grade_total": 8,
+    "created_at": "2026-05-26T23:18:35.882Z",
+    "updated_at": "2026-05-26T23:18:35.882Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 128,
+  "fields": {
+    "number": 64,
+    "name": "都城市立中郷中学校",
+    "city": "都城市",
+    "principal_name": "長友 克憲",
+    "tel": "0986-39-0709",
+    "address": "〒885-0063 都城市梅北町2909-1",
+    "third_grade_total": 71,
+    "created_at": "2026-05-26T23:18:35.890Z",
+    "updated_at": "2026-06-12T05:14:48.662Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 129,
+  "fields": {
+    "number": 65,
+    "name": "都城市立西中学校",
+    "city": "都城市",
+    "principal_name": "黒葛原 武",
+    "tel": "0986-24-1128",
+    "address": "〒885-0094 都城市都原町7707",
+    "third_grade_total": 195,
+    "created_at": "2026-05-26T23:18:35.905Z",
+    "updated_at": "2026-05-26T23:18:35.905Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 130,
+  "fields": {
+    "number": 66,
+    "name": "都城市立山之口中学校",
+    "city": "都城市",
+    "principal_name": "上德 浩太郎",
+    "tel": "0986-57-2007",
+    "address": "〒889-1802 都城市山之口町花木1536番地",
+    "third_grade_total": 65,
+    "created_at": "2026-05-26T23:18:35.937Z",
+    "updated_at": "2026-05-26T23:18:35.937Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 131,
+  "fields": {
+    "number": 67,
+    "name": "都城市立高城中学校",
+    "city": "都城市",
+    "principal_name": "松﨑 和美",
+    "tel": "0986-58-2303",
+    "address": "〒885-1202 都城市高城町穂満坊115番地１",
+    "third_grade_total": 87,
+    "created_at": "2026-05-26T23:18:35.953Z",
+    "updated_at": "2026-05-26T23:18:35.953Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 132,
+  "fields": {
+    "number": 68,
+    "name": "都城市立有水中学校",
+    "city": "都城市",
+    "principal_name": "和田 健",
+    "tel": "0986-59-9307",
+    "address": "〒885-1311 都城市高城町有水3656番地",
+    "third_grade_total": 14,
+    "created_at": "2026-05-26T23:18:35.968Z",
+    "updated_at": "2026-05-26T23:18:35.968Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 133,
+  "fields": {
+    "number": 69,
+    "name": "都城市立山田中学校",
+    "city": "都城市",
+    "principal_name": "加治屋 輝昭",
+    "tel": "0986-64-2105",
+    "address": "〒889-4601 都城市山田町山田2189-1",
+    "third_grade_total": 55,
+    "created_at": "2026-05-26T23:18:35.968Z",
+    "updated_at": "2026-05-26T23:18:35.968Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 134,
+  "fields": {
+    "number": 70,
+    "name": "都城市立高崎中学校",
+    "city": "都城市",
+    "principal_name": "井上 透",
+    "tel": "0986-62-1108",
+    "address": "〒889-4505 都城市高崎町大牟田1904番地１",
+    "third_grade_total": 58,
+    "created_at": "2026-05-26T23:18:35.991Z",
+    "updated_at": "2026-05-26T23:18:35.991Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 135,
+  "fields": {
+    "number": 71,
+    "name": "都城市立笛水中学校",
+    "city": "都城市",
+    "principal_name": "蓮井 伸二",
+    "tel": "0986-62-4634",
+    "address": "〒889-4501 都城市高崎町笛水948-1",
+    "third_grade_total": 0,
+    "created_at": "2026-05-26T23:18:36.011Z",
+    "updated_at": "2026-05-26T23:18:36.011Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 136,
+  "fields": {
+    "number": 72,
+    "name": "都城市立あやめ野中学校",
+    "city": "都城市",
+    "principal_name": "中村 英多朗",
+    "tel": "0986-36-5565",
+    "address": "〒885-0035 都城市立野町3764番地１",
+    "third_grade_total": 10,
+    "created_at": "2026-05-26T23:18:36.013Z",
+    "updated_at": "2026-05-26T23:18:36.013Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 137,
+  "fields": {
+    "number": 73,
+    "name": "三股町立三股中学校",
+    "city": "三股町",
+    "principal_name": "本田 正治",
+    "tel": "0986-52-1144",
+    "address": "〒889-1901 北諸県郡三股町樺山3548番地",
+    "third_grade_total": 336,
+    "created_at": "2026-05-26T23:18:36.013Z",
+    "updated_at": "2026-05-26T23:18:36.013Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 138,
+  "fields": {
+    "number": 74,
+    "name": "小林市立小林中学校",
+    "city": "小林市",
+    "principal_name": "中屋敷 一幸",
+    "tel": "0984-23-4168",
+    "address": "〒886-0004 小林市細野565番地１",
+    "third_grade_total": 141,
+    "created_at": "2026-05-26T23:18:36.060Z",
+    "updated_at": "2026-05-26T23:18:36.060Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 139,
+  "fields": {
+    "number": 75,
+    "name": "小林市立細野中学校",
+    "city": "小林市",
+    "principal_name": "田中 美津枝",
+    "tel": "0984-23-3611",
+    "address": "〒886-0004 小林市細野4374番地",
+    "third_grade_total": 43,
+    "created_at": "2026-05-26T23:18:36.092Z",
+    "updated_at": "2026-05-26T23:18:36.092Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 140,
+  "fields": {
+    "number": 76,
+    "name": "小林市立西小林中学校",
+    "city": "小林市",
+    "principal_name": "谷口 勇人",
+    "tel": "0984-27-1612",
+    "address": "〒886-0005 小林市南西方6149",
+    "third_grade_total": 26,
+    "created_at": "2026-05-26T23:18:36.092Z",
+    "updated_at": "2026-05-26T23:18:36.092Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 141,
+  "fields": {
+    "number": 77,
+    "name": "小林市立永久津中学校",
+    "city": "小林市",
+    "principal_name": "長野 みゆき",
+    "tel": "0984-23-3615",
+    "address": "〒886-0006 小林市北西方4578",
+    "third_grade_total": 10,
+    "created_at": "2026-05-26T23:18:36.118Z",
+    "updated_at": "2026-05-26T23:18:36.118Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 142,
+  "fields": {
+    "number": 78,
+    "name": "小林市立東方中学校",
+    "city": "小林市",
+    "principal_name": "松下 幸政",
+    "tel": "0984-23-3613",
+    "address": "〒886-0001 小林市東方3094番地２",
+    "third_grade_total": 17,
+    "created_at": "2026-05-26T23:18:36.122Z",
+    "updated_at": "2026-05-26T23:18:36.122Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 143,
+  "fields": {
+    "number": 79,
+    "name": "小林市立三松中学校",
+    "city": "小林市",
+    "principal_name": "日高 徹",
+    "tel": "0984-23-3614",
+    "address": "〒886-0003 小林市堤2331番地３",
+    "third_grade_total": 89,
+    "created_at": "2026-05-26T23:18:36.122Z",
+    "updated_at": "2026-05-26T23:18:36.122Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 144,
+  "fields": {
+    "number": 80,
+    "name": "小林市立須木中学校",
+    "city": "小林市",
+    "principal_name": "日髙 幸浩",
+    "tel": "0984-48-2004",
+    "address": "〒886-0111 小林市須木中原1730番地",
+    "third_grade_total": 9,
+    "created_at": "2026-05-26T23:18:36.154Z",
+    "updated_at": "2026-05-26T23:18:36.154Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 145,
+  "fields": {
+    "number": 81,
+    "name": "小林市立野尻中学校",
+    "city": "小林市",
+    "principal_name": "原田 康徳",
+    "tel": "0984-44-2910",
+    "address": "〒886-0212 小林市野尻町東麓2570番地４",
+    "third_grade_total": 44,
+    "created_at": "2026-05-26T23:18:36.154Z",
+    "updated_at": "2026-05-26T23:18:36.154Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 146,
+  "fields": {
+    "number": 82,
+    "name": "小林市立紙屋中学校",
+    "city": "小林市",
+    "principal_name": "上野 由夏",
+    "tel": "0984-46-0109",
+    "address": "〒886-0211 小林市野尻町紙屋1754番地",
+    "third_grade_total": 14,
+    "created_at": "2026-05-26T23:18:36.169Z",
+    "updated_at": "2026-05-26T23:18:36.169Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 147,
+  "fields": {
+    "number": 83,
+    "name": "えびの市立飯野中学校",
+    "city": "えびの市",
+    "principal_name": "川口 直",
+    "tel": "0984-33-0021",
+    "address": "〒889-4301 えびの市大字原田190番地",
+    "third_grade_total": 64,
+    "created_at": "2026-05-26T23:18:36.185Z",
+    "updated_at": "2026-05-26T23:18:36.185Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 148,
+  "fields": {
+    "number": 84,
+    "name": "えびの市立上江中学校",
+    "city": "えびの市",
+    "principal_name": "三輪 由香",
+    "tel": "0984-33-0315",
+    "address": "〒889-4304 えびの市大字上江1580番地",
+    "third_grade_total": 13,
+    "created_at": "2026-05-26T23:18:36.205Z",
+    "updated_at": "2026-05-26T23:18:36.205Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 149,
+  "fields": {
+    "number": 85,
+    "name": "えびの市立加久藤中学校",
+    "city": "えびの市",
+    "principal_name": "河野 和弘",
+    "tel": "0984-35-1353",
+    "address": "〒889-4221 えびの市大字栗下1269-1",
+    "third_grade_total": 27,
+    "created_at": "2026-05-26T23:18:36.217Z",
+    "updated_at": "2026-05-26T23:18:36.217Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 150,
+  "fields": {
+    "number": 86,
+    "name": "えびの市立真幸中学校",
+    "city": "えびの市",
+    "principal_name": "吉村 政文",
+    "tel": "0984-37-1150",
+    "address": "〒889-4151 えびの市向江850番地",
+    "third_grade_total": 32,
+    "created_at": "2026-05-26T23:18:36.225Z",
+    "updated_at": "2026-05-26T23:18:36.225Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 151,
+  "fields": {
+    "number": 87,
+    "name": "高原町立高原中学校",
+    "city": "高原町",
+    "principal_name": "肝付 正籍",
+    "tel": "0984-42-1057",
+    "address": "〒889-4412 西諸県郡高原町大字西麓709番地144",
+    "third_grade_total": 63,
+    "created_at": "2026-05-26T23:18:36.233Z",
+    "updated_at": "2026-05-26T23:18:36.233Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 152,
+  "fields": {
+    "number": 88,
+    "name": "延岡市立延岡中学校",
+    "city": "延岡市",
+    "principal_name": "三樹 浩二",
+    "tel": "0982-33-2541",
+    "address": "〒882-0851 延岡市浜砂１丁目６番地１号",
+    "third_grade_total": 110,
+    "created_at": "2026-05-26T23:18:36.248Z",
+    "updated_at": "2026-05-26T23:18:36.248Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 153,
+  "fields": {
+    "number": 89,
+    "name": "延岡市立恒富中学校",
+    "city": "延岡市",
+    "principal_name": "青木 健",
+    "tel": "0982-21-5381",
+    "address": "〒880-0867 延岡市古城町４丁目149番地",
+    "third_grade_total": 65,
+    "created_at": "2026-05-26T23:18:36.263Z",
+    "updated_at": "2026-05-26T23:18:36.263Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 154,
+  "fields": {
+    "number": 90,
+    "name": "延岡市立岡富中学校",
+    "city": "延岡市",
+    "principal_name": "川原 寛幸",
+    "tel": "0982-21-6494",
+    "address": "〒882-0821 延岡市本小路75番２",
+    "third_grade_total": 121,
+    "created_at": "2026-05-26T23:18:36.280Z",
+    "updated_at": "2026-05-26T23:18:36.280Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 155,
+  "fields": {
+    "number": 91,
+    "name": "延岡市立旭中学校",
+    "city": "延岡市",
+    "principal_name": "小野 秀俊",
+    "tel": "0982-33-4543",
+    "address": "〒882-0051 延岡市富美山町298-1",
+    "third_grade_total": 60,
+    "created_at": "2026-05-26T23:18:36.312Z",
+    "updated_at": "2026-05-26T23:18:36.312Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 156,
+  "fields": {
+    "number": 92,
+    "name": "延岡市立西階中学校",
+    "city": "延岡市",
+    "principal_name": "安在 康喜",
+    "tel": "0982-21-5851",
+    "address": "〒882-0804 延岡市西階町１丁目4042-3",
+    "third_grade_total": 102,
+    "created_at": "2026-05-26T23:18:36.315Z",
+    "updated_at": "2026-05-26T23:18:36.315Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 157,
+  "fields": {
+    "number": 93,
+    "name": "延岡市立南中学校",
+    "city": "延岡市",
+    "principal_name": "菊池 みどり",
+    "tel": "0982-33-3438",
+    "address": "〒882-0863 延岡市緑ヶ丘３丁目６番１号",
+    "third_grade_total": 133,
+    "created_at": "2026-05-26T23:18:36.341Z",
+    "updated_at": "2026-05-26T23:18:36.341Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 158,
+  "fields": {
+    "number": 94,
+    "name": "延岡市立東海中学校",
+    "city": "延岡市",
+    "principal_name": "渡木 秀明",
+    "tel": "0982-33-3029",
+    "address": "〒882-0021 延岡市無鹿町１丁目2218番地１",
+    "third_grade_total": 128,
+    "created_at": "2026-05-26T23:18:36.357Z",
+    "updated_at": "2026-05-26T23:18:36.357Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 159,
+  "fields": {
+    "number": 95,
+    "name": "延岡市立土々呂中学校",
+    "city": "延岡市",
+    "principal_name": "松下 修士",
+    "tel": "0982-37-0073",
+    "address": "〒889-0511 延岡市松原町３丁目8933番地１",
+    "third_grade_total": 132,
+    "created_at": "2026-05-26T23:18:36.388Z",
+    "updated_at": "2026-05-26T23:18:36.388Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 160,
+  "fields": {
+    "number": 96,
+    "name": "延岡市立黒岩中学校",
+    "city": "延岡市",
+    "principal_name": "平野 公一",
+    "tel": "0982-29-1111",
+    "address": "〒882-0086 延岡市大野町744番地２",
+    "third_grade_total": 8,
+    "created_at": "2026-05-26T23:18:36.420Z",
+    "updated_at": "2026-05-26T23:18:36.420Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 161,
+  "fields": {
+    "number": 97,
+    "name": "延岡市立南方中学校",
+    "city": "延岡市",
+    "principal_name": "井上 成二郎",
+    "tel": "0982-39-0804",
+    "address": "〒882-0074 延岡市細見町2971-13",
+    "third_grade_total": 18,
+    "created_at": "2026-05-26T23:18:36.420Z",
+    "updated_at": "2026-05-26T23:18:36.420Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 162,
+  "fields": {
+    "number": 98,
+    "name": "延岡市立島野浦学園",
+    "city": "延岡市",
+    "principal_name": "井戸 恒和",
+    "tel": "0982-43-0803",
+    "address": "〒882-0096 延岡市島浦町322番地４",
+    "third_grade_total": 0,
+    "created_at": "2026-05-26T23:18:36.449Z",
+    "updated_at": "2026-05-26T23:18:36.449Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 163,
+  "fields": {
+    "number": 99,
+    "name": "延岡市立南浦中学校",
+    "city": "延岡市",
+    "principal_name": "酒匂 慎一郎",
+    "tel": "0982-43-0004",
+    "address": "〒889-0322 延岡市熊野江町2511番地１",
+    "third_grade_total": 11,
+    "created_at": "2026-05-26T23:18:36.455Z",
+    "updated_at": "2026-05-26T23:18:36.455Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 164,
+  "fields": {
+    "number": 100,
+    "name": "延岡市立北方学園中学校",
+    "city": "延岡市",
+    "principal_name": "甲斐 誠",
+    "tel": "0982-47-2005",
+    "address": "〒882-0125 延岡市北方町川水流卯972",
+    "third_grade_total": 19,
+    "created_at": "2026-05-26T23:18:36.455Z",
+    "updated_at": "2026-05-26T23:18:36.455Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 165,
+  "fields": {
+    "number": 101,
+    "name": "延岡市立北川中学校",
+    "city": "延岡市",
+    "principal_name": "山本 正和",
+    "tel": "0982-46-2010",
+    "address": "〒889-0101 延岡市北川町川内名7248番地",
+    "third_grade_total": 14,
+    "created_at": "2026-05-26T23:18:36.470Z",
+    "updated_at": "2026-05-26T23:18:36.470Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 166,
+  "fields": {
+    "number": 102,
+    "name": "延岡市立北浦中学校",
+    "city": "延岡市",
+    "principal_name": "佐保 博光",
+    "tel": "0982-45-3030",
+    "address": "〒889-0301 延岡市立北浦町古江2270",
+    "third_grade_total": 16,
+    "created_at": "2026-05-26T23:18:36.470Z",
+    "updated_at": "2026-05-26T23:18:36.470Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 167,
+  "fields": {
+    "number": 103,
+    "name": "延岡市立三川内中学校",
+    "city": "延岡市",
+    "principal_name": "嶋岡 満幸",
+    "tel": "0982-42-1117",
+    "address": "〒889-0304 延岡市北浦町三川内2761",
+    "third_grade_total": 3,
+    "created_at": "2026-05-26T23:18:36.488Z",
+    "updated_at": "2026-05-26T23:18:36.488Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 168,
+  "fields": {
+    "number": 104,
+    "name": "日向市立富島中学校",
+    "city": "日向市",
+    "principal_name": "山之口 雅彦",
+    "tel": "0982-52-4754",
+    "address": "〒883-0062 日向市大字日知屋8272-2",
+    "third_grade_total": 152,
+    "created_at": "2026-05-26T23:18:36.488Z",
+    "updated_at": "2026-05-26T23:18:36.488Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 169,
+  "fields": {
+    "number": 105,
+    "name": "日向市立岩脇中学校",
+    "city": "日向市",
+    "principal_name": "佐藤 省吾",
+    "tel": "0982-57-1555",
+    "address": "〒883-0022 日向市大字平岩33番地３",
+    "third_grade_total": 18,
+    "created_at": "2026-05-26T23:18:36.533Z",
+    "updated_at": "2026-05-26T23:18:36.533Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 170,
+  "fields": {
+    "number": 106,
+    "name": "日向市立美々津中学校",
+    "city": "日向市",
+    "principal_name": "長友 智子",
+    "tel": "0982-58-0036",
+    "address": "〒889-1111 日向市美々津町2755番地",
+    "third_grade_total": 22,
+    "created_at": "2026-05-26T23:18:36.545Z",
+    "updated_at": "2026-05-26T23:18:36.545Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 171,
+  "fields": {
+    "number": 107,
+    "name": "日向市立日向中学校",
+    "city": "日向市",
+    "principal_name": "今村 富貴",
+    "tel": "0982-52-4794",
+    "address": "〒883-0034 日向市大字富高733番地４",
+    "third_grade_total": 98,
+    "created_at": "2026-05-26T23:18:36.558Z",
+    "updated_at": "2026-05-26T23:18:36.558Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 172,
+  "fields": {
+    "number": 108,
+    "name": "日向市立財光寺中学校",
+    "city": "日向市",
+    "principal_name": "飯干 光誠",
+    "tel": "0982-54-0850",
+    "address": "〒883-0021 日向市大字財光寺4863-34",
+    "third_grade_total": 147,
+    "created_at": "2026-05-26T23:18:36.577Z",
+    "updated_at": "2026-05-26T23:18:36.577Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 173,
+  "fields": {
+    "number": 109,
+    "name": "日向市立大王谷学園中等部",
+    "city": "日向市",
+    "principal_name": "野元 政宏",
+    "tel": "0982-52-1177",
+    "address": "〒883-0061 日向市大王町５丁目２番地１",
+    "third_grade_total": 95,
+    "created_at": "2026-05-26T23:18:36.592Z",
+    "updated_at": "2026-05-26T23:18:36.592Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 174,
+  "fields": {
+    "number": 110,
+    "name": "日向市立東郷中学校",
+    "city": "日向市",
+    "principal_name": "黒田 哲郎",
+    "tel": "0982-69-2008",
+    "address": "〒883-0106 日向市東郷町山陰辛31番地１",
+    "third_grade_total": 16,
+    "created_at": "2026-05-26T23:18:36.608Z",
+    "updated_at": "2026-05-26T23:18:36.608Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 175,
+  "fields": {
+    "number": 111,
+    "name": "日向市立東郷学園若竹分校",
+    "city": "日向市",
+    "principal_name": "黒田 哲郎",
+    "tel": "0982-50-7170",
+    "address": "〒882-0106 日向市東郷町山陰辛961番地",
+    "third_grade_total": 3,
+    "created_at": "2026-05-26T23:18:36.624Z",
+    "updated_at": "2026-05-26T23:18:36.624Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 176,
+  "fields": {
+    "number": 112,
+    "name": "門川町立門川中学校",
+    "city": "門川町",
+    "principal_name": "永富 雅樹",
+    "tel": "0982-63-1037",
+    "address": "〒889-0622 東臼杵郡門川町西栄町２丁目３番１号",
+    "third_grade_total": 150,
+    "created_at": "2026-05-26T23:18:36.624Z",
+    "updated_at": "2026-05-26T23:18:36.624Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 177,
+  "fields": {
+    "number": 113,
+    "name": "諸塚村立諸塚中学校",
+    "city": "諸塚村",
+    "principal_name": "土谷 敬子",
+    "tel": "0982-65-0013",
+    "address": "〒883-1301 諸塚村大字家代3292",
+    "third_grade_total": 6,
+    "created_at": "2026-05-26T23:18:36.664Z",
+    "updated_at": "2026-05-26T23:18:36.664Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 178,
+  "fields": {
+    "number": 114,
+    "name": "椎葉村立椎葉中学校",
+    "city": "椎葉村",
+    "principal_name": "河野 靖司",
+    "tel": "0982-67-2004",
+    "address": "〒883-1601 東臼杵郡椎葉村大字下福良102番地",
+    "third_grade_total": 12,
+    "created_at": "2026-05-26T23:18:36.670Z",
+    "updated_at": "2026-05-26T23:18:36.670Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 179,
+  "fields": {
+    "number": 115,
+    "name": "美郷町立美郷南学園",
+    "city": "美郷町",
+    "principal_name": "谷 正勝",
+    "tel": "0982-59-0120",
+    "address": "〒883-0306 美郷町南郷神門773番地１",
+    "third_grade_total": 11,
+    "created_at": "2026-05-26T23:18:36.670Z",
+    "updated_at": "2026-05-26T23:18:36.670Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 180,
+  "fields": {
+    "number": 116,
+    "name": "美郷町立西郷義務教育学校",
+    "city": "美郷町",
+    "principal_name": "田中 政秀",
+    "tel": "0982-66-2013",
+    "address": "〒883-1101 東臼杵郡美郷町西郷田代474-1",
+    "third_grade_total": 11,
+    "created_at": "2026-05-26T23:18:36.685Z",
+    "updated_at": "2026-05-26T23:18:36.685Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 181,
+  "fields": {
+    "number": 117,
+    "name": "美郷町立美郷北義務教育学校",
+    "city": "美郷町",
+    "principal_name": "石田 俊司",
+    "tel": "0982-62-5019",
+    "address": "〒889-0901 東臼杵郡美郷町北郷宇納間798番地",
+    "third_grade_total": 5,
+    "created_at": "2026-05-26T23:18:36.685Z",
+    "updated_at": "2026-05-26T23:18:36.685Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 182,
+  "fields": {
+    "number": 118,
+    "name": "高千穂町立高千穂中学校",
+    "city": "高千穂町",
+    "principal_name": "西田 浩司",
+    "tel": "0982-72-4121",
+    "address": "〒882-1101 西臼杵郡高千穂町大字三田井939-6",
+    "third_grade_total": 83,
+    "created_at": "2026-05-26T23:18:36.701Z",
+    "updated_at": "2026-05-26T23:18:36.701Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 183,
+  "fields": {
+    "number": 119,
+    "name": "日之影町立日之影中学校",
+    "city": "日之影町",
+    "principal_name": "隈元 修一",
+    "tel": "0982-87-2839",
+    "address": "〒882-0402 西臼杵郡日之影町大字岩井川1952番地",
+    "third_grade_total": 32,
+    "created_at": "2026-05-26T23:18:36.705Z",
+    "updated_at": "2026-05-26T23:18:36.705Z"
+  }
+},
+{
+  "model": "publicity.juniorhighschool",
+  "pk": 184,
+  "fields": {
+    "number": 120,
+    "name": "五ヶ瀬町立五ヶ瀬中学校",
+    "city": "五ヶ瀬町",
+    "principal_name": "菊池 憲",
+    "tel": "0982-82-0007",
+    "address": "〒882-1203 西臼杵郡五ヶ瀬町大字三ケ所11530番地",
+    "third_grade_total": 22,
+    "created_at": "2026-05-26T23:18:36.717Z",
+    "updated_at": "2026-05-26T23:18:36.717Z"
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 249,
+  "fields": {
+    "school": 65,
+    "class_name": "3年1組",
+    "boys": 22,
+    "girls": 14,
+    "total": 36
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 250,
+  "fields": {
+    "school": 65,
+    "class_name": "3年2組",
+    "boys": 20,
+    "girls": 14,
+    "total": 34
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 251,
+  "fields": {
+    "school": 65,
+    "class_name": "3年3組",
+    "boys": 20,
+    "girls": 13,
+    "total": 33
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 252,
+  "fields": {
+    "school": 65,
+    "class_name": "たちばな２",
+    "boys": 6,
+    "girls": 1,
+    "total": 7
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 253,
+  "fields": {
+    "school": 65,
+    "class_name": "しののめ",
+    "boys": 0,
+    "girls": 1,
+    "total": 1
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 254,
+  "fields": {
+    "school": 66,
+    "class_name": "3年1組",
+    "boys": 18,
+    "girls": 16,
+    "total": 36
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 255,
+  "fields": {
+    "school": 66,
+    "class_name": "3年2組",
+    "boys": 18,
+    "girls": 17,
+    "total": 35
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 256,
+  "fields": {
+    "school": 66,
+    "class_name": "3年3組",
+    "boys": 17,
+    "girls": 16,
+    "total": 37
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 257,
+  "fields": {
+    "school": 66,
+    "class_name": "3年4組",
+    "boys": 16,
+    "girls": 17,
+    "total": 38
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 258,
+  "fields": {
+    "school": 66,
+    "class_name": "3年6組",
+    "boys": 4,
+    "girls": 0,
+    "total": 4
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 259,
+  "fields": {
+    "school": 66,
+    "class_name": "3年7組",
+    "boys": 4,
+    "girls": 1,
+    "total": 5
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 260,
+  "fields": {
+    "school": 66,
+    "class_name": "3年8組",
+    "boys": 1,
+    "girls": 1,
+    "total": 2
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 261,
+  "fields": {
+    "school": 67,
+    "class_name": "3年1組",
+    "boys": 18,
+    "girls": 21,
+    "total": 39
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 262,
+  "fields": {
+    "school": 67,
+    "class_name": "3年2組",
+    "boys": 18,
+    "girls": 21,
+    "total": 39
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 263,
+  "fields": {
+    "school": 67,
+    "class_name": "3年3組",
+    "boys": 18,
+    "girls": 22,
+    "total": 40
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 264,
+  "fields": {
+    "school": 67,
+    "class_name": "3年4組",
+    "boys": 20,
+    "girls": 20,
+    "total": 40
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 265,
+  "fields": {
+    "school": 67,
+    "class_name": "3年6組",
+    "boys": 1,
+    "girls": 0,
+    "total": 1
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 266,
+  "fields": {
+    "school": 67,
+    "class_name": "3年10組",
+    "boys": 3,
+    "girls": 4,
+    "total": 7
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 267,
+  "fields": {
+    "school": 68,
+    "class_name": "3年1組",
+    "boys": 20,
+    "girls": 20,
+    "total": 40
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 268,
+  "fields": {
+    "school": 68,
+    "class_name": "3年2組",
+    "boys": 19,
+    "girls": 21,
+    "total": 40
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 269,
+  "fields": {
+    "school": 68,
+    "class_name": "3年3組",
+    "boys": 20,
+    "girls": 20,
+    "total": 40
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 270,
+  "fields": {
+    "school": 68,
+    "class_name": "3年4組",
+    "boys": 21,
+    "girls": 21,
+    "total": 42
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 271,
+  "fields": {
+    "school": 68,
+    "class_name": "3年5組",
+    "boys": 21,
+    "girls": 21,
+    "total": 42
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 272,
+  "fields": {
+    "school": 68,
+    "class_name": "3年10組",
+    "boys": 2,
+    "girls": 1,
+    "total": 3
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 273,
+  "fields": {
+    "school": 68,
+    "class_name": "3年11組",
+    "boys": 2,
+    "girls": 0,
+    "total": 2
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 274,
+  "fields": {
+    "school": 69,
+    "class_name": "3年1組",
+    "boys": 16,
+    "girls": 18,
+    "total": 34
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 275,
+  "fields": {
+    "school": 69,
+    "class_name": "3年2組",
+    "boys": 15,
+    "girls": 19,
+    "total": 34
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 276,
+  "fields": {
+    "school": 69,
+    "class_name": "3年3組",
+    "boys": 16,
+    "girls": 15,
+    "total": 31
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 277,
+  "fields": {
+    "school": 69,
+    "class_name": "3年4組",
+    "boys": 15,
+    "girls": 19,
+    "total": 34
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 278,
+  "fields": {
+    "school": 69,
+    "class_name": "3年5組",
+    "boys": 15,
+    "girls": 19,
+    "total": 34
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 279,
+  "fields": {
+    "school": 69,
+    "class_name": "7組",
+    "boys": 1,
+    "girls": 0,
+    "total": 1
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 280,
+  "fields": {
+    "school": 69,
+    "class_name": "9組",
+    "boys": 1,
+    "girls": 2,
+    "total": 3
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 281,
+  "fields": {
+    "school": 70,
+    "class_name": "3年1組",
+    "boys": 22,
+    "girls": 17,
+    "total": 39
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 282,
+  "fields": {
+    "school": 70,
+    "class_name": "3年2組",
+    "boys": 22,
+    "girls": 18,
+    "total": 40
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 283,
+  "fields": {
+    "school": 70,
+    "class_name": "3年3組",
+    "boys": 21,
+    "girls": 19,
+    "total": 40
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 284,
+  "fields": {
+    "school": 70,
+    "class_name": "3年4組",
+    "boys": 22,
+    "girls": 17,
+    "total": 39
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 285,
+  "fields": {
+    "school": 70,
+    "class_name": "3年5組",
+    "boys": 21,
+    "girls": 17,
+    "total": 38
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 286,
+  "fields": {
+    "school": 70,
+    "class_name": "ハートフル3A",
+    "boys": 2,
+    "girls": 2,
+    "total": 4
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 287,
+  "fields": {
+    "school": 70,
+    "class_name": "ハートフル3B",
+    "boys": 3,
+    "girls": 2,
+    "total": 5
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 288,
+  "fields": {
+    "school": 70,
+    "class_name": "3年8組",
+    "boys": 2,
+    "girls": 1,
+    "total": 3
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 289,
+  "fields": {
+    "school": 71,
+    "class_name": "3年1組",
+    "boys": 17,
+    "girls": 18,
+    "total": 35
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 290,
+  "fields": {
+    "school": 71,
+    "class_name": "3年2組",
+    "boys": 18,
+    "girls": 17,
+    "total": 35
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 291,
+  "fields": {
+    "school": 71,
+    "class_name": "3年3組",
+    "boys": 18,
+    "girls": 18,
+    "total": 36
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 292,
+  "fields": {
+    "school": 71,
+    "class_name": "3年4組",
+    "boys": 18,
+    "girls": 17,
+    "total": 35
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 293,
+  "fields": {
+    "school": 71,
+    "class_name": "3年6組",
+    "boys": 6,
+    "girls": 3,
+    "total": 9
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 294,
+  "fields": {
+    "school": 71,
+    "class_name": "3年7組",
+    "boys": 1,
+    "girls": 1,
+    "total": 2
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 295,
+  "fields": {
+    "school": 72,
+    "class_name": "3年1組",
+    "boys": 18,
+    "girls": 17,
+    "total": 35
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 296,
+  "fields": {
+    "school": 72,
+    "class_name": "3年2組",
+    "boys": 19,
+    "girls": 17,
+    "total": 36
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 297,
+  "fields": {
+    "school": 72,
+    "class_name": "3年3組",
+    "boys": 18,
+    "girls": 17,
+    "total": 35
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 298,
+  "fields": {
+    "school": 73,
+    "class_name": "3年1組",
+    "boys": 7,
+    "girls": 10,
+    "total": 17
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 299,
+  "fields": {
+    "school": 73,
+    "class_name": "3年2組",
+    "boys": 1,
+    "girls": 1,
+    "total": 2
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 300,
+  "fields": {
+    "school": 74,
+    "class_name": "3年A組",
+    "boys": 9,
+    "girls": 12,
+    "total": 21
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 301,
+  "fields": {
+    "school": 74,
+    "class_name": "3年B組",
+    "boys": 9,
+    "girls": 12,
+    "total": 21
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 302,
+  "fields": {
+    "school": 74,
+    "class_name": "3年C組",
+    "boys": 1,
+    "girls": 1,
+    "total": 2
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 303,
+  "fields": {
+    "school": 75,
+    "class_name": "3年1組",
+    "boys": 19,
+    "girls": 16,
+    "total": 35
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 304,
+  "fields": {
+    "school": 75,
+    "class_name": "3年2組",
+    "boys": 19,
+    "girls": 16,
+    "total": 35
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 305,
+  "fields": {
+    "school": 75,
+    "class_name": "3年3組",
+    "boys": 18,
+    "girls": 17,
+    "total": 35
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 306,
+  "fields": {
+    "school": 75,
+    "class_name": "3年4組",
+    "boys": 19,
+    "girls": 16,
+    "total": 35
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 307,
+  "fields": {
+    "school": 75,
+    "class_name": "3年5組",
+    "boys": 19,
+    "girls": 16,
+    "total": 35
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 308,
+  "fields": {
+    "school": 75,
+    "class_name": "3年6組",
+    "boys": 19,
+    "girls": 16,
+    "total": 35
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 309,
+  "fields": {
+    "school": 75,
+    "class_name": "3年8組",
+    "boys": 3,
+    "girls": 1,
+    "total": 4
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 310,
+  "fields": {
+    "school": 75,
+    "class_name": "3年9組",
+    "boys": 1,
+    "girls": 0,
+    "total": 1
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 311,
+  "fields": {
+    "school": 76,
+    "class_name": "3年1組",
+    "boys": 18,
+    "girls": 15,
+    "total": 33
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 312,
+  "fields": {
+    "school": 76,
+    "class_name": "3年2組",
+    "boys": 18,
+    "girls": 15,
+    "total": 33
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 313,
+  "fields": {
+    "school": 76,
+    "class_name": "3年3組",
+    "boys": 18,
+    "girls": 15,
+    "total": 33
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 314,
+  "fields": {
+    "school": 76,
+    "class_name": "3年4組",
+    "boys": 18,
+    "girls": 14,
+    "total": 32
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 315,
+  "fields": {
+    "school": 76,
+    "class_name": "3年5組",
+    "boys": 18,
+    "girls": 15,
+    "total": 33
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 316,
+  "fields": {
+    "school": 76,
+    "class_name": "3年7組",
+    "boys": 4,
+    "girls": 0,
+    "total": 4
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 317,
+  "fields": {
+    "school": 76,
+    "class_name": "3年8組",
+    "boys": 0,
+    "girls": 2,
+    "total": 2
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 318,
+  "fields": {
+    "school": 77,
+    "class_name": "3年1組",
+    "boys": 18,
+    "girls": 17,
+    "total": 35
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 319,
+  "fields": {
+    "school": 77,
+    "class_name": "3年2組",
+    "boys": 17,
+    "girls": 17,
+    "total": 34
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 320,
+  "fields": {
+    "school": 77,
+    "class_name": "3年3組",
+    "boys": 18,
+    "girls": 16,
+    "total": 34
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 321,
+  "fields": {
+    "school": 77,
+    "class_name": "3年4組",
+    "boys": 18,
+    "girls": 17,
+    "total": 35
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 322,
+  "fields": {
+    "school": 77,
+    "class_name": "3年5組",
+    "boys": 13,
+    "girls": 16,
+    "total": 29
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 323,
+  "fields": {
+    "school": 77,
+    "class_name": "3年6組",
+    "boys": 18,
+    "girls": 17,
+    "total": 35
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 324,
+  "fields": {
+    "school": 77,
+    "class_name": "8組",
+    "boys": 1,
+    "girls": 1,
+    "total": 2
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 325,
+  "fields": {
+    "school": 77,
+    "class_name": "12組",
+    "boys": 6,
+    "girls": 1,
+    "total": 7
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 326,
+  "fields": {
+    "school": 78,
+    "class_name": "3年1組",
+    "boys": 17,
+    "girls": 19,
+    "total": 36
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 327,
+  "fields": {
+    "school": 78,
+    "class_name": "3年2組",
+    "boys": 17,
+    "girls": 19,
+    "total": 36
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 328,
+  "fields": {
+    "school": 78,
+    "class_name": "3年3組",
+    "boys": 17,
+    "girls": 19,
+    "total": 36
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 329,
+  "fields": {
+    "school": 78,
+    "class_name": "3年4組",
+    "boys": 15,
+    "girls": 17,
+    "total": 32
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 330,
+  "fields": {
+    "school": 78,
+    "class_name": "3年5組",
+    "boys": 18,
+    "girls": 20,
+    "total": 38
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 331,
+  "fields": {
+    "school": 78,
+    "class_name": "3年9組",
+    "boys": 2,
+    "girls": 6,
+    "total": 8
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 332,
+  "fields": {
+    "school": 78,
+    "class_name": "3年11組",
+    "boys": 1,
+    "girls": 0,
+    "total": 1
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 333,
+  "fields": {
+    "school": 79,
+    "class_name": "3年1組",
+    "boys": 20,
+    "girls": 20,
+    "total": 40
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 334,
+  "fields": {
+    "school": 79,
+    "class_name": "3年2組",
+    "boys": 20,
+    "girls": 20,
+    "total": 40
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 335,
+  "fields": {
+    "school": 79,
+    "class_name": "3年3組",
+    "boys": 20,
+    "girls": 18,
+    "total": 38
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 336,
+  "fields": {
+    "school": 79,
+    "class_name": "3年4組",
+    "boys": 21,
+    "girls": 19,
+    "total": 40
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 337,
+  "fields": {
+    "school": 79,
+    "class_name": "3年5組",
+    "boys": 20,
+    "girls": 20,
+    "total": 40
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 338,
+  "fields": {
+    "school": 79,
+    "class_name": "3年7組(知的)",
+    "boys": 1,
+    "girls": 0,
+    "total": 1
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 339,
+  "fields": {
+    "school": 79,
+    "class_name": "3年8組(自情)",
+    "boys": 1,
+    "girls": 2,
+    "total": 3
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 340,
+  "fields": {
+    "school": 80,
+    "class_name": "3年1組",
+    "boys": 17,
+    "girls": 15,
+    "total": 32
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 341,
+  "fields": {
+    "school": 80,
+    "class_name": "3年5組",
+    "boys": 1,
+    "girls": 1,
+    "total": 2
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 342,
+  "fields": {
+    "school": 81,
+    "class_name": "3年1組",
+    "boys": 20,
+    "girls": 14,
+    "total": 34
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 343,
+  "fields": {
+    "school": 81,
+    "class_name": "3年2組",
+    "boys": 22,
+    "girls": 15,
+    "total": 37
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 344,
+  "fields": {
+    "school": 81,
+    "class_name": "3年3組",
+    "boys": 21,
+    "girls": 15,
+    "total": 36
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 345,
+  "fields": {
+    "school": 81,
+    "class_name": "3年5組(自情)",
+    "boys": 4,
+    "girls": 1,
+    "total": 5
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 346,
+  "fields": {
+    "school": 81,
+    "class_name": "3年6組(自情)",
+    "boys": 2,
+    "girls": 2,
+    "total": 4
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 347,
+  "fields": {
+    "school": 81,
+    "class_name": "3年7組(知的)",
+    "boys": 0,
+    "girls": 1,
+    "total": 1
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 348,
+  "fields": {
+    "school": 82,
+    "class_name": "3年1組",
+    "boys": 15,
+    "girls": 12,
+    "total": 27
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 349,
+  "fields": {
+    "school": 82,
+    "class_name": "3年2組",
+    "boys": 16,
+    "girls": 11,
+    "total": 27
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 350,
+  "fields": {
+    "school": 83,
+    "class_name": "3年1組",
+    "boys": 19,
+    "girls": 13,
+    "total": 32
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 351,
+  "fields": {
+    "school": 83,
+    "class_name": "3年2組",
+    "boys": 19,
+    "girls": 13,
+    "total": 32
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 352,
+  "fields": {
+    "school": 83,
+    "class_name": "3年3組",
+    "boys": 19,
+    "girls": 13,
+    "total": 32
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 353,
+  "fields": {
+    "school": 83,
+    "class_name": "3年5組",
+    "boys": 2,
+    "girls": 2,
+    "total": 4
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 354,
+  "fields": {
+    "school": 83,
+    "class_name": "3年7組",
+    "boys": 4,
+    "girls": 1,
+    "total": 5
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 355,
+  "fields": {
+    "school": 84,
+    "class_name": "3年A級",
+    "boys": 19,
+    "girls": 21,
+    "total": 40
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 356,
+  "fields": {
+    "school": 84,
+    "class_name": "3年B級",
+    "boys": 17,
+    "girls": 22,
+    "total": 39
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 357,
+  "fields": {
+    "school": 85,
+    "class_name": "3年1組",
+    "boys": 14,
+    "girls": 21,
+    "total": 35
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 358,
+  "fields": {
+    "school": 85,
+    "class_name": "3年2組",
+    "boys": 15,
+    "girls": 20,
+    "total": 35
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 359,
+  "fields": {
+    "school": 85,
+    "class_name": "3年3組",
+    "boys": 15,
+    "girls": 19,
+    "total": 34
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 360,
+  "fields": {
+    "school": 86,
+    "class_name": "3年1組",
+    "boys": 17,
+    "girls": 16,
+    "total": 33
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 361,
+  "fields": {
+    "school": 86,
+    "class_name": "3年2組",
+    "boys": 17,
+    "girls": 16,
+    "total": 33
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 362,
+  "fields": {
+    "school": 86,
+    "class_name": "3年3組",
+    "boys": 15,
+    "girls": 16,
+    "total": 31
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 363,
+  "fields": {
+    "school": 86,
+    "class_name": "3年4組",
+    "boys": 17,
+    "girls": 17,
+    "total": 34
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 364,
+  "fields": {
+    "school": 86,
+    "class_name": "3年7組(自情)",
+    "boys": 2,
+    "girls": 0,
+    "total": 2
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 365,
+  "fields": {
+    "school": 86,
+    "class_name": "3年8組(知的)",
+    "boys": 0,
+    "girls": 1,
+    "total": 1
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 366,
+  "fields": {
+    "school": 87,
+    "class_name": "3年1組",
+    "boys": 20,
+    "girls": 20,
+    "total": 40
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 367,
+  "fields": {
+    "school": 87,
+    "class_name": "3年2組",
+    "boys": 19,
+    "girls": 20,
+    "total": 39
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 368,
+  "fields": {
+    "school": 87,
+    "class_name": "3年5組",
+    "boys": 2,
+    "girls": 0,
+    "total": 2
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 369,
+  "fields": {
+    "school": 87,
+    "class_name": "3年7組",
+    "boys": 0,
+    "girls": 1,
+    "total": 1
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 370,
+  "fields": {
+    "school": 88,
+    "class_name": "3年1組",
+    "boys": 12,
+    "girls": 18,
+    "total": 30
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 371,
+  "fields": {
+    "school": 88,
+    "class_name": "3年2組",
+    "boys": 12,
+    "girls": 19,
+    "total": 31
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 372,
+  "fields": {
+    "school": 88,
+    "class_name": "3年3組",
+    "boys": 12,
+    "girls": 19,
+    "total": 31
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 373,
+  "fields": {
+    "school": 88,
+    "class_name": "3年4組",
+    "boys": 12,
+    "girls": 17,
+    "total": 29
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 374,
+  "fields": {
+    "school": 88,
+    "class_name": "3年7組(自情)",
+    "boys": 1,
+    "girls": 1,
+    "total": 2
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 375,
+  "fields": {
+    "school": 88,
+    "class_name": "3年8組(知的)",
+    "boys": 1,
+    "girls": 3,
+    "total": 4
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 376,
+  "fields": {
+    "school": 89,
+    "class_name": "3年1組",
+    "boys": 18,
+    "girls": 19,
+    "total": 37
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 377,
+  "fields": {
+    "school": 89,
+    "class_name": "3年2組",
+    "boys": 17,
+    "girls": 20,
+    "total": 37
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 378,
+  "fields": {
+    "school": 89,
+    "class_name": "3年3組",
+    "boys": 17,
+    "girls": 19,
+    "total": 36
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 379,
+  "fields": {
+    "school": 89,
+    "class_name": "3年4組",
+    "boys": 17,
+    "girls": 19,
+    "total": 36
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 380,
+  "fields": {
+    "school": 89,
+    "class_name": "3年8組",
+    "boys": 1,
+    "girls": 1,
+    "total": 2
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 381,
+  "fields": {
+    "school": 90,
+    "class_name": "3年1組",
+    "boys": 5,
+    "girls": 9,
+    "total": 14
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 382,
+  "fields": {
+    "school": 91,
+    "class_name": "3年",
+    "boys": 9,
+    "girls": 6,
+    "total": 15
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 383,
+  "fields": {
+    "school": 92,
+    "class_name": "3年1組",
+    "boys": 18,
+    "girls": 20,
+    "total": 38
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 384,
+  "fields": {
+    "school": 92,
+    "class_name": "3年2組",
+    "boys": 18,
+    "girls": 19,
+    "total": 37
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 385,
+  "fields": {
+    "school": 93,
+    "class_name": "3年A組",
+    "boys": 12,
+    "girls": 4,
+    "total": 16
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 386,
+  "fields": {
+    "school": 94,
+    "class_name": "3年A組",
+    "boys": 11,
+    "girls": 11,
+    "total": 22
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 387,
+  "fields": {
+    "school": 94,
+    "class_name": "3年B組",
+    "boys": 11,
+    "girls": 13,
+    "total": 24
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 388,
+  "fields": {
+    "school": 94,
+    "class_name": "3年D組",
+    "boys": 0,
+    "girls": 2,
+    "total": 2
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 389,
+  "fields": {
+    "school": 95,
+    "class_name": "3年1組",
+    "boys": 19,
+    "girls": 18,
+    "total": 37
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 390,
+  "fields": {
+    "school": 95,
+    "class_name": "3年2組",
+    "boys": 18,
+    "girls": 18,
+    "total": 36
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 391,
+  "fields": {
+    "school": 95,
+    "class_name": "わかたけ２組",
+    "boys": 2,
+    "girls": 0,
+    "total": 2
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 392,
+  "fields": {
+    "school": 95,
+    "class_name": "みどり",
+    "boys": 2,
+    "girls": 2,
+    "total": 4
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 393,
+  "fields": {
+    "school": 96,
+    "class_name": "3年1組",
+    "boys": 17,
+    "girls": 16,
+    "total": 33
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 394,
+  "fields": {
+    "school": 96,
+    "class_name": "3年2組",
+    "boys": 16,
+    "girls": 18,
+    "total": 34
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 395,
+  "fields": {
+    "school": 97,
+    "class_name": "3年1組",
+    "boys": 23,
+    "girls": 13,
+    "total": 36
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 396,
+  "fields": {
+    "school": 98,
+    "class_name": "3年1組",
+    "boys": 16,
+    "girls": 21,
+    "total": 37
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 397,
+  "fields": {
+    "school": 98,
+    "class_name": "3年2組",
+    "boys": 17,
+    "girls": 21,
+    "total": 38
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 398,
+  "fields": {
+    "school": 98,
+    "class_name": "3年3組",
+    "boys": 17,
+    "girls": 20,
+    "total": 37
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 399,
+  "fields": {
+    "school": 98,
+    "class_name": "3年4組",
+    "boys": 17,
+    "girls": 21,
+    "total": 38
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 400,
+  "fields": {
+    "school": 99,
+    "class_name": "9年1組",
+    "boys": 15,
+    "girls": 20,
+    "total": 35
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 401,
+  "fields": {
+    "school": 99,
+    "class_name": "9年4組",
+    "boys": 1,
+    "girls": 0,
+    "total": 1
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 402,
+  "fields": {
+    "school": 100,
+    "class_name": "3年A級",
+    "boys": 8,
+    "girls": 6,
+    "total": 14
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 403,
+  "fields": {
+    "school": 100,
+    "class_name": "3年B級",
+    "boys": 0,
+    "girls": 1,
+    "total": 1
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 404,
+  "fields": {
+    "school": 101,
+    "class_name": "3年1組",
+    "boys": 2,
+    "girls": 1,
+    "total": 3
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 405,
+  "fields": {
+    "school": 102,
+    "class_name": "3年1組",
+    "boys": 13,
+    "girls": 12,
+    "total": 25
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 406,
+  "fields": {
+    "school": 102,
+    "class_name": "3年2組",
+    "boys": 2,
+    "girls": 0,
+    "total": 2
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 407,
+  "fields": {
+    "school": 102,
+    "class_name": "3年3組",
+    "boys": 3,
+    "girls": 0,
+    "total": 3
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 408,
+  "fields": {
+    "school": 103,
+    "class_name": "3年1組",
+    "boys": 15,
+    "girls": 15,
+    "total": 30
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 409,
+  "fields": {
+    "school": 103,
+    "class_name": "3年2組",
+    "boys": 17,
+    "girls": 14,
+    "total": 31
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 410,
+  "fields": {
+    "school": 104,
+    "class_name": "3年A組",
+    "boys": 2,
+    "girls": 2,
+    "total": 4
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 411,
+  "fields": {
+    "school": 104,
+    "class_name": "3年B組",
+    "boys": 1,
+    "girls": 0,
+    "total": 1
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 412,
+  "fields": {
+    "school": 105,
+    "class_name": "3年1組",
+    "boys": 19,
+    "girls": 17,
+    "total": 36
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 413,
+  "fields": {
+    "school": 105,
+    "class_name": "3年2組",
+    "boys": 20,
+    "girls": 16,
+    "total": 36
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 414,
+  "fields": {
+    "school": 105,
+    "class_name": "3年3組",
+    "boys": 20,
+    "girls": 16,
+    "total": 36
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 415,
+  "fields": {
+    "school": 105,
+    "class_name": "3年4組",
+    "boys": 20,
+    "girls": 16,
+    "total": 36
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 416,
+  "fields": {
+    "school": 106,
+    "class_name": "3年1組",
+    "boys": 22,
+    "girls": 17,
+    "total": 39
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 417,
+  "fields": {
+    "school": 106,
+    "class_name": "3年2組",
+    "boys": 21,
+    "girls": 13,
+    "total": 34
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 418,
+  "fields": {
+    "school": 106,
+    "class_name": "3年3組",
+    "boys": 18,
+    "girls": 15,
+    "total": 33
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 419,
+  "fields": {
+    "school": 106,
+    "class_name": "3年4組",
+    "boys": 21,
+    "girls": 18,
+    "total": 39
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 420,
+  "fields": {
+    "school": 106,
+    "class_name": "3年5組",
+    "boys": 21,
+    "girls": 17,
+    "total": 38
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 421,
+  "fields": {
+    "school": 106,
+    "class_name": "3年6組",
+    "boys": 21,
+    "girls": 17,
+    "total": 38
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 422,
+  "fields": {
+    "school": 106,
+    "class_name": "(情)3年7組",
+    "boys": 2,
+    "girls": 3,
+    "total": 5
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 423,
+  "fields": {
+    "school": 106,
+    "class_name": "(情)3年8組",
+    "boys": 4,
+    "girls": 2,
+    "total": 6
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 424,
+  "fields": {
+    "school": 107,
+    "class_name": "3年1組",
+    "boys": 1,
+    "girls": 1,
+    "total": 2
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 425,
+  "fields": {
+    "school": 108,
+    "class_name": "3年1組",
+    "boys": 17,
+    "girls": 13,
+    "total": 30
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 426,
+  "fields": {
+    "school": 108,
+    "class_name": "3年2組",
+    "boys": 17,
+    "girls": 14,
+    "total": 31
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 427,
+  "fields": {
+    "school": 108,
+    "class_name": "3年3組",
+    "boys": 16,
+    "girls": 13,
+    "total": 29
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 428,
+  "fields": {
+    "school": 108,
+    "class_name": "3年5組",
+    "boys": 1,
+    "girls": 2,
+    "total": 3
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 429,
+  "fields": {
+    "school": 108,
+    "class_name": "3年6組",
+    "boys": 5,
+    "girls": 0,
+    "total": 5
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 430,
+  "fields": {
+    "school": 109,
+    "class_name": "3年1組",
+    "boys": 14,
+    "girls": 14,
+    "total": 28
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 431,
+  "fields": {
+    "school": 109,
+    "class_name": "3年2組",
+    "boys": 13,
+    "girls": 13,
+    "total": 26
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 432,
+  "fields": {
+    "school": 109,
+    "class_name": "3年3組",
+    "boys": 14,
+    "girls": 13,
+    "total": 27
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 433,
+  "fields": {
+    "school": 109,
+    "class_name": "3年5組",
+    "boys": 1,
+    "girls": 0,
+    "total": 1
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 434,
+  "fields": {
+    "school": 109,
+    "class_name": "3年6組",
+    "boys": 1,
+    "girls": 0,
+    "total": 1
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 435,
+  "fields": {
+    "school": 110,
+    "class_name": "3年1組",
+    "boys": 17,
+    "girls": 20,
+    "total": 37
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 436,
+  "fields": {
+    "school": 110,
+    "class_name": "3年2組",
+    "boys": 17,
+    "girls": 20,
+    "total": 37
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 437,
+  "fields": {
+    "school": 110,
+    "class_name": "3年5組",
+    "boys": 1,
+    "girls": 0,
+    "total": 1
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 438,
+  "fields": {
+    "school": 110,
+    "class_name": "3年7組",
+    "boys": 2,
+    "girls": 1,
+    "total": 3
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 439,
+  "fields": {
+    "school": 111,
+    "class_name": "3年A級",
+    "boys": 16,
+    "girls": 22,
+    "total": 38
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 440,
+  "fields": {
+    "school": 112,
+    "class_name": "3年A組",
+    "boys": 12,
+    "girls": 14,
+    "total": 26
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 441,
+  "fields": {
+    "school": 113,
+    "class_name": "3年A組",
+    "boys": 2,
+    "girls": 2,
+    "total": 4
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 442,
+  "fields": {
+    "school": 114,
+    "class_name": "9年1組",
+    "boys": 10,
+    "girls": 15,
+    "total": 25
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 443,
+  "fields": {
+    "school": 114,
+    "class_name": "9年2組",
+    "boys": 10,
+    "girls": 15,
+    "total": 25
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 444,
+  "fields": {
+    "school": 115,
+    "class_name": "3年1組",
+    "boys": 15,
+    "girls": 13,
+    "total": 28
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 445,
+  "fields": {
+    "school": 115,
+    "class_name": "3年2組",
+    "boys": 15,
+    "girls": 14,
+    "total": 29
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 446,
+  "fields": {
+    "school": 115,
+    "class_name": "3年3組",
+    "boys": 15,
+    "girls": 12,
+    "total": 27
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 447,
+  "fields": {
+    "school": 115,
+    "class_name": "未来",
+    "boys": 1,
+    "girls": 2,
+    "total": 3
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 448,
+  "fields": {
+    "school": 115,
+    "class_name": "希望",
+    "boys": 0,
+    "girls": 2,
+    "total": 3
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 449,
+  "fields": {
+    "school": 116,
+    "class_name": "3年A級",
+    "boys": 13,
+    "girls": 15,
+    "total": 28
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 450,
+  "fields": {
+    "school": 116,
+    "class_name": "3年B級",
+    "boys": 14,
+    "girls": 15,
+    "total": 29
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 451,
+  "fields": {
+    "school": 117,
+    "class_name": "3年1組",
+    "boys": 10,
+    "girls": 15,
+    "total": 25
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 452,
+  "fields": {
+    "school": 117,
+    "class_name": "3年2組",
+    "boys": 11,
+    "girls": 15,
+    "total": 26
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 453,
+  "fields": {
+    "school": 117,
+    "class_name": "3年3組",
+    "boys": 12,
+    "girls": 15,
+    "total": 27
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 454,
+  "fields": {
+    "school": 117,
+    "class_name": "3年5組",
+    "boys": 0,
+    "girls": 1,
+    "total": 1
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 455,
+  "fields": {
+    "school": 117,
+    "class_name": "3年7組",
+    "boys": 3,
+    "girls": 1,
+    "total": 4
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 456,
+  "fields": {
+    "school": 118,
+    "class_name": "3年1組",
+    "boys": 17,
+    "girls": 16,
+    "total": 33
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 457,
+  "fields": {
+    "school": 118,
+    "class_name": "3年2組",
+    "boys": 15,
+    "girls": 15,
+    "total": 30
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 458,
+  "fields": {
+    "school": 118,
+    "class_name": "3年3組",
+    "boys": 17,
+    "girls": 18,
+    "total": 35
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 459,
+  "fields": {
+    "school": 118,
+    "class_name": "5組",
+    "boys": 0,
+    "girls": 2,
+    "total": 2
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 460,
+  "fields": {
+    "school": 118,
+    "class_name": "6組",
+    "boys": 2,
+    "girls": 2,
+    "total": 4
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 461,
+  "fields": {
+    "school": 119,
+    "class_name": "3年1組",
+    "boys": 20,
+    "girls": 11,
+    "total": 31
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 462,
+  "fields": {
+    "school": 119,
+    "class_name": "3年2組",
+    "boys": 23,
+    "girls": 11,
+    "total": 34
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 463,
+  "fields": {
+    "school": 119,
+    "class_name": "3年3組",
+    "boys": 19,
+    "girls": 13,
+    "total": 32
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 464,
+  "fields": {
+    "school": 120,
+    "class_name": "3年1組",
+    "boys": 20,
+    "girls": 20,
+    "total": 40
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 465,
+  "fields": {
+    "school": 120,
+    "class_name": "3年2組",
+    "boys": 21,
+    "girls": 19,
+    "total": 40
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 466,
+  "fields": {
+    "school": 120,
+    "class_name": "3年3組",
+    "boys": 21,
+    "girls": 19,
+    "total": 40
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 467,
+  "fields": {
+    "school": 120,
+    "class_name": "3年4組",
+    "boys": 23,
+    "girls": 19,
+    "total": 42
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 468,
+  "fields": {
+    "school": 120,
+    "class_name": "3年5組",
+    "boys": 21,
+    "girls": 19,
+    "total": 40
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 469,
+  "fields": {
+    "school": 120,
+    "class_name": "3年8B",
+    "boys": 3,
+    "girls": 0,
+    "total": 3
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 470,
+  "fields": {
+    "school": 120,
+    "class_name": "3年9B",
+    "boys": 2,
+    "girls": 1,
+    "total": 3
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 471,
+  "fields": {
+    "school": 121,
+    "class_name": "3年1組",
+    "boys": 19,
+    "girls": 22,
+    "total": 41
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 472,
+  "fields": {
+    "school": 121,
+    "class_name": "3年2組",
+    "boys": 21,
+    "girls": 19,
+    "total": 40
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 473,
+  "fields": {
+    "school": 121,
+    "class_name": "3年3組",
+    "boys": 21,
+    "girls": 19,
+    "total": 40
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 474,
+  "fields": {
+    "school": 121,
+    "class_name": "3年4組",
+    "boys": 21,
+    "girls": 20,
+    "total": 41
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 475,
+  "fields": {
+    "school": 122,
+    "class_name": "3年1組",
+    "boys": 15,
+    "girls": 24,
+    "total": 39
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 476,
+  "fields": {
+    "school": 122,
+    "class_name": "3年2組",
+    "boys": 15,
+    "girls": 24,
+    "total": 39
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 477,
+  "fields": {
+    "school": 122,
+    "class_name": "3年3組",
+    "boys": 16,
+    "girls": 24,
+    "total": 40
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 478,
+  "fields": {
+    "school": 122,
+    "class_name": "3年4組",
+    "boys": 16,
+    "girls": 24,
+    "total": 40
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 479,
+  "fields": {
+    "school": 122,
+    "class_name": "3年5組",
+    "boys": 16,
+    "girls": 23,
+    "total": 39
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 480,
+  "fields": {
+    "school": 122,
+    "class_name": "3年8組",
+    "boys": 6,
+    "girls": 4,
+    "total": 10
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 481,
+  "fields": {
+    "school": 122,
+    "class_name": "3年9組",
+    "boys": 1,
+    "girls": 0,
+    "total": 1
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 482,
+  "fields": {
+    "school": 123,
+    "class_name": "3年1組",
+    "boys": 16,
+    "girls": 16,
+    "total": 32
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 483,
+  "fields": {
+    "school": 123,
+    "class_name": "3年2組",
+    "boys": 16,
+    "girls": 15,
+    "total": 31
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 484,
+  "fields": {
+    "school": 123,
+    "class_name": "3年3組",
+    "boys": 16,
+    "girls": 16,
+    "total": 32
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 485,
+  "fields": {
+    "school": 123,
+    "class_name": "3年4組",
+    "boys": 16,
+    "girls": 15,
+    "total": 31
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 486,
+  "fields": {
+    "school": 123,
+    "class_name": "3年5組",
+    "boys": 1,
+    "girls": 1,
+    "total": 2
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 487,
+  "fields": {
+    "school": 123,
+    "class_name": "3年6組",
+    "boys": 2,
+    "girls": 0,
+    "total": 2
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 488,
+  "fields": {
+    "school": 124,
+    "class_name": "3年1組",
+    "boys": 16,
+    "girls": 20,
+    "total": 36
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 489,
+  "fields": {
+    "school": 124,
+    "class_name": "3年2組",
+    "boys": 17,
+    "girls": 22,
+    "total": 39
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 490,
+  "fields": {
+    "school": 124,
+    "class_name": "3年5組",
+    "boys": 2,
+    "girls": 1,
+    "total": 3
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 491,
+  "fields": {
+    "school": 125,
+    "class_name": "3年1組",
+    "boys": 18,
+    "girls": 17,
+    "total": 35
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 492,
+  "fields": {
+    "school": 125,
+    "class_name": "3年2組",
+    "boys": 20,
+    "girls": 14,
+    "total": 34
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 493,
+  "fields": {
+    "school": 126,
+    "class_name": "3年1組",
+    "boys": 2,
+    "girls": 0,
+    "total": 2
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 494,
+  "fields": {
+    "school": 127,
+    "class_name": "3年A組",
+    "boys": 4,
+    "girls": 4,
+    "total": 8
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 495,
+  "fields": {
+    "school": 128,
+    "class_name": "3年1組",
+    "boys": 14,
+    "girls": 20,
+    "total": 34
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 496,
+  "fields": {
+    "school": 128,
+    "class_name": "3年2組",
+    "boys": 11,
+    "girls": 19,
+    "total": 30
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 497,
+  "fields": {
+    "school": 128,
+    "class_name": "3年5組",
+    "boys": 5,
+    "girls": 2,
+    "total": 7
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 498,
+  "fields": {
+    "school": 129,
+    "class_name": "3年1組",
+    "boys": 23,
+    "girls": 16,
+    "total": 39
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 499,
+  "fields": {
+    "school": 129,
+    "class_name": "3年2組",
+    "boys": 19,
+    "girls": 16,
+    "total": 35
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 500,
+  "fields": {
+    "school": 129,
+    "class_name": "3年3組",
+    "boys": 24,
+    "girls": 15,
+    "total": 39
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 501,
+  "fields": {
+    "school": 129,
+    "class_name": "3年4組",
+    "boys": 20,
+    "girls": 16,
+    "total": 36
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 502,
+  "fields": {
+    "school": 129,
+    "class_name": "3年5組",
+    "boys": 23,
+    "girls": 16,
+    "total": 39
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 503,
+  "fields": {
+    "school": 129,
+    "class_name": "3年7組",
+    "boys": 3,
+    "girls": 0,
+    "total": 3
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 504,
+  "fields": {
+    "school": 129,
+    "class_name": "3年8組",
+    "boys": 4,
+    "girls": 0,
+    "total": 4
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 505,
+  "fields": {
+    "school": 130,
+    "class_name": "3年1組",
+    "boys": 16,
+    "girls": 12,
+    "total": 28
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 506,
+  "fields": {
+    "school": 130,
+    "class_name": "3年2組",
+    "boys": 20,
+    "girls": 13,
+    "total": 33
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 507,
+  "fields": {
+    "school": 130,
+    "class_name": "3年3組",
+    "boys": 3,
+    "girls": 1,
+    "total": 4
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 508,
+  "fields": {
+    "school": 131,
+    "class_name": "3年1組",
+    "boys": 17,
+    "girls": 11,
+    "total": 28
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 509,
+  "fields": {
+    "school": 131,
+    "class_name": "3年2組",
+    "boys": 17,
+    "girls": 11,
+    "total": 28
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 510,
+  "fields": {
+    "school": 131,
+    "class_name": "3年3組",
+    "boys": 17,
+    "girls": 12,
+    "total": 29
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 511,
+  "fields": {
+    "school": 131,
+    "class_name": "3年さくら",
+    "boys": 2,
+    "girls": 0,
+    "total": 2
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 512,
+  "fields": {
+    "school": 132,
+    "class_name": "3年A組",
+    "boys": 10,
+    "girls": 4,
+    "total": 14
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 513,
+  "fields": {
+    "school": 133,
+    "class_name": "3年1組",
+    "boys": 10,
+    "girls": 18,
+    "total": 28
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 514,
+  "fields": {
+    "school": 133,
+    "class_name": "3年2組",
+    "boys": 9,
+    "girls": 17,
+    "total": 26
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 515,
+  "fields": {
+    "school": 133,
+    "class_name": "3年5組",
+    "boys": 0,
+    "girls": 1,
+    "total": 1
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 516,
+  "fields": {
+    "school": 134,
+    "class_name": "3年1組",
+    "boys": 15,
+    "girls": 14,
+    "total": 29
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 517,
+  "fields": {
+    "school": 134,
+    "class_name": "3年2組",
+    "boys": 15,
+    "girls": 14,
+    "total": 29
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 518,
+  "fields": {
+    "school": 135,
+    "class_name": "（最上級学年 在籍なし）",
+    "boys": 0,
+    "girls": 0,
+    "total": 0
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 519,
+  "fields": {
+    "school": 136,
+    "class_name": "3年1組",
+    "boys": 3,
+    "girls": 7,
+    "total": 10
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 520,
+  "fields": {
+    "school": 137,
+    "class_name": "3年1組",
+    "boys": 17,
+    "girls": 20,
+    "total": 37
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 521,
+  "fields": {
+    "school": 137,
+    "class_name": "3年2組",
+    "boys": 17,
+    "girls": 20,
+    "total": 37
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 522,
+  "fields": {
+    "school": 137,
+    "class_name": "3年3組",
+    "boys": 17,
+    "girls": 19,
+    "total": 36
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 523,
+  "fields": {
+    "school": 137,
+    "class_name": "3年4組",
+    "boys": 16,
+    "girls": 20,
+    "total": 36
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 524,
+  "fields": {
+    "school": 137,
+    "class_name": "3年5組",
+    "boys": 17,
+    "girls": 19,
+    "total": 36
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 525,
+  "fields": {
+    "school": 137,
+    "class_name": "3年6組",
+    "boys": 17,
+    "girls": 20,
+    "total": 37
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 526,
+  "fields": {
+    "school": 137,
+    "class_name": "3年7組",
+    "boys": 17,
+    "girls": 19,
+    "total": 36
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 527,
+  "fields": {
+    "school": 137,
+    "class_name": "3年8組",
+    "boys": 17,
+    "girls": 19,
+    "total": 36
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 528,
+  "fields": {
+    "school": 137,
+    "class_name": "3年9組",
+    "boys": 17,
+    "girls": 19,
+    "total": 36
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 529,
+  "fields": {
+    "school": 137,
+    "class_name": "3年15組",
+    "boys": 5,
+    "girls": 1,
+    "total": 6
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 530,
+  "fields": {
+    "school": 137,
+    "class_name": "3年17組",
+    "boys": 2,
+    "girls": 1,
+    "total": 3
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 531,
+  "fields": {
+    "school": 138,
+    "class_name": "3年1組",
+    "boys": 18,
+    "girls": 17,
+    "total": 35
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 532,
+  "fields": {
+    "school": 138,
+    "class_name": "3年2組",
+    "boys": 19,
+    "girls": 17,
+    "total": 36
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 533,
+  "fields": {
+    "school": 138,
+    "class_name": "3年3組",
+    "boys": 19,
+    "girls": 16,
+    "total": 35
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 534,
+  "fields": {
+    "school": 138,
+    "class_name": "3年4組",
+    "boys": 19,
+    "girls": 16,
+    "total": 35
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 535,
+  "fields": {
+    "school": 139,
+    "class_name": "3年A組",
+    "boys": 11,
+    "girls": 11,
+    "total": 22
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 536,
+  "fields": {
+    "school": 139,
+    "class_name": "3年B組",
+    "boys": 11,
+    "girls": 10,
+    "total": 21
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 537,
+  "fields": {
+    "school": 140,
+    "class_name": "3年1組",
+    "boys": 10,
+    "girls": 14,
+    "total": 24
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 538,
+  "fields": {
+    "school": 140,
+    "class_name": "3年2組",
+    "boys": 1,
+    "girls": 1,
+    "total": 2
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 539,
+  "fields": {
+    "school": 141,
+    "class_name": "第3学年A級",
+    "boys": 6,
+    "girls": 4,
+    "total": 10
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 540,
+  "fields": {
+    "school": 142,
+    "class_name": "3年A組",
+    "boys": 8,
+    "girls": 9,
+    "total": 17
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 541,
+  "fields": {
+    "school": 143,
+    "class_name": "3年A組",
+    "boys": 14,
+    "girls": 15,
+    "total": 29
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 542,
+  "fields": {
+    "school": 143,
+    "class_name": "3年B組",
+    "boys": 14,
+    "girls": 15,
+    "total": 29
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 543,
+  "fields": {
+    "school": 143,
+    "class_name": "3年C組",
+    "boys": 13,
+    "girls": 14,
+    "total": 27
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 544,
+  "fields": {
+    "school": 143,
+    "class_name": "3年D組(自情)",
+    "boys": 2,
+    "girls": 2,
+    "total": 4
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 545,
+  "fields": {
+    "school": 144,
+    "class_name": "3年A組",
+    "boys": 3,
+    "girls": 6,
+    "total": 9
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 546,
+  "fields": {
+    "school": 145,
+    "class_name": "3年1組",
+    "boys": 9,
+    "girls": 11,
+    "total": 22
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 547,
+  "fields": {
+    "school": 145,
+    "class_name": "3年2組",
+    "boys": 11,
+    "girls": 11,
+    "total": 22
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 548,
+  "fields": {
+    "school": 146,
+    "class_name": "3年A組",
+    "boys": 6,
+    "girls": 8,
+    "total": 14
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 549,
+  "fields": {
+    "school": 147,
+    "class_name": "3年1組",
+    "boys": 18,
+    "girls": 12,
+    "total": 30
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 550,
+  "fields": {
+    "school": 147,
+    "class_name": "3年2組",
+    "boys": 18,
+    "girls": 11,
+    "total": 29
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 551,
+  "fields": {
+    "school": 147,
+    "class_name": "はばたき1組",
+    "boys": 1,
+    "girls": 1,
+    "total": 2
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 552,
+  "fields": {
+    "school": 147,
+    "class_name": "きらめき2組",
+    "boys": 2,
+    "girls": 1,
+    "total": 3
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 553,
+  "fields": {
+    "school": 148,
+    "class_name": "3年A組",
+    "boys": 8,
+    "girls": 4,
+    "total": 12
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 554,
+  "fields": {
+    "school": 148,
+    "class_name": "3年B組",
+    "boys": 0,
+    "girls": 1,
+    "total": 1
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 555,
+  "fields": {
+    "school": 149,
+    "class_name": "3年1組",
+    "boys": 8,
+    "girls": 19,
+    "total": 27
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 556,
+  "fields": {
+    "school": 150,
+    "class_name": "3年1組",
+    "boys": 9,
+    "girls": 7,
+    "total": 16
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 557,
+  "fields": {
+    "school": 150,
+    "class_name": "3年2組",
+    "boys": 10,
+    "girls": 6,
+    "total": 16
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 558,
+  "fields": {
+    "school": 151,
+    "class_name": "3年1組",
+    "boys": 18,
+    "girls": 14,
+    "total": 32
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 559,
+  "fields": {
+    "school": 151,
+    "class_name": "3年2組",
+    "boys": 18,
+    "girls": 13,
+    "total": 31
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 560,
+  "fields": {
+    "school": 152,
+    "class_name": "3年1組",
+    "boys": 15,
+    "girls": 16,
+    "total": 31
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 561,
+  "fields": {
+    "school": 152,
+    "class_name": "3年2組",
+    "boys": 20,
+    "girls": 16,
+    "total": 36
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 562,
+  "fields": {
+    "school": 152,
+    "class_name": "3年3組",
+    "boys": 20,
+    "girls": 15,
+    "total": 35
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 563,
+  "fields": {
+    "school": 152,
+    "class_name": "3年5組",
+    "boys": 7,
+    "girls": 1,
+    "total": 8
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 564,
+  "fields": {
+    "school": 153,
+    "class_name": "3年1組",
+    "boys": 16,
+    "girls": 16,
+    "total": 32
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 565,
+  "fields": {
+    "school": 153,
+    "class_name": "3年2組",
+    "boys": 15,
+    "girls": 15,
+    "total": 30
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 566,
+  "fields": {
+    "school": 153,
+    "class_name": "3年4組",
+    "boys": 1,
+    "girls": 1,
+    "total": 2
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 567,
+  "fields": {
+    "school": 153,
+    "class_name": "3年5組",
+    "boys": 0,
+    "girls": 1,
+    "total": 1
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 568,
+  "fields": {
+    "school": 154,
+    "class_name": "3年1組",
+    "boys": 18,
+    "girls": 20,
+    "total": 38
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 569,
+  "fields": {
+    "school": 154,
+    "class_name": "3年2組",
+    "boys": 18,
+    "girls": 20,
+    "total": 38
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 570,
+  "fields": {
+    "school": 154,
+    "class_name": "3年3組",
+    "boys": 18,
+    "girls": 21,
+    "total": 39
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 571,
+  "fields": {
+    "school": 154,
+    "class_name": "3年6組",
+    "boys": 3,
+    "girls": 1,
+    "total": 4
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 572,
+  "fields": {
+    "school": 154,
+    "class_name": "3年7組",
+    "boys": 2,
+    "girls": 0,
+    "total": 2
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 573,
+  "fields": {
+    "school": 155,
+    "class_name": "3年1組",
+    "boys": 17,
+    "girls": 13,
+    "total": 30
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 574,
+  "fields": {
+    "school": 155,
+    "class_name": "3年2組",
+    "boys": 18,
+    "girls": 12,
+    "total": 30
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 575,
+  "fields": {
+    "school": 156,
+    "class_name": "3年1組",
+    "boys": 19,
+    "girls": 14,
+    "total": 33
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 576,
+  "fields": {
+    "school": 156,
+    "class_name": "3年2組",
+    "boys": 20,
+    "girls": 14,
+    "total": 34
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 577,
+  "fields": {
+    "school": 156,
+    "class_name": "3年3組",
+    "boys": 18,
+    "girls": 14,
+    "total": 32
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 578,
+  "fields": {
+    "school": 156,
+    "class_name": "3年5組",
+    "boys": 1,
+    "girls": 0,
+    "total": 1
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 579,
+  "fields": {
+    "school": 156,
+    "class_name": "3年6組",
+    "boys": 1,
+    "girls": 1,
+    "total": 2
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 580,
+  "fields": {
+    "school": 157,
+    "class_name": "3年1組",
+    "boys": 17,
+    "girls": 16,
+    "total": 33
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 581,
+  "fields": {
+    "school": 157,
+    "class_name": "3年2組",
+    "boys": 17,
+    "girls": 16,
+    "total": 33
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 582,
+  "fields": {
+    "school": 157,
+    "class_name": "3年3組",
+    "boys": 17,
+    "girls": 15,
+    "total": 32
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 583,
+  "fields": {
+    "school": 157,
+    "class_name": "3年4組",
+    "boys": 17,
+    "girls": 16,
+    "total": 33
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 584,
+  "fields": {
+    "school": 157,
+    "class_name": "3年8組",
+    "boys": 1,
+    "girls": 1,
+    "total": 2
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 585,
+  "fields": {
+    "school": 158,
+    "class_name": "3年1組",
+    "boys": 15,
+    "girls": 14,
+    "total": 29
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 586,
+  "fields": {
+    "school": 158,
+    "class_name": "3年2組",
+    "boys": 17,
+    "girls": 15,
+    "total": 32
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 587,
+  "fields": {
+    "school": 158,
+    "class_name": "3年3組",
+    "boys": 16,
+    "girls": 13,
+    "total": 29
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 588,
+  "fields": {
+    "school": 158,
+    "class_name": "3年4組",
+    "boys": 16,
+    "girls": 16,
+    "total": 32
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 589,
+  "fields": {
+    "school": 158,
+    "class_name": "3年7組",
+    "boys": 0,
+    "girls": 3,
+    "total": 3
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 590,
+  "fields": {
+    "school": 158,
+    "class_name": "3年9組",
+    "boys": 2,
+    "girls": 1,
+    "total": 3
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 591,
+  "fields": {
+    "school": 159,
+    "class_name": "3年1組",
+    "boys": 15,
+    "girls": 16,
+    "total": 31
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 592,
+  "fields": {
+    "school": 159,
+    "class_name": "3年2組",
+    "boys": 15,
+    "girls": 16,
+    "total": 31
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 593,
+  "fields": {
+    "school": 159,
+    "class_name": "3年3組",
+    "boys": 16,
+    "girls": 16,
+    "total": 32
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 594,
+  "fields": {
+    "school": 159,
+    "class_name": "3年4組",
+    "boys": 16,
+    "girls": 16,
+    "total": 32
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 595,
+  "fields": {
+    "school": 159,
+    "class_name": "3年7組",
+    "boys": 2,
+    "girls": 1,
+    "total": 3
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 596,
+  "fields": {
+    "school": 159,
+    "class_name": "3年8組",
+    "boys": 3,
+    "girls": 0,
+    "total": 3
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 597,
+  "fields": {
+    "school": 160,
+    "class_name": "3年1組",
+    "boys": 3,
+    "girls": 5,
+    "total": 8
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 598,
+  "fields": {
+    "school": 161,
+    "class_name": "3年1組",
+    "boys": 8,
+    "girls": 7,
+    "total": 15
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 599,
+  "fields": {
+    "school": 161,
+    "class_name": "せんだん(情緒)",
+    "boys": 1,
+    "girls": 0,
+    "total": 1
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 600,
+  "fields": {
+    "school": 161,
+    "class_name": "さくら(知的)",
+    "boys": 1,
+    "girls": 1,
+    "total": 2
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 601,
+  "fields": {
+    "school": 162,
+    "class_name": "（最上級学年 在籍なし）",
+    "boys": 0,
+    "girls": 0,
+    "total": 0
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 602,
+  "fields": {
+    "school": 163,
+    "class_name": "3年1組",
+    "boys": 1,
+    "girls": 1,
+    "total": 2
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 603,
+  "fields": {
+    "school": 163,
+    "class_name": "3年2組",
+    "boys": 0,
+    "girls": 9,
+    "total": 9
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 604,
+  "fields": {
+    "school": 164,
+    "class_name": "3年1組",
+    "boys": 12,
+    "girls": 7,
+    "total": 19
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 605,
+  "fields": {
+    "school": 165,
+    "class_name": "3年A組",
+    "boys": 9,
+    "girls": 5,
+    "total": 14
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 606,
+  "fields": {
+    "school": 166,
+    "class_name": "3年A組",
+    "boys": 6,
+    "girls": 10,
+    "total": 16
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 607,
+  "fields": {
+    "school": 167,
+    "class_name": "3年A組",
+    "boys": 2,
+    "girls": 1,
+    "total": 3
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 608,
+  "fields": {
+    "school": 168,
+    "class_name": "3年1組",
+    "boys": 19,
+    "girls": 14,
+    "total": 33
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 609,
+  "fields": {
+    "school": 168,
+    "class_name": "3年2組",
+    "boys": 20,
+    "girls": 14,
+    "total": 34
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 610,
+  "fields": {
+    "school": 168,
+    "class_name": "3年3組",
+    "boys": 23,
+    "girls": 15,
+    "total": 38
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 611,
+  "fields": {
+    "school": 168,
+    "class_name": "3年4組",
+    "boys": 22,
+    "girls": 15,
+    "total": 37
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 612,
+  "fields": {
+    "school": 168,
+    "class_name": "3年5組",
+    "boys": 1,
+    "girls": 0,
+    "total": 1
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 613,
+  "fields": {
+    "school": 168,
+    "class_name": "3年8組",
+    "boys": 3,
+    "girls": 2,
+    "total": 5
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 614,
+  "fields": {
+    "school": 168,
+    "class_name": "3年9組",
+    "boys": 3,
+    "girls": 1,
+    "total": 4
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 615,
+  "fields": {
+    "school": 169,
+    "class_name": "3年1組",
+    "boys": 7,
+    "girls": 6,
+    "total": 13
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 616,
+  "fields": {
+    "school": 169,
+    "class_name": "3年3組",
+    "boys": 2,
+    "girls": 3,
+    "total": 5
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 617,
+  "fields": {
+    "school": 170,
+    "class_name": "3年1組",
+    "boys": 12,
+    "girls": 8,
+    "total": 20
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 618,
+  "fields": {
+    "school": 170,
+    "class_name": "3年わかたけ組",
+    "boys": 2,
+    "girls": 0,
+    "total": 2
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 619,
+  "fields": {
+    "school": 171,
+    "class_name": "3年1組",
+    "boys": 16,
+    "girls": 17,
+    "total": 33
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 620,
+  "fields": {
+    "school": 171,
+    "class_name": "3年2組",
+    "boys": 15,
+    "girls": 17,
+    "total": 32
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 621,
+  "fields": {
+    "school": 171,
+    "class_name": "3年3組",
+    "boys": 16,
+    "girls": 17,
+    "total": 33
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 622,
+  "fields": {
+    "school": 172,
+    "class_name": "3年1組",
+    "boys": 20,
+    "girls": 16,
+    "total": 36
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 623,
+  "fields": {
+    "school": 172,
+    "class_name": "3年2組",
+    "boys": 17,
+    "girls": 16,
+    "total": 33
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 624,
+  "fields": {
+    "school": 172,
+    "class_name": "3年3組",
+    "boys": 20,
+    "girls": 17,
+    "total": 37
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 625,
+  "fields": {
+    "school": 172,
+    "class_name": "3年4組",
+    "boys": 19,
+    "girls": 17,
+    "total": 36
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 626,
+  "fields": {
+    "school": 172,
+    "class_name": "楠木1組(知的)",
+    "boys": 0,
+    "girls": 1,
+    "total": 1
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 627,
+  "fields": {
+    "school": 172,
+    "class_name": "楠木2組(自情)",
+    "boys": 3,
+    "girls": 1,
+    "total": 4
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 628,
+  "fields": {
+    "school": 173,
+    "class_name": "9年1組",
+    "boys": 17,
+    "girls": 14,
+    "total": 31
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 629,
+  "fields": {
+    "school": 173,
+    "class_name": "9年2組",
+    "boys": 17,
+    "girls": 15,
+    "total": 32
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 630,
+  "fields": {
+    "school": 173,
+    "class_name": "9年3組",
+    "boys": 18,
+    "girls": 14,
+    "total": 32
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 631,
+  "fields": {
+    "school": 174,
+    "class_name": "9年1組",
+    "boys": 10,
+    "girls": 6,
+    "total": 16
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 632,
+  "fields": {
+    "school": 175,
+    "class_name": "3年2組",
+    "boys": 2,
+    "girls": 1,
+    "total": 3
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 633,
+  "fields": {
+    "school": 176,
+    "class_name": "3年1組",
+    "boys": 17,
+    "girls": 20,
+    "total": 37
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 634,
+  "fields": {
+    "school": 176,
+    "class_name": "3年2組",
+    "boys": 18,
+    "girls": 19,
+    "total": 37
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 635,
+  "fields": {
+    "school": 176,
+    "class_name": "3年3組",
+    "boys": 17,
+    "girls": 20,
+    "total": 37
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 636,
+  "fields": {
+    "school": 176,
+    "class_name": "3年4組",
+    "boys": 17,
+    "girls": 19,
+    "total": 36
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 637,
+  "fields": {
+    "school": 176,
+    "class_name": "3年7組",
+    "boys": 0,
+    "girls": 1,
+    "total": 1
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 638,
+  "fields": {
+    "school": 176,
+    "class_name": "3年9組",
+    "boys": 1,
+    "girls": 1,
+    "total": 2
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 639,
+  "fields": {
+    "school": 177,
+    "class_name": "3年A組",
+    "boys": 4,
+    "girls": 2,
+    "total": 6
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 640,
+  "fields": {
+    "school": 178,
+    "class_name": "3年1組",
+    "boys": 9,
+    "girls": 3,
+    "total": 12
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 641,
+  "fields": {
+    "school": 179,
+    "class_name": "9年",
+    "boys": 7,
+    "girls": 4,
+    "total": 11
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 642,
+  "fields": {
+    "school": 180,
+    "class_name": "9年",
+    "boys": 5,
+    "girls": 6,
+    "total": 11
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 643,
+  "fields": {
+    "school": 181,
+    "class_name": "3年1組",
+    "boys": 0,
+    "girls": 5,
+    "total": 5
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 644,
+  "fields": {
+    "school": 182,
+    "class_name": "3年1組",
+    "boys": 20,
+    "girls": 22,
+    "total": 42
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 645,
+  "fields": {
+    "school": 182,
+    "class_name": "3年2組",
+    "boys": 19,
+    "girls": 22,
+    "total": 41
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 646,
+  "fields": {
+    "school": 183,
+    "class_name": "3年A組",
+    "boys": 15,
+    "girls": 16,
+    "total": 31
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 647,
+  "fields": {
+    "school": 183,
+    "class_name": "3年B組",
+    "boys": 1,
+    "girls": 0,
+    "total": 1
+  }
+},
+{
+  "model": "publicity.juniorhighclass",
+  "pk": 648,
+  "fields": {
+    "school": 184,
+    "class_name": "3年1組",
+    "boys": 13,
+    "girls": 9,
+    "total": 22
+  }
+}
+]
