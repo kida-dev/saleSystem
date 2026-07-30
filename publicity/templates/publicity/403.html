@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>アクセス権限がありません</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family:
+                "Yu Gothic",
+                "Meiryo",
+                sans-serif;
+            color: #222;
+            background-color: #f4f6f8;
+        }
+
+        .container {
+            width: min(620px, calc(100% - 30px));
+            margin: 80px auto;
+            padding: 30px;
+            background-color: #fff;
+            border: 1px solid #d6dde2;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+        }
+
+        h1 {
+            color: #842029;
+        }
+
+        p {
+            line-height: 1.8;
+        }
+
+        a {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 10px 18px;
+            color: #fff;
+            background-color: #28556b;
+            border-radius: 5px;
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>アクセス権限がありません</h1>
+
+    <p>
+        このページを表示する権限がありません。
+    </p>
+
+    <p>
+        必要な機能が表示されない場合は、
+        システム管理者へ権限設定を依頼してください。
+    </p>
+
+    <a href="{% url 'publicity:top' %}">
+        トップへ戻る
+    </a>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+
+    <title>教員・権限管理</title>
+
+    <style>
+        body {
+            font-family:
+                "Yu Gothic",
+                "Meiryo",
+                sans-serif;
+
+            margin: 30px;
+            background-color: #f5f7fa;
+            color: #222;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            margin-bottom: 10px;
+        }
+
+        .description {
+            margin-bottom: 20px;
+            color: #555;
+        }
+
+        .message {
+            padding: 12px;
+            margin-bottom: 15px;
+            background-color: #e8f5e9;
+            border: 1px solid #81c784;
+            border-radius: 5px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #fff;
+        }
+
+        th,
+        td {
+            border: 1px solid #ccc;
+            padding: 9px;
+            vertical-align: middle;
+        }
+
+        th {
+            background-color: #e9eef5;
+            text-align: center;
+        }
+
+        .number {
+            width: 65px;
+            text-align: center;
+        }
+
+        .position {
+            width: 130px;
+        }
+
+        .name {
+            width: 130px;
+            font-weight: bold;
+        }
+
+        .club {
+            width: 160px;
+        }
+
+        .role {
+            width: 170px;
+            text-align: center;
+        }
+
+        .active {
+            width: 90px;
+            text-align: center;
+        }
+
+        .email-list {
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .email-disabled {
+            color: #999;
+            text-decoration: line-through;
+        }
+
+        .button-area {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        button {
+            padding: 10px 22px;
+            font-size: 15px;
+            cursor: pointer;
+        }
+
+        .save-button {
+            color: #fff;
+            background-color: #1769aa;
+            border: 1px solid #1769aa;
+            border-radius: 5px;
+        }
+
+        .back-button {
+            display: inline-block;
+            padding: 10px 22px;
+            color: #222;
+            background-color: #fff;
+            border: 1px solid #999;
+            border-radius: 5px;
+            text-decoration: none;
+        }
+
+        .warning {
+            padding: 12px;
+            margin-bottom: 20px;
+            background-color: #fff3cd;
+            border: 1px solid #e0b84f;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>教員・権限管理</h1>
+
+    <p class="description">
+        教員ごとのシステム権限と利用状態を変更できます。
+    </p>
+
+    <div class="warning">
+        「システム管理者」は、教員・権限管理を含む
+        全機能を操作できます。必要な教員だけに設定してください。
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="message">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <form method="post">
+
+        {% csrf_token %}
+
+        {{ formset.management_form }}
+
+        <table>
+            <thead>
+                <tr>
+                    <th class="number">職員番号</th>
+                    <th class="position">職名</th>
+                    <th class="name">氏名</th>
+                    <th class="club">部活動</th>
+                    <th>ログイン用メール</th>
+                    <th class="role">システム権限</th>
+                    <th class="active">利用中</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% for teacher, form in teacher_rows %}
+
+                    <tr>
+                        <td class="number">
+                            {{ teacher.employee_number }}
+
+                            {{ form.id }}
+                        </td>
+
+                        <td class="position">
+                            {{ teacher.position|default:"―" }}
+                        </td>
+
+                        <td class="name">
+                            {{ teacher.name }}
+                        </td>
+
+                        <td class="club">
+                            {{ teacher.club|default:"―" }}
+                        </td>
+
+                        <td>
+                            <div class="email-list">
+
+                                {% for login_email in teacher.login_emails.all %}
+
+                                    <div
+                                        {% if not login_email.is_allowed %}
+                                            class="email-disabled"
+                                        {% endif %}
+                                    >
+                                        {{ login_email.get_email_type_display }}
+                                        ：
+                                        {{ login_email.email }}
+
+                                        {% if not login_email.is_allowed %}
+                                            （停止中）
+                                        {% endif %}
+                                    </div>
+
+                                {% empty %}
+
+                                    未登録
+
+                                {% endfor %}
+
+                            </div>
+                        </td>
+
+                        <td class="role">
+                            {{ form.role }}
+
+                            {% if form.role.errors %}
+                                <div>
+                                    {{ form.role.errors }}
+                                </div>
+                            {% endif %}
+                        </td>
+
+                        <td class="active">
+                            {{ form.is_active }}
+
+                            {% if form.is_active.errors %}
+                                <div>
+                                    {{ form.is_active.errors }}
+                                </div>
+                            {% endif %}
+                        </td>
+                    </tr>
+
+                {% endfor %}
+
+            </tbody>
+        </table>
+
+        <div class="button-area">
+
+            <button
+                type="submit"
+                class="save-button"
+            >
+                権限設定を保存
+            </button>
+
+            <a
+                href="{% url 'publicity:top' %}"
+                class="back-button"
+            >
+                トップへ戻る
+            </a>
+
+        </div>
+
+    </form>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>募集対象生徒一覧</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family:
+                "Yu Gothic",
+                "Meiryo",
+                sans-serif;
+            color: #222;
+            background: #f4f6f8;
+        }
+
+        .header {
+            padding: 22px 30px;
+            color: #fff;
+            background: #28556b;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 27px;
+        }
+
+        .header p {
+            margin: 8px 0 0;
+        }
+
+        .container {
+            width: min(1200px, calc(100% - 30px));
+            margin: 28px auto;
+        }
+
+        .card {
+            margin-bottom: 20px;
+            padding: 22px;
+            background: #fff;
+            border: 1px solid #d5dde2;
+            border-radius: 9px;
+            box-shadow:
+                0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .top-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 10px 17px;
+            color: #fff;
+            background: #1769aa;
+            border: 1px solid #1769aa;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .button-secondary {
+            color: #333;
+            background: #fff;
+            border-color: #999;
+        }
+
+        .filter-grid {
+            display: grid;
+            grid-template-columns:
+                minmax(220px, 2fr)
+                minmax(180px, 1fr)
+                minmax(180px, 1fr)
+                auto;
+            gap: 10px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 9px;
+            border: 1px solid #aaa;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .search-button {
+            padding: 9px 18px;
+            color: #fff;
+            background: #28556b;
+            border: 1px solid #28556b;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .messages {
+            margin-bottom: 18px;
+        }
+
+        .message {
+            padding: 12px;
+            color: #155724;
+            background: #d4edda;
+            border: 1px solid #a9d6b2;
+            border-radius: 5px;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #fff;
+        }
+
+        th,
+        td {
+            padding: 11px 10px;
+            border: 1px solid #ccd4d9;
+            vertical-align: middle;
+        }
+
+        th {
+            background: #eaf0f4;
+            white-space: nowrap;
+        }
+
+        .student-name {
+            font-weight: bold;
+        }
+
+        .sub-text {
+            color: #666;
+            font-size: 12px;
+        }
+
+        .edit-link {
+            white-space: nowrap;
+        }
+
+        .empty {
+            padding: 35px;
+            text-align: center;
+            color: #666;
+        }
+
+        @media (max-width: 800px) {
+            .filter-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .search-button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="header">
+    <h1>募集対象生徒一覧</h1>
+
+    <p>
+        募集・勧誘対象となる中学生の情報を管理します。
+    </p>
+</header>
+
+<main class="container">
+
+    {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+                <div class="message">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <section class="card">
+        <div class="top-actions">
+            <div>
+                <a
+                    href="{% url 'publicity:top' %}"
+                    class="button button-secondary"
+                >
+                    トップへ戻る
+                </a>
+            </div>
+
+            <a
+                href="{% url 'publicity:prospective_student_create' %}"
+                class="button"
+            >
+                ＋ 募集対象生徒を登録
+            </a>
+        </div>
+    </section>
+
+    <section class="card">
+        <form method="get">
+            <div class="filter-grid">
+
+                <input
+                    type="search"
+                    name="q"
+                    value="{{ keyword }}"
+                    placeholder="氏名・中学校・部活動で検索"
+                    class="form-control"
+                >
+
+                <select
+                    name="school"
+                    class="form-control"
+                >
+                    <option value="">
+                        すべての中学校
+                    </option>
+
+                    {% for school in schools %}
+                        <option
+                            value="{{ school.id }}"
+                            {% if selected_school == school.id|stringformat:"s" %}
+                                selected
+                            {% endif %}
+                        >
+                            {{ school.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+
+                <select
+                    name="club"
+                    class="form-control"
+                >
+                    <option value="">
+                        すべての部活動
+                    </option>
+
+                    {% for club in clubs %}
+                        <option
+                            value="{{ club.id }}"
+                            {% if selected_club == club.id|stringformat:"s" %}
+                                selected
+                            {% endif %}
+                        >
+                            {{ club.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+
+                <button
+                    type="submit"
+                    class="search-button"
+                >
+                    検索
+                </button>
+
+            </div>
+        </form>
+    </section>
+
+    <section class="card">
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>氏名</th>
+                        <th>中学校</th>
+                        <th>校長名</th>
+                        <th>部活動</th>
+                        <th>奨学金区分</th>
+                        <th>担当教員</th>
+                        <th>登録日</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for student in students %}
+                        <tr>
+                            <td>
+                                <span class="student-name">
+                                    {{ student.name }}
+                                </span>
+
+                                <div class="sub-text">
+                                    〒
+                                    {{ student.postal_code|default:"未登録" }}
+                                </div>
+                            </td>
+
+                            <td>
+                                {{ student.junior_high_school.name }}
+                            </td>
+
+                            <td>
+                                {{ student.principal_name|default:"未登録" }}
+                            </td>
+
+                            <td>
+                                {{ student.club.name }}
+                            </td>
+
+                            <td>
+                                {% if student.scholarship_category %}
+                                    {{ student.scholarship_category.name }}
+                                {% else %}
+                                    未設定
+                                {% endif %}
+                            </td>
+
+                            <td>
+                                {{ student.assigned_teacher.name }}
+                            </td>
+
+                            <td>
+                                {{ student.created_at|date:"Y/m/d" }}
+                            </td>
+
+                            <td>
+                                <a
+                                    href="{% url 'publicity:prospective_student_edit' student.id %}"
+                                    class="edit-link"
+                                >
+                                    編集
+                                </a>
+                            </td>
+                        </tr>
+
+                    {% empty %}
+
+                        <tr>
+                            <td
+                                colspan="8"
+                                class="empty"
+                            >
+                                該当する募集対象生徒は登録されていません。
+                            </td>
+                        </tr>
+
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+</main>
+
+</body>
+</html>

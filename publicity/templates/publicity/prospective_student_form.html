@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>{{ page_title }}</title>
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/tom-select@2.6.2/dist/css/tom-select.css"
+        rel="stylesheet"
+    >
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family:
+                "Yu Gothic",
+                "Meiryo",
+                sans-serif;
+            color: #222;
+            background: #f4f6f8;
+        }
+
+        .header {
+            padding: 22px 30px;
+            color: #fff;
+            background: #28556b;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 27px;
+        }
+
+        .header p {
+            margin: 8px 0 0;
+            color: #e7f0f4;
+            line-height: 1.6;
+        }
+
+        .container {
+            width: min(820px, calc(100% - 30px));
+            margin: 28px auto;
+        }
+
+        .card {
+            padding: 26px;
+            background: #fff;
+            border: 1px solid #d5dde2;
+            border-radius: 9px;
+            box-shadow:
+                0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .section {
+            margin-bottom: 30px;
+        }
+
+        .section:last-of-type {
+            margin-bottom: 0;
+        }
+
+        .section-title {
+            margin: 0 0 8px;
+            padding-bottom: 10px;
+            color: #28556b;
+            border-bottom: 2px solid #28556b;
+            font-size: 21px;
+        }
+
+        .section-description {
+            margin: 0 0 20px;
+            color: #555;
+            line-height: 1.7;
+            font-size: 14px;
+        }
+
+        .required-guide {
+            margin-bottom: 20px;
+            padding: 13px 15px;
+            color: #3d4b52;
+            background: #eef5f8;
+            border-left: 5px solid #28556b;
+            border-radius: 4px;
+            line-height: 1.7;
+        }
+
+        .field {
+            margin-bottom: 20px;
+        }
+
+        .field label {
+            display: block;
+            margin-bottom: 7px;
+            font-weight: bold;
+        }
+
+        .required {
+            display: inline-block;
+            margin-left: 6px;
+            padding: 2px 7px;
+            color: #fff;
+            background: #b00020;
+            border-radius: 4px;
+            font-size: 11px;
+            vertical-align: middle;
+        }
+
+        .optional {
+            display: inline-block;
+            margin-left: 6px;
+            padding: 2px 7px;
+            color: #555;
+            background: #e8ecef;
+            border-radius: 4px;
+            font-size: 11px;
+            vertical-align: middle;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 11px;
+            border: 1px solid #9ea9af;
+            border-radius: 5px;
+            background: #fff;
+            font-size: 16px;
+        }
+
+        .form-control:focus {
+            border-color: #1769aa;
+            outline: 2px solid rgba(23, 105, 170, 0.15);
+        }
+
+        textarea.form-control {
+            resize: vertical;
+        }
+
+        .help-text {
+            margin-top: 6px;
+            color: #666;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .principal-box {
+            padding: 14px;
+            background: #eef4f7;
+            border: 1px solid #c4d5de;
+            border-radius: 5px;
+        }
+
+        .principal-label {
+            color: #555;
+            font-size: 13px;
+        }
+
+        .principal-name {
+            margin-top: 5px;
+            font-weight: bold;
+            font-size: 17px;
+        }
+
+        .checkbox-box {
+            padding: 15px;
+            background: #f8fafb;
+            border: 1px solid #ccd5da;
+            border-radius: 6px;
+        }
+
+        .checkbox-label {
+            display: flex !important;
+            align-items: center;
+            gap: 12px;
+            margin: 0 !important;
+            cursor: pointer;
+        }
+
+        .checkbox-label input[type="checkbox"] {
+            width: 22px;
+            height: 22px;
+            margin: 0;
+            cursor: pointer;
+        }
+
+        .checkbox-main-text {
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .checkbox-sub-text {
+            margin-top: 7px;
+            color: #666;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .error {
+            margin-top: 7px;
+            color: #b00020;
+            font-size: 13px;
+        }
+
+        .non-field-errors {
+            margin-bottom: 20px;
+            padding: 14px;
+            color: #842029;
+            background: #f8d7da;
+            border: 1px solid #e2aeb4;
+            border-radius: 5px;
+        }
+
+        .additional-section {
+            margin-top: 28px;
+            border: 1px solid #ccd5da;
+            border-radius: 7px;
+            overflow: hidden;
+        }
+
+        .additional-section summary {
+            padding: 16px 18px;
+            color: #28556b;
+            background: #eef4f7;
+            font-weight: bold;
+            font-size: 17px;
+            cursor: pointer;
+            list-style-position: inside;
+        }
+
+        .additional-section summary:hover {
+            background: #e4eef3;
+        }
+
+        .additional-content {
+            padding: 22px;
+        }
+
+        .office-note {
+            margin-bottom: 20px;
+            padding: 12px 14px;
+            color: #664d03;
+            background: #fff3cd;
+            border: 1px solid #efd277;
+            border-radius: 5px;
+            line-height: 1.7;
+            font-size: 14px;
+        }
+
+        .button-area {
+            display: flex;
+            gap: 12px;
+            margin-top: 30px;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 12px 22px;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+            text-align: center;
+        }
+
+        .save-button {
+            color: #fff;
+            background: #1769aa;
+            border: 1px solid #1769aa;
+        }
+
+        .save-button:hover {
+            background: #12598f;
+        }
+
+        .cancel-button {
+            color: #333;
+            background: #fff;
+            border: 1px solid #999;
+        }
+
+        .cancel-button:hover {
+            background: #f0f0f0;
+        }
+
+
+        /* Tom Select：中学校検索 */
+        .ts-wrapper {
+            width: 100%;
+        }
+
+        .ts-control {
+            min-height: 47px;
+            padding: 10px 12px;
+            border: 1px solid #9ea9af;
+            border-radius: 5px;
+            background: #fff;
+            font-size: 16px;
+            line-height: 1.5;
+        }
+
+        .ts-wrapper.single .ts-control {
+            background-image: none;
+        }
+
+        .ts-control.focus {
+            border-color: #1769aa;
+            box-shadow: 0 0 0 2px rgba(23, 105, 170, 0.15);
+        }
+
+        .ts-dropdown {
+            z-index: 1000;
+            border: 1px solid #9ea9af;
+            border-radius: 5px;
+            font-size: 15px;
+        }
+
+        .ts-dropdown .option {
+            padding: 11px 12px;
+        }
+
+        .ts-dropdown .active {
+            color: #222;
+            background: #eaf3f8;
+        }
+
+        .school-option-name {
+            color: #222;
+            font-weight: bold;
+            line-height: 1.45;
+        }
+
+        .school-option-location {
+            margin-top: 4px;
+            color: #666;
+            font-size: 12px;
+            line-height: 1.45;
+        }
+
+        .school-selected-item {
+            overflow: hidden;
+            max-width: 100%;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .school-search-note {
+            margin-top: 7px;
+            color: #555;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .no-results,
+        .school-loading-message {
+            padding: 12px;
+            color: #666;
+        }
+
+        @media (max-width: 600px) {
+            .header {
+                padding: 18px;
+            }
+
+            .header h1 {
+                font-size: 22px;
+            }
+
+            .container {
+                width: calc(100% - 20px);
+                margin: 18px auto;
+            }
+
+            .card {
+                padding: 19px;
+            }
+
+            .button-area {
+                display: block;
+            }
+
+            .button {
+                display: block;
+                width: 100%;
+                margin-bottom: 10px;
+            }
+
+            .additional-content {
+                padding: 18px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="header">
+    <h1>{{ page_title }}</h1>
+
+    <p>
+        顧問の先生は、氏名・中学校・部活動の3項目を入力すれば
+        登録できます。
+    </p>
+</header>
+
+<main class="container">
+
+    <section class="card">
+
+        <form method="post">
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+                <div class="non-field-errors">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
+
+            <section class="section">
+
+                <h2 class="section-title">
+                    基本情報
+                </h2>
+
+                <p class="section-description">
+                    募集・勧誘対象となる中学生の基本情報を入力してください。
+                </p>
+
+                <div class="required-guide">
+                    <strong>
+                        顧問の先生が入力する必須項目
+                    </strong>
+
+                    <br>
+
+                    氏名・中学校・部活動の3項目だけで登録できます。
+                    ふりがなや寮希望は、分かる場合のみ入力してください。
+                </div>
+
+                <div class="field">
+                    <label for="{{ form.name.id_for_label }}">
+                        氏名
+                        <span class="required">
+                            必須
+                        </span>
+                    </label>
+
+                    {{ form.name }}
+
+                    {% for error in form.name.errors %}
+                        <div class="error">
+                            {{ error }}
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <div class="field">
+                    <label for="{{ form.name_kana.id_for_label }}">
+                        ふりがな
+                        <span class="optional">
+                            任意
+                        </span>
+                    </label>
+
+                    {{ form.name_kana }}
+
+                    <div class="help-text">
+                        文書や名簿のルビに使用します。
+                        ひらがなで入力してください。
+                    </div>
+
+                    {% for error in form.name_kana.errors %}
+                        <div class="error">
+                            {{ error }}
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <div class="field">
+                    <label for="{{ form.junior_high_school.id_for_label }}">
+                        中学校
+                        <span class="required">
+                            必須
+                        </span>
+                    </label>
+
+                    {{ form.junior_high_school }}
+
+                    <div class="school-search-note">
+                        学校名または市町村名を1文字以上入力すると、
+                        登録済みの中学校を検索できます。
+                    </div>
+
+                    {% for error in form.junior_high_school.errors %}
+                        <div class="error">
+                            {{ error }}
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <div class="field">
+                    <label>
+                        校長名
+                    </label>
+
+                    <div class="principal-box">
+                        <div class="principal-label">
+                            選択した中学校の登録情報
+                        </div>
+
+                        <div
+                            id="principal-name"
+                            class="principal-name"
+                        >
+                            中学校を選択してください
+                        </div>
+                    </div>
+
+                    <div class="help-text">
+                        校長名は中学校情報から自動表示されます。
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label for="{{ form.club.id_for_label }}">
+                        部活動
+                        <span class="required">
+                            必須
+                        </span>
+                    </label>
+
+                    {{ form.club }}
+
+                    {% for error in form.club.errors %}
+                        <div class="error">
+                            {{ error }}
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <div class="field">
+                    <label>
+                        寮の予定
+                        <span class="optional">
+                            任意
+                        </span>
+                    </label>
+
+                    <div class="checkbox-box">
+                        <label
+                            for="{{ form.dormitory.id_for_label }}"
+                            class="checkbox-label"
+                        >
+                            {{ form.dormitory }}
+
+                            <span class="checkbox-main-text">
+                                寮への入寮を希望・予定している
+                            </span>
+                        </label>
+
+                        <div class="checkbox-sub-text">
+                            現時点で入寮の予定が分かっている場合のみ、
+                            チェックしてください。事務担当者が後から変更できます。
+                        </div>
+                    </div>
+
+                    {% for error in form.dormitory.errors %}
+                        <div class="error">
+                            {{ error }}
+                        </div>
+                    {% endfor %}
+                </div>
+
+            </section>
+
+            <details class="additional-section">
+
+                <summary>
+                    事務入力・追加情報
+                </summary>
+
+                <div class="additional-content">
+
+                    <div class="office-note">
+                        郵便番号・住所・奨学金区分などは、
+                        後から事務担当者が入力できます。
+                        顧問の先生は、分からない場合は空欄のままで構いません。
+                    </div>
+
+                    <div class="field">
+                        <label for="{{ form.postal_code.id_for_label }}">
+                            郵便番号
+                            <span class="optional">
+                                任意
+                            </span>
+                        </label>
+
+                        {{ form.postal_code }}
+
+                        {% for error in form.postal_code.errors %}
+                            <div class="error">
+                                {{ error }}
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="field">
+                        <label for="{{ form.address.id_for_label }}">
+                            住所
+                            <span class="optional">
+                                任意
+                            </span>
+                        </label>
+
+                        {{ form.address }}
+
+                        {% for error in form.address.errors %}
+                            <div class="error">
+                                {{ error }}
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="field">
+                        <label for="{{ form.scholarship_category.id_for_label }}">
+                            奨学金区分
+                            <span class="optional">
+                                任意
+                            </span>
+                        </label>
+
+                        {{ form.scholarship_category }}
+
+                        <div class="help-text">
+                            区分が未確定の場合は、
+                            「未設定」のまま登録できます。
+                        </div>
+
+                        {% for error in form.scholarship_category.errors %}
+                            <div class="error">
+                                {{ error }}
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="field">
+                        <label for="{{ form.notes.id_for_label }}">
+                            備考
+                            <span class="optional">
+                                任意
+                            </span>
+                        </label>
+
+                        {{ form.notes }}
+
+                        {% for error in form.notes.errors %}
+                            <div class="error">
+                                {{ error }}
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                </div>
+
+            </details>
+
+            <div class="button-area">
+                <button
+                    type="submit"
+                    class="button save-button"
+                >
+                    {{ submit_label }}
+                </button>
+
+                <a
+                    href="{% url 'publicity:prospective_student_list' %}"
+                    class="button cancel-button"
+                >
+                    キャンセル
+                </a>
+            </div>
+
+        </form>
+
+    </section>
+
+</main>
+
+<script
+    src="https://cdn.jsdelivr.net/npm/tom-select@2.6.2/dist/js/tom-select.complete.min.js"
+></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const schoolSelect =
+            document.getElementById("id_junior_high_school");
+
+        const principalName =
+            document.getElementById("principal-name");
+
+        if (!schoolSelect) {
+            return;
+        }
+
+        if (typeof TomSelect === "undefined") {
+            console.error("Tom Selectを読み込めませんでした。");
+            return;
+        }
+
+        const searchUrl =
+            "{% url 'publicity:junior_high_school_search' %}";
+
+        const initialOptions = [];
+
+        schoolSelect
+            .querySelectorAll("option[value]:not([value=''])")
+            .forEach(function (option) {
+                initialOptions.push({
+                    id: option.value,
+                    name: option.textContent.trim(),
+                    label: option.textContent.trim(),
+                    prefecture: "",
+                    city: "",
+                    address: "",
+                    principal_name: "",
+                });
+            });
+
+        const selectedSchoolId = schoolSelect.value;
+
+        const schoolTomSelect = new TomSelect(
+            schoolSelect,
+            {
+                valueField: "id",
+                labelField: "label",
+                searchField: [
+                    "name",
+                    "prefecture",
+                    "city",
+                    "address",
+                ],
+                options: initialOptions,
+                items: selectedSchoolId
+                    ? [selectedSchoolId]
+                    : [],
+                placeholder:
+                    "学校名・市町村名を入力して検索",
+                maxOptions: 30,
+                loadThrottle: 300,
+                create: false,
+                allowEmptyOption: true,
+                closeAfterSelect: true,
+                hideSelected: true,
+
+                shouldLoad: function (query) {
+                    return query.trim().length >= 1;
+                },
+
+                load: function (query, callback) {
+                    const keyword = query.trim();
+
+                    if (!keyword) {
+                        callback();
+                        return;
+                    }
+
+                    this.clearOptions();
+
+                    const url =
+                        searchUrl
+                        + "?q="
+                        + encodeURIComponent(keyword);
+
+                    fetch(
+                        url,
+                        {
+                            credentials: "same-origin",
+                            headers: {
+                                "X-Requested-With":
+                                    "XMLHttpRequest",
+                            },
+                        }
+                    )
+                    .then(function (response) {
+                        if (!response.ok) {
+                            throw new Error(
+                                "中学校情報を取得できませんでした。"
+                            );
+                        }
+
+                        return response.json();
+                    })
+                    .then(function (data) {
+                        callback(
+                            Array.isArray(data.results)
+                                ? data.results
+                                : []
+                        );
+                    })
+                    .catch(function (error) {
+                        console.error(error);
+                        callback();
+                    });
+                },
+
+                render: {
+                    option: function (item, escape) {
+                        const location = [
+                            item.prefecture,
+                            item.city,
+                        ]
+                        .filter(Boolean)
+                        .join(" ");
+
+                        const address = item.address || "";
+
+                        return `
+                            <div>
+                                <div class="school-option-name">
+                                    ${escape(
+                                        item.name
+                                        || item.label
+                                        || ""
+                                    )}
+                                </div>
+
+                                ${
+                                    location
+                                        ? `
+                                            <div class="school-option-location">
+                                                ${escape(location)}
+                                            </div>
+                                        `
+                                        : ""
+                                }
+
+                                ${
+                                    address
+                                        ? `
+                                            <div class="school-option-location">
+                                                ${escape(address)}
+                                            </div>
+                                        `
+                                        : ""
+                                }
+                            </div>
+                        `;
+                    },
+
+                    item: function (item, escape) {
+                        return `
+                            <div class="school-selected-item">
+                                ${escape(
+                                    item.name
+                                    || item.label
+                                    || ""
+                                )}
+                            </div>
+                        `;
+                    },
+
+                    no_results: function (data, escape) {
+                        return `
+                            <div class="no-results">
+                                「${escape(data.input)}」に該当する
+                                中学校がありません。
+                            </div>
+                        `;
+                    },
+
+                    loading: function () {
+                        return `
+                            <div class="school-loading-message">
+                                中学校を検索しています…
+                            </div>
+                        `;
+                    },
+                },
+
+                onItemAdd: function (schoolId) {
+                    updatePrincipalName(schoolId);
+                },
+
+                onChange: function (schoolId) {
+                    updatePrincipalName(schoolId);
+                },
+
+                onClear: function () {
+                    updatePrincipalName("");
+                },
+            }
+        );
+
+        function updatePrincipalName(schoolId) {
+            if (!principalName) {
+                return;
+            }
+
+            if (!schoolId) {
+                principalName.textContent =
+                    "中学校を選択してください";
+                return;
+            }
+
+            const school =
+                schoolTomSelect.options[schoolId];
+
+            if (!school) {
+                principalName.textContent =
+                    "学校長様";
+                return;
+            }
+
+            principalName.textContent =
+                school.principal_name
+                || "学校長様";
+        }
+
+        updatePrincipalName(
+            schoolTomSelect.getValue()
+        );
+    });
+</script>
+
+</body>
+</html>

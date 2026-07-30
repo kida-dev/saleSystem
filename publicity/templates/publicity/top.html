@@ -1,29 +1,432 @@
+{% load socialaccount %}
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>saleSystem</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>小林西高等学校 広報支援システム</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family:
+                "Yu Gothic",
+                "Meiryo",
+                sans-serif;
+            color: #222;
+            background-color: #f4f6f8;
+        }
+
+        .header {
+            color: #fff;
+            background-color: #28556b;
+            padding: 22px 30px;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+        }
+
+        .header p {
+            margin: 8px 0 0;
+            color: #e9f2f6;
+        }
+
+        .container {
+            width: min(960px, calc(100% - 30px));
+            margin: 30px auto;
+        }
+
+        .card {
+            margin-bottom: 22px;
+            padding: 24px;
+            background-color: #fff;
+            border: 1px solid #d6dde2;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .card h2 {
+            margin-top: 0;
+            margin-bottom: 12px;
+        }
+
+        .login-card {
+            max-width: 540px;
+            margin: 50px auto;
+            text-align: center;
+        }
+
+        .login-description {
+            margin: 18px 0 24px;
+            line-height: 1.8;
+            color: #555;
+        }
+
+        .user-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .user-name {
+            margin: 0 0 6px;
+            font-size: 21px;
+            font-weight: bold;
+        }
+
+        .user-email {
+            margin: 0 0 10px;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .role-badge {
+            display: inline-block;
+            padding: 5px 11px;
+            border-radius: 20px;
+            background-color: #e8f1f5;
+            color: #28556b;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns:
+                repeat(auto-fit, minmax(230px, 1fr));
+            gap: 16px;
+            margin-top: 20px;
+        }
+
+        .menu-item {
+            display: block;
+            min-height: 130px;
+            padding: 20px;
+            color: #222;
+            background-color: #fff;
+            border: 1px solid #ccd6dc;
+            border-radius: 9px;
+            text-decoration: none;
+            transition:
+                transform 0.15s,
+                box-shadow 0.15s;
+        }
+
+        .menu-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 14px rgba(0, 0, 0, 0.10);
+        }
+
+        .menu-item h3 {
+            margin: 0 0 10px;
+            color: #28556b;
+        }
+
+        .menu-item p {
+            margin: 0;
+            color: #555;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
+        .admin-menu {
+            border-left: 6px solid #b7791f;
+        }
+
+        .google-button,
+        .logout-button {
+            display: inline-block;
+            padding: 11px 22px;
+            border-radius: 6px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .google-button {
+            color: #fff;
+            background-color: #1769aa;
+            border: 1px solid #1769aa;
+        }
+
+        .google-button:hover {
+            background-color: #12588f;
+        }
+
+        .logout-button {
+            color: #333;
+            background-color: #fff;
+            border: 1px solid #999;
+        }
+
+        .logout-button:hover {
+            background-color: #f1f1f1;
+        }
+
+        .warning {
+            padding: 15px;
+            color: #664d03;
+            background-color: #fff3cd;
+            border: 1px solid #e6c75b;
+            border-radius: 6px;
+            line-height: 1.7;
+        }
+
+        .denied {
+            color: #842029;
+            background-color: #f8d7da;
+            border-color: #e2aeb4;
+        }
+
+        @media (max-width: 650px) {
+            .header {
+                padding: 18px;
+            }
+
+            .header h1 {
+                font-size: 22px;
+            }
+
+            .user-info {
+                display: block;
+            }
+
+            .logout-form {
+                margin-top: 18px;
+            }
+        }
+    </style>
 </head>
+
 <body>
-    <h1>saleSystem</h1>
-    <h2>小林西高等学校 広報支援システム</h2>
 
-    <p>中学校情報や宛名シール作成を行うシステムです。</p>
+<header class="header">
+    <h1>小林西高等学校 広報支援システム</h1>
 
     <p>
-        <a href="{% url 'publicity:school_list' %}">
-            <button>中学校一覧</button>
-        </a>
+        中学校情報の管理や、広報活動に必要な印刷を行うシステムです。
     </p>
-    <p>
-        <a href="{% url 'publicity:label_pdf' %}" target="_blank">
-            <button>宛名シールPDFを作成</button>
-        </a>
-    </p>
-    <p>
-        <a href="{% url 'publicity:label_select' %}">
-            <button>宛名シールを作成する</button>
-        </a>
-    </p>
+</header>
+
+<main class="container">
+
+    {% if not request.user.is_authenticated %}
+
+        <section class="card login-card">
+            <h2>ログイン</h2>
+
+            <p class="login-description">
+                このシステムは、小林西高等学校の教職員向けです。<br>
+                登録済みの学校用または個人用Googleアカウントで
+                ログインしてください。
+            </p>
+
+            <a
+                href="{% provider_login_url 'google' %}"
+                class="google-button"
+            >
+                Googleでログイン
+            </a>
+        </section>
+
+    {% else %}
+
+        <section class="card">
+            <div class="user-info">
+
+                <div>
+                    {% if teacher %}
+                        <p class="user-name">
+                            {{ teacher.name }} 先生
+                        </p>
+
+                        <p class="user-email">
+                            ログイン中：
+                            {{ request.user.email|default:"メールアドレス未設定" }}
+                        </p>
+
+                        <span class="role-badge">
+                            {{ teacher.get_role_display }}
+                        </span>
+
+                    {% elif request.user.is_superuser %}
+                        <p class="user-name">
+                            システム管理者
+                        </p>
+
+                        <p class="user-email">
+                            ログイン中：
+                            {{ request.user.username }}
+                        </p>
+
+                        <span class="role-badge">
+                            Djangoスーパーユーザー
+                        </span>
+
+                    {% else %}
+                        <p class="user-name">
+                            Googleログイン済み
+                        </p>
+
+                        <p class="user-email">
+                            {{ request.user.email }}
+                        </p>
+                    {% endif %}
+                </div>
+
+                <form
+                    method="post"
+                    action="{% url 'account_logout' %}"
+                    class="logout-form"
+                >
+                    {% csrf_token %}
+
+                    <button
+                        type="submit"
+                        class="logout-button"
+                    >
+                        ログアウト
+                    </button>
+                </form>
+
+            </div>
+        </section>
+
+        {% if can_use_system %}
+
+            <section class="card">
+                <h2>広報メニュー</h2>
+
+                <div class="menu-grid">
+
+                    <a
+                        href="{% url 'publicity:school_list' %}"
+                        class="menu-item"
+                    >
+                        <h3>中学校一覧</h3>
+
+                        <p>
+                            登録済みの中学校情報を確認・検索します。
+                        </p>
+                    </a>
+
+                    <a
+                        href="{% url 'publicity:prospective_student_list' %}"
+                        class="menu-item"
+                    >
+                        <h3>募集対象生徒</h3>
+
+                        <p>
+                            募集・勧誘対象となる中学生の
+                            登録・確認・編集を行います。
+                        </p>
+                    </a>
+
+                    {% if can_manage_publicity %}
+
+                        <a
+                            href="{% url 'publicity:label_select' %}"
+                            class="menu-item"
+                        >
+                            <h3>宛名シール作成</h3>
+
+                            <p>
+                                対象の中学校を選択して、
+                                宛名シールを作成します。
+                            </p>
+                        </a>
+
+                        <a
+                            href="{% url 'publicity:label_pdf' %}"
+                            target="_blank"
+                            class="menu-item"
+                        >
+                            <h3>宛名シールPDF</h3>
+
+                            <p>
+                                登録されている中学校の
+                                宛名シールPDFを表示します。
+                            </p>
+                        </a>
+
+                    {% endif %}
+
+                </div>
+            </section>
+
+            {% if can_manage_permissions %}
+
+                <section class="card">
+                    <h2>システム管理</h2>
+
+                    <div class="menu-grid">
+
+                        <a
+                            href="{% url 'publicity:teacher_permission_manage' %}"
+                            class="menu-item admin-menu"
+                        >
+                            <h3>教員・権限管理</h3>
+
+                            <p>
+                                教員のシステム権限や、
+                                利用可否を変更します。
+                            </p>
+                        </a>
+
+                        <a
+                            href="{% url 'admin:index' %}"
+                            class="menu-item admin-menu"
+                        >
+                            <h3>Django管理画面</h3>
+
+                            <p>
+                                教員・メール・中学校などの
+                               詳細情報を管理します。
+                            </p>
+                        </a>
+
+                    </div>
+                </section>
+
+            {% endif %}
+
+        {% else %}
+
+            <section class="card">
+                <div class="warning denied">
+
+                    <strong>
+                        このアカウントではシステムを利用できません。
+                    </strong>
+
+                    <br>
+
+                    Googleログインには成功していますが、
+                    教員情報との紐づけがないか、
+                    利用が停止されています。
+
+                    <br>
+
+                    システム管理者へ連絡してください。
+
+                </div>
+            </section>
+
+        {% endif %}
+
+    {% endif %}
+
+</main>
+
 </body>
 </html>
