@@ -168,6 +168,15 @@
                 width: 100%;
             }
         }
+        .excel-button {
+            color: #fff;
+            background: #217346;
+            border: 1px solid #217346;
+        }
+
+        .excel-button:hover {
+            background: #185c37;
+        }
     </style>
 </head>
 
@@ -274,8 +283,14 @@
 
             </div>
         </form>
-    </section>
 
+    </section>
+    <a
+        href="{% url 'publicity:prospective_student_excel' %}?{{ request.GET.urlencode }}"
+        class="button excel-button"
+    >
+        Excel出力
+    </a>
     <section class="card">
         <div class="table-wrapper">
             <table>

@@ -25,6 +25,11 @@ urlpatterns = [
         views.prospective_student_edit,
         name="prospective_student_edit",
     ),
+    path(
+        "students/export/excel/",
+        views.prospective_student_excel,
+        name="prospective_student_excel",
+    ),
     path("schools/", views.school_list, name="school_list"),
     path("schools/print/", views.school_print, name="school_print"),
 

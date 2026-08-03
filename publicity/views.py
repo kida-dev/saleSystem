@@ -29,6 +29,11 @@ from .decorators import (
 )
 
 from django.http import HttpResponse, JsonResponse
+from io import BytesIO
+from urllib.parse import quote
+from openpyxl import Workbook
+from openpyxl.styles import Alignment, Font, PatternFill
+from openpyxl.utils import get_column_letter
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfbase import pdfmetrics
@@ -478,7 +483,252 @@ def prospective_student_list(request):
         },
     )
 
+@club_advisor_required
+def prospective_student_excel(request):
+    teacher = request.teacher
 
+    students = (
+        ProspectiveStudent.objects
+        .select_related(
+            "junior_high_school",
+            "club",
+            "scholarship_category",
+            "registered_by",
+            "assigned_teacher",
+        )
+        .filter(is_active=True)
+    )
+
+    # 一覧画面と同じ権限制御
+    if teacher.role not in {
+        "publicity_admin",
+        "system_admin",
+    }:
+        students = students.filter(
+            Q(registered_by=teacher)
+            | Q(assigned_teacher=teacher)
+        )
+
+    # 一覧画面と同じ検索条件
+    keyword = request.GET.get(
+        "q",
+        "",
+    ).strip()
+
+    school_id = request.GET.get(
+        "school",
+        "",
+    ).strip()
+
+    club_id = request.GET.get(
+        "club",
+        "",
+    ).strip()
+
+    if keyword:
+        students = students.filter(
+            Q(name__icontains=keyword)
+            | Q(name_kana__icontains=keyword)
+            | Q(
+                junior_high_school__name__icontains=keyword
+            )
+            | Q(club__name__icontains=keyword)
+        )
+
+    if school_id.isdigit():
+        students = students.filter(
+            junior_high_school_id=school_id
+        )
+
+    if club_id.isdigit():
+        students = students.filter(
+            club_id=club_id
+        )
+
+    students = students.order_by(
+        "junior_high_school__prefecture",
+        "junior_high_school__city",
+        "junior_high_school__name",
+        "name_kana",
+        "name",
+    )
+
+    workbook = Workbook()
+    worksheet = workbook.active
+    worksheet.title = "募集対象生徒一覧"
+
+    headers = [
+        "氏名",
+        "ふりがな",
+        "中学校",
+        "都道府県",
+        "市町村",
+        "部活動",
+        "寮予定",
+        "奨学金区分",
+        "郵便番号",
+        "住所",
+        "担当教員",
+        "登録者",
+        "登録日",
+        "備考",
+    ]
+
+    worksheet.append(headers)
+
+    # 見出しの装飾
+    header_fill = PatternFill(
+        fill_type="solid",
+        fgColor="28556B",
+    )
+
+    header_font = Font(
+        color="FFFFFF",
+        bold=True,
+    )
+
+    for cell in worksheet[1]:
+        cell.fill = header_fill
+        cell.font = header_font
+        cell.alignment = Alignment(
+            horizontal="center",
+            vertical="center",
+        )
+
+    for student in students:
+        school = student.junior_high_school
+
+        worksheet.append(
+            [
+                student.name,
+                student.name_kana or "",
+                school.name if school else "",
+                (
+                    school.prefecture
+                    if school
+                    else ""
+                ),
+                (
+                    school.city
+                    if school
+                    else ""
+                ),
+                (
+                    student.club.name
+                    if student.club
+                    else ""
+                ),
+                (
+                    "入寮予定"
+                    if student.dormitory
+                    else ""
+                ),
+                (
+                    student.scholarship_category.name
+                    if student.scholarship_category
+                    else ""
+                ),
+                student.postal_code or "",
+                student.address or "",
+                (
+                    student.assigned_teacher.name
+                    if student.assigned_teacher
+                    else ""
+                ),
+                (
+                    student.registered_by.name
+                    if student.registered_by
+                    else ""
+                ),
+                (
+                    student.created_at.strftime(
+                        "%Y/%m/%d"
+                    )
+                    if student.created_at
+                    else ""
+                ),
+                student.notes or "",
+            ]
+        )
+
+    # 先頭行固定
+    worksheet.freeze_panes = "A2"
+
+    # オートフィルター
+    worksheet.auto_filter.ref = (
+        worksheet.dimensions
+    )
+
+    # 行の高さ
+    worksheet.row_dimensions[1].height = 24
+
+    # 列幅
+    column_widths = {
+        "A": 16,
+        "B": 18,
+        "C": 32,
+        "D": 12,
+        "E": 16,
+        "F": 18,
+        "G": 12,
+        "H": 18,
+        "I": 12,
+        "J": 38,
+        "K": 16,
+        "L": 16,
+        "M": 12,
+        "N": 35,
+    }
+
+    for column, width in (
+        column_widths.items()
+    ):
+        worksheet.column_dimensions[
+            column
+        ].width = width
+
+    # セルを折り返す
+    for row in worksheet.iter_rows(
+        min_row=2
+    ):
+        for cell in row:
+            cell.alignment = Alignment(
+                vertical="top",
+                wrap_text=True,
+            )
+
+    # 印刷設定
+    worksheet.sheet_properties.pageSetUpPr.fitToPage = True
+    worksheet.page_setup.fitToWidth = 1
+    worksheet.page_setup.fitToHeight = 0
+    worksheet.page_orientation = "landscape"
+    worksheet.print_title_rows = "1:1"
+
+    output = BytesIO()
+    workbook.save(output)
+    output.seek(0)
+
+    filename = (
+        "募集対象生徒一覧.xlsx"
+    )
+
+    response = HttpResponse(
+        output.getvalue(),
+        content_type=(
+            "application/vnd.openxmlformats-"
+            "officedocument.spreadsheetml.sheet"
+        ),
+    )
+
+    response[
+        "Content-Disposition"
+    ] = (
+        "attachment; "
+        "filename*=UTF-8''"
+        f"{quote(filename)}"
+    )
+
+    return response
 
 def _get_school_principals():
     return {
@@ -600,8 +850,17 @@ def prospective_student_edit(request, pk):
 
 @club_advisor_required
 def junior_high_school_search(request):
-    keyword = request.GET.get("q", "").strip()
-    prefecture = request.GET.get("prefecture", "").strip()
+    keyword = (
+        request.GET
+        .get("q", "")
+        .strip()
+    )
+
+    prefecture = (
+        request.GET
+        .get("prefecture", "")
+        .strip()
+    )
 
     schools = (
         JuniorHighSchool.objects
@@ -619,27 +878,48 @@ def junior_high_school_search(request):
         )
 
     if keyword:
-        schools = schools.filter(
-            Q(name__icontains=keyword)
-            | Q(city__icontains=keyword)
-            | Q(official_address__icontains=keyword)
-            | Q(school_code__icontains=keyword)
+        # 全角スペースを半角スペースへ統一し、
+        # スペース区切りで複数の検索語に分割
+        search_words = (
+            keyword
+            .replace("　", " ")
+            .split()
         )
+
+        # 各検索語についてfilterを重ねることで
+        # AND検索にする
+        for word in search_words:
+            schools = schools.filter(
+                Q(name__icontains=word)
+                | Q(prefecture__icontains=word)
+                | Q(city__icontains=word)
+                | Q(address__icontains=word)
+                | Q(
+                    official_address__icontains=word
+                )
+                | Q(
+                    official_postal_code__icontains=word
+                )
+                | Q(school_code__icontains=word)
+            )
+
     else:
-        # 未入力時に全国の学校を大量返却しない
+        # 未入力時に全国の学校を返さない
         schools = schools.none()
 
+    # 候補を最大30校に制限
     schools = schools[:30]
 
     results = [
         {
             "id": school.id,
             "name": school.name,
-            "prefecture": school.prefecture,
-            "city": school.city,
+            "prefecture": (
+                school.prefecture or ""
+            ),
+            "city": school.city or "",
             "principal_name": (
-                school.principal_name
-                or ""
+                school.principal_name or ""
             ),
             "postal_code": (
                 school.official_postal_code
@@ -652,8 +932,8 @@ def junior_high_school_search(request):
             ),
             "label": (
                 f"{school.name}"
-                f"（{school.prefecture}"
-                f"{school.city}）"
+                f"（{school.prefecture or ''}"
+                f"{school.city or ''}）"
             ),
         }
         for school in schools
