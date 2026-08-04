@@ -300,7 +300,8 @@
                         <th>中学校</th>
                         <th>校長名</th>
                         <th>部活動</th>
-                        <th>奨学金区分</th>
+                        <th>奨学金希望</th>
+                        <th>貸与型申込</th>
                         <th>担当教員</th>
                         <th>登録日</th>
                         <th>操作</th>
@@ -334,10 +335,18 @@
                             </td>
 
                             <td>
-                                {% if student.scholarship_category %}
-                                    {{ student.scholarship_category.name }}
+                                {% if student.scholarship_wanted %}
+                                    希望あり
                                 {% else %}
-                                    未設定
+                                    -
+                                {% endif %}
+                            </td>
+
+                            <td>
+                                {% if student.junior_high_loan_scholarship_applied %}
+                                    申込済
+                                {% else %}
+                                    -
                                 {% endif %}
                             </td>
 
@@ -363,7 +372,7 @@
 
                         <tr>
                             <td
-                                colspan="8"
+                                colspan="9"
                                 class="empty"
                             >
                                 該当する募集対象生徒は登録されていません。

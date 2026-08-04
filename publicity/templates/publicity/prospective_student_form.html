@@ -630,21 +630,68 @@
                     </div>
 
                     <div class="field">
-                        <label for="{{ form.scholarship_category.id_for_label }}">
-                            奨学金区分
+                        <label>
+                            奨学金
                             <span class="optional">
                                 任意
                             </span>
                         </label>
 
-                        {{ form.scholarship_category }}
+                        <div class="checkbox-box">
+                            <label
+                                for="{{ form.scholarship_wanted.id_for_label }}"
+                                class="checkbox-label"
+                            >
+                                {{ form.scholarship_wanted }}
 
-                        <div class="help-text">
-                            区分が未確定の場合は、
-                            「未設定」のまま登録できます。
+                                <span class="checkbox-main-text">
+                                    奨学金を希望する
+                                </span>
+                            </label>
+
+                            <div class="checkbox-sub-text">
+                                現時点で奨学金の利用を希望している場合に
+                                チェックしてください。
+                                事務担当者が後から変更できます。
+                            </div>
                         </div>
 
-                        {% for error in form.scholarship_category.errors %}
+                        {% for error in form.scholarship_wanted.errors %}
+                            <div class="error">
+                                {{ error }}
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="field">
+                        <label>
+                            貸与型奨学金の申込み
+                            <span class="optional">
+                                任意
+                            </span>
+                        </label>
+
+                        <div class="checkbox-box">
+                            <label
+                                for="{{ form.junior_high_loan_scholarship_applied.id_for_label }}"
+                                class="checkbox-label"
+                            >
+                                {{ form.junior_high_loan_scholarship_applied }}
+
+                                <span class="checkbox-main-text">
+                                    中学3年時に申込み可能な
+                                    貸与型奨学金へ申込み済み
+                                </span>
+                            </label>
+
+                            <div class="checkbox-sub-text">
+                                中学校3年生の段階で申込みができる
+                                貸与型奨学金へ、すでに申込み済みの場合に
+                                チェックしてください。
+                            </div>
+                        </div>
+
+                        {% for error in form.junior_high_loan_scholarship_applied.errors %}
                             <div class="error">
                                 {{ error }}
                             </div>

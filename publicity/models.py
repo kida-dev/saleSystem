@@ -237,6 +237,16 @@ class ProspectiveStudent(models.Model):
         related_name="prospective_students",
     )
 
+    scholarship_wanted = models.BooleanField(
+        "奨学金希望",
+        default=False,
+    )
+
+    junior_high_loan_scholarship_applied = models.BooleanField(
+        "中学3年時申込可能な貸与型奨学金に申込済み",
+        default=False,
+    )
+
     scholarship_category = models.ForeignKey(
         ScholarshipCategory,
         verbose_name="奨学金区分",

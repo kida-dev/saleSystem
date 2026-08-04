@@ -95,12 +95,13 @@ class ProspectiveStudentForm(forms.ModelForm):
         fields = [
             "name",
             "name_kana",
+            "junior_high_school",
             "club",
             "dormitory",
             "postal_code",
             "address",
-            "junior_high_school",
-            "scholarship_category",
+            "scholarship_wanted",
+            "junior_high_loan_scholarship_applied",
             "notes",
         ]
 
@@ -209,24 +210,10 @@ class ProspectiveStudentForm(forms.ModelForm):
                 )
             )
 
-        # ---------------------------------
-        # 奨学金区分
-        # ---------------------------------
-        self.fields["scholarship_category"].queryset = (
-            ScholarshipCategory.objects
-            .filter(is_active=True)
-            .order_by("name")
-        )
-
         self.fields["club"].empty_label = (
             "部活動を選択してください"
         )
 
-        self.fields["scholarship_category"].required = False
-
-        self.fields["scholarship_category"].empty_label = (
-            "未設定"
-        )
 
     def clean_name(self):
         name = self.cleaned_data.get("name", "").strip()

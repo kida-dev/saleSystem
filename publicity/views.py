@@ -565,7 +565,8 @@ def prospective_student_excel(request):
         "市町村",
         "部活動",
         "寮予定",
-        "奨学金区分",
+        "奨学金金額",
+        "貸与型奨学金申込済"
         "郵便番号",
         "住所",
         "担当教員",
@@ -624,8 +625,13 @@ def prospective_student_excel(request):
                     else ""
                 ),
                 (
-                    student.scholarship_category.name
-                    if student.scholarship_category
+                    "希望あり"
+                    if student.scholarship_wanted
+                    else ""
+                ),
+                (
+                    "申込済"
+                    if student.junior_high_loan_scholarship_applied
                     else ""
                 ),
                 student.postal_code or "",
@@ -662,22 +668,23 @@ def prospective_student_excel(request):
     # 行の高さ
     worksheet.row_dimensions[1].height = 24
 
-    # 列幅
+        # 列幅
     column_widths = {
-        "A": 16,
-        "B": 18,
-        "C": 32,
-        "D": 12,
-        "E": 16,
-        "F": 18,
-        "G": 12,
-        "H": 18,
-        "I": 12,
-        "J": 38,
-        "K": 16,
-        "L": 16,
-        "M": 12,
-        "N": 35,
+        "A": 16,  # 氏名
+        "B": 18,  # ふりがな
+        "C": 32,  # 中学校
+        "D": 12,  # 都道府県
+        "E": 16,  # 市町村
+        "F": 18,  # 部活動
+        "G": 12,  # 寮予定
+        "H": 14,  # 奨学金希望
+        "I": 22,  # 貸与型奨学金申込済
+        "J": 12,  # 郵便番号
+        "K": 38,  # 住所
+        "L": 16,  # 担当教員
+        "M": 16,  # 登録者
+        "N": 12,  # 登録日
+        "O": 35,  # 備考
     }
 
     for column, width in (
@@ -791,7 +798,6 @@ def prospective_student_edit(request, pk):
         .select_related(
             "junior_high_school",
             "club",
-            "scholarship_category",
             "registered_by",
             "assigned_teacher",
         )
