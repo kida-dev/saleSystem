@@ -1,0 +1,957 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        発行文書履歴
+    </title>
+
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+
+        body {
+
+            margin: 0;
+
+            font-family:
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                "Yu Gothic",
+                "Meiryo",
+                sans-serif;
+
+            background: #f4f7f9;
+
+            color: #222;
+
+        }
+
+
+        /* =========================
+           ヘッダー
+        ========================= */
+
+        .page-header {
+
+            background: #245f73;
+
+            color: white;
+
+            padding: 24px 32px;
+
+        }
+
+
+        .page-header h1 {
+
+            margin: 0 0 8px;
+
+            font-size: 26px;
+
+        }
+
+
+        .page-header p {
+
+            margin: 0;
+
+            font-size: 14px;
+
+        }
+
+
+        /* =========================
+           全体
+        ========================= */
+
+        .container {
+
+            max-width: 1200px;
+
+            margin: 28px auto;
+
+            padding: 0 20px;
+
+        }
+
+
+        .card {
+
+            background: white;
+
+            border: 1px solid #d4dde2;
+
+            border-radius: 8px;
+
+            padding: 24px;
+
+            margin-bottom: 22px;
+
+            box-shadow:
+                0 2px 5px rgba(0, 0, 0, 0.05);
+
+        }
+
+
+        .card h2 {
+
+            margin-top: 0;
+
+            color: #15536c;
+
+            font-size: 20px;
+
+        }
+
+
+        /* =========================
+           検索
+        ========================= */
+
+        .search-area {
+
+            display: grid;
+
+            grid-template-columns:
+                minmax(250px, 1fr)
+                200px
+                auto;
+
+            gap: 14px;
+
+            align-items: end;
+
+        }
+
+
+        .field label {
+
+            display: block;
+
+            font-weight: bold;
+
+            margin-bottom: 7px;
+
+            font-size: 14px;
+
+        }
+
+
+        .field input,
+        .field select {
+
+            width: 100%;
+
+            padding: 10px 12px;
+
+            border: 1px solid #aebcc4;
+
+            border-radius: 4px;
+
+            background: white;
+
+            font-size: 14px;
+
+        }
+
+
+        .button {
+
+            display: inline-block;
+
+            padding: 10px 18px;
+
+            border: none;
+
+            border-radius: 4px;
+
+            text-decoration: none;
+
+            cursor: pointer;
+
+            font-weight: bold;
+
+            font-size: 14px;
+
+        }
+
+
+        .search-button {
+
+            background: #19749a;
+
+            color: white;
+
+        }
+
+
+        .search-button:hover {
+
+            background: #155f7e;
+
+        }
+
+
+        .back-button {
+
+            background: white;
+
+            color: #333;
+
+            border: 1px solid #9ba7ad;
+
+        }
+
+
+        /* =========================
+           件数
+        ========================= */
+
+        .summary {
+
+            background: #fff3c9;
+
+            border: 1px solid #e8c55b;
+
+            border-radius: 5px;
+
+            padding: 14px 18px;
+
+            margin-bottom: 18px;
+
+        }
+
+
+        .summary strong {
+
+            color: #075779;
+
+            font-size: 18px;
+
+        }
+
+
+        /* =========================
+           テーブル
+        ========================= */
+
+        .table-wrapper {
+
+            overflow-x: auto;
+
+        }
+
+
+        table {
+
+            width: 100%;
+
+            border-collapse: collapse;
+
+            font-size: 14px;
+
+        }
+
+
+        th {
+
+            background: #eaf1f4;
+
+            text-align: left;
+
+            white-space: nowrap;
+
+        }
+
+
+        th,
+        td {
+
+            border: 1px solid #cbd6dc;
+
+            padding: 11px 12px;
+
+            vertical-align: middle;
+
+        }
+
+
+        tbody tr:hover {
+
+            background: #f7fafb;
+
+        }
+
+
+        .document-number {
+
+            font-weight: bold;
+
+            color: #145f7b;
+
+            white-space: nowrap;
+
+        }
+
+
+        .school-name {
+
+            font-weight: bold;
+
+        }
+
+
+        .student-count {
+
+            text-align: center;
+
+            white-space: nowrap;
+
+        }
+
+
+        /* =========================
+           ステータス
+        ========================= */
+
+        .status {
+
+            display: inline-block;
+
+            padding: 4px 9px;
+
+            border-radius: 20px;
+
+            font-size: 12px;
+
+            font-weight: bold;
+
+            white-space: nowrap;
+
+        }
+
+
+        .status-issued {
+
+            background: #dff1e4;
+
+            color: #246638;
+
+        }
+
+
+        .status-cancelled {
+
+            background: #f5dddd;
+
+            color: #8a3030;
+
+        }
+
+
+        /* =========================
+           操作
+        ========================= */
+
+        .action-area {
+
+            display: flex;
+
+            gap: 6px;
+
+            flex-wrap: wrap;
+
+        }
+
+
+        .action-button {
+
+            padding: 6px 10px;
+
+            border-radius: 4px;
+
+            font-size: 12px;
+
+            font-weight: bold;
+
+            text-decoration: none;
+
+            white-space: nowrap;
+
+        }
+
+
+        .reprint-button {
+
+            background: #19749a;
+
+            color: white;
+
+        }
+
+
+        .edit-button {
+
+            background: #fff;
+
+            color: #555;
+
+            border: 1px solid #aaa;
+
+        }
+
+
+        .cancel-button {
+
+            background: #fff;
+
+            color: #a52d2d;
+
+            border: 1px solid #c97979;
+
+        }
+
+
+        .disabled {
+
+            opacity: 0.45;
+
+            cursor: not-allowed;
+
+            pointer-events: none;
+
+        }
+
+
+        /* =========================
+           データなし
+        ========================= */
+
+        .empty {
+
+            padding: 40px;
+
+            text-align: center;
+
+            color: #777;
+
+        }
+
+
+        /* =========================
+           下部
+        ========================= */
+
+        .bottom-area {
+
+            margin-top: 22px;
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+        }
+
+
+        @media (
+            max-width: 800px
+        ) {
+
+            .search-area {
+
+                grid-template-columns: 1fr;
+
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- =========================
+         ヘッダー
+    ========================== -->
+
+    <header class="page-header">
+
+        <h1>
+            発行文書履歴
+        </h1>
+
+        <p>
+            発行済み文書の確認・再印刷・訂正・取消を管理します。
+        </p>
+
+    </header>
+
+
+
+    <main class="container">
+
+
+        <!-- =========================
+             1. 検索
+        ========================== -->
+
+        <section class="card">
+
+            <h2>
+                1. 履歴検索
+            </h2>
+
+
+            <form
+                method="GET"
+            >
+
+                <div class="search-area">
+
+
+                    <div class="field">
+
+                        <label for="q">
+                            文書番号・中学校・生徒名
+                        </label>
+
+                        <input
+                            type="text"
+                            id="q"
+                            name="q"
+                            value="{{ keyword }}"
+                            placeholder="例：小林西発第80号、小林中学校"
+                        >
+
+                    </div>
+
+
+                    <div class="field">
+
+                        <label for="status">
+                            状態
+                        </label>
+
+                        <select
+                            id="status"
+                            name="status"
+                        >
+
+                            <option value="">
+                                すべて
+                            </option>
+
+                            <option
+                                value="issued"
+                                {% if selected_status == "issued" %}
+                                    selected
+                                {% endif %}
+                            >
+                                発行済
+                            </option>
+
+                            <option
+                                value="cancelled"
+                                {% if selected_status == "cancelled" %}
+                                    selected
+                                {% endif %}
+                            >
+                                取消
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div>
+
+                        <button
+                            type="submit"
+                            class="button search-button"
+                        >
+                            検索
+                        </button>
+
+                    </div>
+
+
+                </div>
+
+            </form>
+
+        </section>
+
+
+
+        <!-- =========================
+             2. 発行履歴
+        ========================== -->
+
+        <section class="card">
+
+            <h2>
+                2. 発行履歴
+            </h2>
+
+
+            <div class="summary">
+
+                登録されている文書：
+
+                <strong>
+                    {{ documents|length }}
+                </strong>
+
+                件
+
+            </div>
+
+
+            <div class="table-wrapper">
+
+
+                {% if documents %}
+
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    文書番号
+                                </th>
+
+                                <th>
+                                    発行日
+                                </th>
+
+                                <th>
+                                    中学校
+                                </th>
+
+                                <th>
+                                    対象生徒
+                                </th>
+
+                                <th>
+                                    校長名
+                                </th>
+
+                                <th>
+                                    作成者
+                                </th>
+
+                                <th>
+                                    状態
+                                </th>
+
+                                <th>
+                                    操作
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody>
+
+
+                            {% for document in documents %}
+
+                                <tr>
+
+
+                                    <!-- 文書番号 -->
+
+                                    <td class="document-number">
+
+                                        {{ document.document_number }}
+
+                                    </td>
+
+
+                                    <!-- 発行日 -->
+
+                                    <td>
+
+                                        {{ document.issue_date|date:"Y/m/d" }}
+
+                                    </td>
+
+
+                                    <!-- 中学校 -->
+
+                                    <td class="school-name">
+
+                                        {{ document.school.name }}
+
+                                    </td>
+
+
+                                    <!-- 対象生徒 -->
+
+                                    <td class="student-count">
+
+                                        {{ document.students.all|length }}名
+
+                                    </td>
+
+
+                                    <!-- 校長名 -->
+
+                                    <td>
+
+                                        {{ document.principal_name|default:"-" }}
+
+                                    </td>
+
+
+                                    <!-- 作成者 -->
+
+                                    <td>
+
+                                        {% if document.created_by %}
+
+                                            {{ document.created_by }}
+
+                                        {% else %}
+
+                                            -
+
+                                        {% endif %}
+
+                                    </td>
+
+
+                                    <!-- 状態 -->
+
+                                    <td>
+
+                                        {% if document.status == "cancelled" %}
+
+                                            <span class="status status-cancelled">
+                                                取消
+                                            </span>
+
+                                        {% elif document.status == "corrected" %}
+
+                                            <span
+                                                class="status"
+                                                style="
+                                                    background:#eee;
+                                                    color:#666;
+                                                "
+                                            >
+                                                訂正済
+                                            </span>
+
+                                        {% elif document.corrected_from %}
+
+                                            <span
+                                                class="status"
+                                                style="
+                                                    background:#dcecff;
+                                                    color:#245f8a;
+                                                "
+                                            >
+                                                訂正版
+                                            </span>
+
+                                        {% else %}
+
+                                            <span class="status status-issued">
+                                                発行済
+                                            </span>
+
+                                        {% endif %}
+
+                                    </td>
+
+
+                                    <!-- 操作 -->
+
+                                    <td>
+
+                                        <div class="action-area">
+
+
+                                            {% if document.status == "cancelled" %}
+
+                                                <span
+                                                    class="
+                                                        action-button
+                                                        reprint-button
+                                                        disabled
+                                                    "
+                                                >
+                                                    再印刷
+                                                </span>
+
+                                            {% else %}
+
+                                                <a
+                                                    href="{% url 'publicity:scholarship_document_reprint' document.id %}"
+                                                    class="
+                                                        action-button
+                                                        reprint-button
+                                                    "
+                                                    target="_blank"
+                                                >
+                                                    再印刷
+                                                </a>
+
+                                            {% endif %}
+
+
+                                            {% if document.status == "issued" %}
+
+                                                <a
+                                                    href="{% url 'publicity:scholarship_document_correct' document.id %}"
+                                                    class="action-button edit-button"
+                                                >
+                                                    訂正
+                                                </a>
+
+                                            {% else %}
+
+                                                <span
+                                                    class="
+                                                        action-button
+                                                        edit-button
+                                                        disabled
+                                                    "
+                                                >
+                                                    訂正
+                                                </span>
+
+                                            {% endif %}
+
+
+                                            {% if document.status == "cancelled" %}
+
+                                                <span
+                                                    class="
+                                                        action-button
+                                                        cancel-button
+                                                        disabled
+                                                    "
+                                                >
+                                                    取消済
+                                                </span>
+
+                                            {% else %}
+
+                                                <form
+                                                    method="POST"
+                                                    action="{% url 'publicity:scholarship_document_cancel' document.id %}"
+                                                    style="display:inline;"
+                                                    onsubmit="
+                                                        return confirm(
+                                                            'この文書を取消しますか？\\n'
+                                                            + '文書番号：{{ document.document_number }}\\n'
+                                                            + '中学校：{{ document.school.name }}'
+                                                        );
+                                                    "
+                                                >
+
+                                                    {% csrf_token %}
+
+                                                    <button
+                                                        type="submit"
+                                                        class="
+                                                            action-button
+                                                            cancel-button
+                                                        "
+                                                        style="
+                                                            background:white;
+                                                            cursor:pointer;
+                                                        "
+                                                    >
+                                                        取消
+                                                    </button>
+
+                                                </form>
+
+                                            {% endif %}
+
+
+                                        </div>
+
+                                    </td>
+
+
+                                </tr>
+
+                            {% endfor %}
+
+
+                        </tbody>
+
+                    </table>
+
+
+                {% else %}
+
+
+                    <div class="empty">
+
+                        該当する発行履歴はありません。
+
+                    </div>
+
+
+                {% endif %}
+
+
+            </div>
+
+
+
+            <div class="bottom-area">
+
+
+                <a
+                    href="{% url 'publicity:document_management_top' %}"
+                    class="button back-button"
+                >
+                    文書発行管理へ戻る
+                </a>
+
+
+            </div>
+
+
+        </section>
+
+
+    </main>
+
+
+</body>
+
+</html>

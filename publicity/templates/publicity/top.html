@@ -332,6 +332,23 @@
                         </p>
                     </a>
 
+                    {% if teacher.role == "system_admin" %}
+                        <a
+                            href="{% url 'publicity:document_management_top' %}"
+                            class="menu-item"
+                        >
+                            <h3>
+                                文書発行管理
+                            </h3>
+
+                            <p>
+                                奨学生募集依頼などの正式文書を
+                                作成・発行・再印刷・管理します。
+                            </p>
+                        </a>
+
+                    {% endif %}
+
                     {% if can_manage_publicity %}
 
                         <a

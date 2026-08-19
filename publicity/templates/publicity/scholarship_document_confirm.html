@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        奨学生募集依頼 文書発行確認
+    </title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+
+            font-family:
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                "Yu Gothic",
+                Meiryo,
+                sans-serif;
+
+            color: #222;
+            background: #f4f7f9;
+        }
+
+        .header {
+            padding: 24px 30px;
+
+            color: white;
+            background: #28647a;
+        }
+
+        .header-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .header h1 {
+            margin: 0 0 8px;
+            font-size: 26px;
+        }
+
+        .header p {
+            margin: 0;
+        }
+
+        .container {
+            width: min(
+                1100px,
+                calc(100% - 30px)
+            );
+
+            margin: 28px auto 50px;
+        }
+
+        .card {
+            margin-bottom: 22px;
+            padding: 24px;
+
+            background: white;
+
+            border:
+                1px solid #d7e0e5;
+
+            border-radius: 8px;
+
+            box-shadow:
+                0 2px 5px
+                rgba(0, 0, 0, 0.05);
+        }
+
+        .card h2 {
+            margin-top: 0;
+
+            color: #15546d;
+
+            font-size: 20px;
+        }
+
+        .summary {
+            display: flex;
+            gap: 40px;
+            flex-wrap: wrap;
+
+            padding: 18px;
+
+            background: #fff7d8;
+
+            border:
+                1px solid #e5c963;
+
+            border-radius: 6px;
+        }
+
+        .summary strong {
+            margin-right: 5px;
+
+            color: #15546d;
+
+            font-size: 24px;
+        }
+
+        .school-card {
+            margin-top: 18px;
+
+            border:
+                1px solid #cbd6dc;
+
+            border-radius: 7px;
+
+            overflow: hidden;
+        }
+
+        .school-header {
+            padding: 14px 18px;
+
+            background: #eaf2f5;
+
+            border-left:
+                5px solid #28647a;
+        }
+
+        .school-name {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .school-count {
+            margin-top: 5px;
+            color: #555;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 11px 12px;
+
+            border-top:
+                1px solid #d2dce1;
+
+            text-align: left;
+        }
+
+        th {
+            background: #f6f9fa;
+        }
+
+        .settings {
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, 1fr);
+
+            gap: 18px;
+        }
+
+        .field label {
+            display: block;
+
+            margin-bottom: 7px;
+
+            font-weight: bold;
+        }
+
+        .field input {
+            width: 100%;
+
+            padding: 10px;
+
+            border:
+                1px solid #aaa;
+
+            border-radius: 5px;
+
+            font-size: 15px;
+        }
+
+        .notice {
+            margin-top: 20px;
+            padding: 15px;
+
+            background: #eef6f9;
+
+            border-left:
+                5px solid #28647a;
+
+            line-height: 1.7;
+        }
+
+        .button-area {
+            display: flex;
+
+            justify-content:
+                space-between;
+
+            gap: 15px;
+
+            margin-top: 24px;
+        }
+
+        .button {
+            display: inline-block;
+
+            padding: 11px 20px;
+
+            border-radius: 5px;
+
+            font-weight: bold;
+
+            text-decoration: none;
+
+            cursor: pointer;
+        }
+
+        .back-button {
+            color: #333;
+
+            background: white;
+
+            border:
+                1px solid #999;
+        }
+
+        .issue-button {
+            color: white;
+
+            border: none;
+
+            background: #176d91;
+        }
+
+        @media (
+            max-width: 700px
+        ) {
+
+            .settings {
+                grid-template-columns: 1fr;
+            }
+
+            .button-area {
+                flex-direction: column;
+            }
+
+            .button {
+                width: 100%;
+                text-align: center;
+            }
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<header class="header">
+
+    <div class="header-inner">
+
+        <h1>
+            高千穂学園奨学生募集依頼
+        </h1>
+
+        <p>
+            文書発行内容を確認してください。
+        </p>
+
+    </div>
+
+</header>
+
+
+<main class="container">
+
+
+    <!-- =========================
+         発行概要
+    ========================== -->
+
+    <section class="card">
+
+        <h2>
+            1. 発行概要
+        </h2>
+
+        <div class="summary">
+
+            <div>
+
+                選択生徒：
+
+                <strong>
+                    {{ student_count }}
+                </strong>
+
+                名
+
+            </div>
+
+            <div>
+
+                発行予定：
+
+                <strong>
+                    {{ school_count }}
+                </strong>
+
+                校
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         学校別確認 + 文書設定
+    ========================== -->
+
+    <form
+        method="POST"
+        id="issue-form"
+        action="{% url 'publicity:scholarship_document_batch_issue' %}"
+        target="_blank"
+    >
+
+        {% csrf_token %}
+
+        {% for student_id in student_ids %}
+            <input
+                type="hidden"
+                name="student_ids"
+                value="{{ student_id }}"
+            >
+        {% endfor %}
+
+        <section class="card">
+
+            <h2>
+                2. 学校別対象者・文書番号
+            </h2>
+
+            <div class="notice">
+                各中学校ごとの文書番号候補を表示しています。
+                事務で取得した正式な文書番号に変更してから発行してください。
+            </div>
+
+            {% for group in school_groups %}
+
+                <div class="school-card">
+
+                    <div class="school-header">
+
+                        <div class="school-name">
+                            {{ group.school.name }}
+                        </div>
+
+                        <div class="school-count">
+                            対象生徒：
+                            {{ group.students|length }}名
+                        </div>
+                    </div>
+
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>No.</th>
+                                <th>生徒氏名</th>
+                                <th>部活動</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {% for student in group.students %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{ student.name }}</td>
+                                    <td>{{ student.club.name }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+
+                </div>
+
+            {% endfor %}
+
+        </section>
+
+
+        <section class="card">
+
+            <h2>
+                3. 文書発行設定
+            </h2>
+
+            <div class="settings">
+
+                <div class="field">
+                    <label>募集年度</label>
+                    <input
+                        type="text"
+                        value="{{ fiscal_year_label }}"
+                        readonly
+                    >
+                </div>
+
+                <div class="field">
+                    <label for="issue_date">発行日</label>
+                    <input
+                        type="date"
+                        id="issue_date"
+                        name="issue_date"
+                        value="{{ issue_date|date:'Y-m-d' }}"
+                        required
+                    >
+                </div>
+
+                <div class="field">
+                    <label for="seasonal_greeting">時候の挨拶</label>
+                    <input
+                        type="text"
+                        id="seasonal_greeting"
+                        name="seasonal_greeting"
+                        value="{{ seasonal_greeting }}"
+                        required
+                    >
+                </div>
+
+                <div class="field">
+                    <label for="principal_name">校長名</label>
+                    <input
+                        type="text"
+                        id="principal_name"
+                        name="principal_name"
+                        value="竹元 和寛"
+                        required
+                    >
+                </div>
+                <div class="field">
+
+                    <label for="document_number">
+                        文書番号
+                    </label>
+
+                    <input
+                        type="text"
+                        id="document_number"
+                        name="document_number"
+                        value="{{ suggested_document_number }}"
+                        placeholder="例：小林西発第100号"
+                        required
+                    >
+
+                </div>
+
+            </div>
+
+            <div class="notice">
+                「正式発行」を実行すると、選択した生徒を中学校ごとにまとめ、
+                上で入力した文書番号を使用してPDFを発行します。
+                <br>
+                PDFは別タブで表示されます。
+            </div>
+
+            <div class="button-area">
+
+                <a
+                    href="{% url 'publicity:scholarship_document_student_select' %}"
+                    class="button back-button"
+                >
+                    生徒選択へ戻る
+                </a>
+
+                <button
+                    type="submit"
+                    class="button issue-button"
+                >
+                    {{ school_count }}校分を正式発行
+                </button>
+
+            </div>
+
+        </section>
+
+    </form>
+
+
+
+
+</main>
+
+
+<script>
+
+    /*
+     * 発行日から時候の挨拶を変更
+     */
+
+    const issueDate =
+        document.getElementById(
+            "issue_date"
+        );
+
+    const seasonalGreeting =
+        document.getElementById(
+            "seasonal_greeting"
+        );
+
+
+    const greetings = {
+
+        1: "新春の候",
+        2: "立春の候",
+        3: "早春の候",
+        4: "春暖の候",
+        5: "新緑の候",
+        6: "梅雨の候",
+        7: "盛夏の候",
+        8: "残暑の候",
+        9: "秋分の候",
+        10: "秋冷の候",
+        11: "晩秋の候",
+        12: "師走の候",
+
+    };
+
+
+    if (
+        issueDate
+        && seasonalGreeting
+    ) {
+
+        issueDate.addEventListener(
+            "change",
+            function () {
+
+                if (!issueDate.value) {
+                    return;
+                }
+
+                const date =
+                    new Date(
+                        issueDate.value
+                        + "T00:00:00"
+                    );
+
+                const month =
+                    date.getMonth() + 1;
+
+                seasonalGreeting.value =
+                    greetings[month] || "";
+
+            }
+        );
+
+    }
+
+</script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>文書発行管理</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family:
+                "Yu Gothic",
+                "Meiryo",
+                sans-serif;
+            color: #222;
+            background: #f4f6f8;
+        }
+
+        .header {
+            padding: 24px 30px;
+            color: #fff;
+            background: #285d73;
+        }
+
+        .header h1 {
+            margin: 0 0 8px;
+            font-size: 26px;
+        }
+
+        .container {
+            width: min(
+                1000px,
+                calc(100% - 30px)
+            );
+
+            margin: 30px auto;
+        }
+
+        .card {
+            padding: 25px;
+            background: #fff;
+            border: 1px solid #d2dce2;
+            border-radius: 8px;
+            box-shadow:
+                0 2px 7px
+                rgba(0, 0, 0, 0.05);
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns:
+                repeat(2, 1fr);
+            gap: 18px;
+        }
+
+        .menu-item {
+            display: block;
+            padding: 22px;
+            color: #222;
+            text-decoration: none;
+            background: #fff;
+            border: 1px solid #ccd8de;
+            border-radius: 8px;
+        }
+
+        .menu-item:hover {
+            background: #f3f8fa;
+        }
+
+        .menu-item h2 {
+            margin-top: 0;
+            color: #285d73;
+            font-size: 20px;
+        }
+
+        .back-area {
+            margin-bottom: 20px;
+        }
+
+        .back-button {
+            display: inline-block;
+            padding: 10px 18px;
+            color: #333;
+            text-decoration: none;
+            background: #fff;
+            border: 1px solid #999;
+            border-radius: 5px;
+        }
+
+        @media (max-width: 700px) {
+            .menu-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="header">
+
+    <h1>
+        文書発行管理
+    </h1>
+
+    <div>
+        正式文書の作成・発行・履歴管理を行います。
+    </div>
+
+</header>
+
+<main class="container">
+
+    <div class="back-area">
+
+        <a
+            href="{% url 'publicity:top' %}"
+            class="back-button"
+        >
+            トップへ戻る
+        </a>
+
+    </div>
+
+
+    <section class="card">
+
+        <div class="menu-grid">
+
+            <a
+                href="{% url 'publicity:scholarship_document_student_select' %}"
+                class="menu-item"
+            >
+
+                <h2>
+                    高千穂学園奨学生募集依頼
+                </h2>
+
+                <p>
+                    募集対象生徒から、
+                    奨学生募集依頼文書を作成します。
+                </p>
+
+            </a>
+
+
+            <div class="menu-item">
+
+                <a
+                    href="{% url 'publicity:scholarship_document_history' %}"
+                    class="menu-item"
+                >
+                    <h2>
+                        発行文書履歴
+                    </h2>
+
+                    <p>
+                        発行済み文書の確認・再印刷・
+                        訂正・取消を行います。
+                    </p>
+                </a>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+</body>
+</html>

@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>奨学生募集依頼文書作成</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family:
+                "Yu Gothic",
+                "Meiryo",
+                sans-serif;
+            color: #222;
+            background: #f4f6f8;
+        }
+
+        .header {
+            padding: 24px 30px;
+            color: #fff;
+            background: #285d73;
+        }
+
+        .header h1 {
+            margin: 0 0 8px;
+            font-size: 26px;
+        }
+
+        .header p {
+            margin: 0;
+            font-size: 14px;
+        }
+
+        .container {
+            width: min(
+                1000px,
+                calc(100% - 30px)
+            );
+
+            margin: 30px auto;
+        }
+
+        .card {
+            margin-bottom: 22px;
+            padding: 25px;
+            background: #fff;
+            border: 1px solid #d2dce2;
+            border-radius: 8px;
+            box-shadow:
+                0 2px 7px
+                rgba(0, 0, 0, 0.05);
+        }
+
+        .card h2 {
+            margin-top: 0;
+            color: #285d73;
+            font-size: 21px;
+        }
+
+        .field {
+            margin-bottom: 20px;
+        }
+
+        .field label {
+            display: block;
+            margin-bottom: 7px;
+            font-weight: bold;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #aaa;
+            border-radius: 5px;
+            font-size: 15px;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 11px 20px;
+            border: 0;
+            border-radius: 5px;
+            font-weight: bold;
+            font-size: 15px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .search-button {
+            color: #fff;
+            background: #285d73;
+        }
+
+        .pdf-button {
+            color: #fff;
+            background: #1769aa;
+        }
+
+        .back-button {
+            color: #333;
+            background: #fff;
+            border: 1px solid #999;
+        }
+
+        .student-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .student-table th,
+        .student-table td {
+            padding: 12px;
+            border: 1px solid #ccd5da;
+            text-align: left;
+        }
+
+        .student-table th {
+            background: #eaf1f4;
+        }
+
+        .school-info {
+            margin-bottom: 20px;
+            padding: 17px;
+            background: #eef5f8;
+            border-left: 5px solid #285d73;
+        }
+
+        .school-name {
+            margin-bottom: 5px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .student-count {
+            color: #555;
+        }
+
+        .document-settings {
+            display: grid;
+            grid-template-columns:
+                repeat(2, 1fr);
+            gap: 18px;
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        .notice {
+            padding: 15px;
+            background: #fff3cd;
+            border: 1px solid #e4ca70;
+            border-radius: 5px;
+        }
+
+        .button-area {
+            display: flex;
+            gap: 10px;
+            margin-top: 25px;
+        }
+
+        @media (
+            max-width: 700px
+        ) {
+
+            .document-settings {
+                grid-template-columns: 1fr;
+            }
+
+            .full-width {
+                grid-column: auto;
+            }
+
+            .student-table {
+                font-size: 13px;
+            }
+
+            .button-area {
+                display: block;
+            }
+
+            .button {
+                display: block;
+                width: 100%;
+                margin-bottom: 10px;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="header">
+
+    <h1>
+        奨学生募集依頼文書作成
+    </h1>
+
+    <p>
+        登録済みの募集対象生徒から、
+        中学校別の依頼文書を作成します。
+    </p>
+
+</header>
+
+<main class="container">
+
+    <section class="card">
+
+        <h2>
+            1．送付先中学校
+        </h2>
+
+        <form method="GET">
+        
+            <div class="field">
+
+                <label for="{{ form.school.id_for_label }}">
+                    中学校
+                </label>
+
+                {{ form.school }}
+
+            </div>
+
+            <button
+                type="submit"
+                class="button search-button"
+            >
+                対象生徒を表示
+            </button>
+
+        </form>
+
+    </section>
+
+
+    {% if selected_school %}
+
+        <section class="card">
+
+            <h2>
+                2．対象生徒確認
+            </h2>
+
+            <div class="school-info">
+
+                <div class="school-name">
+                    {{ selected_school.name }}
+                </div>
+
+                <div class="student-count">
+                    対象生徒：
+                    {{ students|length }}名
+                </div>
+
+            </div>
+
+
+            {% if students %}
+
+                <table class="student-table">
+
+                    <thead>
+                        <tr>
+                            <th>No.</th>
+                            <th>生徒氏名</th>
+                            <th>部活動</th>
+                            <th>奨学金希望</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        {% for student in students %}
+
+                            <tr>
+
+                                <td>
+                                    {{ forloop.counter }}
+                                </td>
+
+                                <td>
+                                    {{ student.name }}
+                                </td>
+
+                                <td>
+                                    {{ student.club.name }}
+                                </td>
+
+                                <td>
+                                    {% if student.scholarship_wanted %}
+                                        希望あり
+                                    {% else %}
+                                        希望なし
+                                    {% endif %}
+                                </td>
+
+                            </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            {% else %}
+
+                <div class="notice">
+                    この中学校には現在、
+                    有効な募集対象生徒が登録されていません。
+                </div>
+
+            {% endif %}
+
+        </section>
+
+
+        {% if students %}
+
+            <section class="card">
+
+                <h2>
+                    3．文書設定
+                </h2>
+
+                <form method="post">
+                    {% csrf_token %}
+
+                    <input
+                        type="hidden"
+                        name="school"
+                        value="{{ selected_school.id }}"
+                    >
+
+                    <div class="document-settings">
+
+                        <div class="field">
+
+                            <label>
+                                募集年度
+                            </label>
+
+                            {{ form.fiscal_year }}
+
+                        </div>
+
+
+                        <div class="field">
+
+                            <label>
+                                文書番号
+                            </label>
+
+                            {{ form.document_number }}
+
+                        </div>
+
+
+                        <div class="field">
+
+                            <label>
+                                発行日
+                            </label>
+
+                            {{ form.issue_date }}
+
+                        </div>
+
+
+                        <div class="field">
+
+                            <label>
+                                時候の挨拶
+                            </label>
+
+                            {{ form.seasonal_greeting }}
+
+                            <datalist
+                                id="seasonal-greeting-list"
+                            >
+                                <option value="新春の候">
+                                <option value="早春の候">
+                                <option value="春暖の候">
+                                <option value="新緑の候">
+                                <option value="梅雨の候">
+                                <option value="盛夏の候">
+                                <option value="残暑の候">
+                                <option value="初秋の候">
+                                <option value="秋分の候">
+                                <option value="秋冷の候">
+                                <option value="晩秋の候">
+                                <option value="師走の候">
+                            </datalist>
+
+                        </div>
+
+
+                        <div class="field full-width">
+
+                            <label>
+                                校長名
+                            </label>
+
+                            {{ form.principal_name }}
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="notice">
+
+                        次の工程で、この設定内容と
+                        {{ selected_school.name }}
+                        の対象生徒
+                        {{ students|length }}名から、
+                        正式なPDF文書を生成します。
+
+                    </div>
+
+
+                    <div class="button-area">
+
+                        <button
+                            type="submit"
+                            class="button pdf-button"
+                            formaction="{% url 'publicity:scholarship_request_document_pdf' %}"
+                            formmethod="post"
+                            formtarget="_blank"
+                        >
+                            PDFを正式発行
+                        </button>
+
+                        <a
+                            href="{% url 'publicity:prospective_student_list' %}"
+                            class="button back-button"
+                        >
+                            生徒一覧へ戻る
+                        </a>
+
+                    </div>
+
+                </form>
+
+            </section>
+
+        {% endif %}
+
+    {% endif %}
+
+</main>
+
+<script>
+    document.addEventListener(
+        "DOMContentLoaded",
+        function () {
+            const issueDate =
+                document.getElementById(
+                    "id_issue_date"
+                );
+
+            const fiscalYear =
+                document.getElementById(
+                    "id_fiscal_year"
+                );
+
+            const seasonalGreeting =
+                document.getElementById(
+                    "id_seasonal_greeting"
+                );
+
+            if (
+                !issueDate
+                || !fiscalYear
+                || !seasonalGreeting
+            ) {
+                return;
+            }
+
+            const greetings = {
+                1: "新春の候",
+                2: "立春の候",
+                3: "早春の候",
+                4: "春暖の候",
+                5: "新緑の候",
+                6: "梅雨の候",
+                7: "盛夏の候",
+                8: "残暑の候",
+                9: "秋分の候",
+                10: "秋冷の候",
+                11: "晩秋の候",
+                12: "師走の候",
+            };
+
+            function updateDocumentSettings() {
+                if (!issueDate.value) {
+                    return;
+                }
+
+                const date =
+                    new Date(
+                        issueDate.value
+                        + "T00:00:00"
+                    );
+
+                const year =
+                    date.getFullYear();
+
+                const month =
+                    date.getMonth() + 1;
+
+                const fiscalYearValue =
+                    month >= 4
+                        ? year
+                        : year - 1;
+
+                const reiwaYear =
+                    fiscalYearValue - 2018;
+
+                fiscalYear.value =
+                    "令和"
+                    + reiwaYear
+                    + "年度";
+
+                seasonalGreeting.value =
+                    greetings[month] || "";
+            }
+
+            issueDate.addEventListener(
+                "change",
+                updateDocumentSettings
+            );
+
+            updateDocumentSettings();
+        }
+    );
+</script>
+
+</body>
+
+</html>

@@ -8,6 +8,7 @@ from .models import (
     JuniorHighClass,
     ProspectiveStudent,
     ScholarshipCategory,
+    ScholarshipRequestDocument,
     Teacher,
     TeacherLoginEmail
 )
@@ -284,5 +285,46 @@ class DocumentHistoryAdmin(admin.ModelAdmin):
 
     ordering = (
         "-sent_date",
+        "-created_at",
+    )
+
+@admin.register(ScholarshipRequestDocument)
+class ScholarshipRequestDocumentAdmin(admin.ModelAdmin):
+
+    list_display = (
+        "id",
+        "document_number",
+        "school",
+        "issue_date",
+        "status",
+        "corrected_from",
+        "created_by",
+        "created_at",
+    )
+
+    list_filter = (
+        "status",
+        "issue_date",
+        "school",
+    )
+
+    search_fields = (
+        "document_number",
+        "school__name",
+        "students__name",
+        "correction_reason",
+    )
+
+    readonly_fields = (
+        "id",
+        "created_at",
+    )
+
+    filter_horizontal = (
+        "students",
+    )
+
+    ordering = (
+        "-issue_date",
         "-created_at",
     )

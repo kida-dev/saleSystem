@@ -577,3 +577,123 @@ class DocumentHistory(models.Model):
             f" - "
             f"{self.document_type.name}"
         )
+
+class DocumentNumberSequence(models.Model):
+    fiscal_year = models.IntegerField(
+        "年度（西暦）",
+        unique=True,
+        help_text="例：2026",
+    )
+
+    last_number = models.PositiveIntegerField(
+        "最終発行番号",
+        default=0,
+    )
+
+    updated_at = models.DateTimeField(
+        "更新日時",
+        auto_now=True,
+    )
+
+    class Meta:
+        verbose_name = "文書番号管理"
+        verbose_name_plural = "文書番号管理"
+        ordering = ["-fiscal_year"]
+
+    def __str__(self):
+        reiwa_year = self.fiscal_year - 2018
+
+        return (
+            f"令和{reiwa_year}年度 "
+            f"最終番号：{self.last_number}"
+        )
+
+class ScholarshipRequestDocument(models.Model):
+
+    STATUS_CHOICES = [
+        ("issued", "発行済"),
+        ("corrected", "訂正済み"),
+        ("cancelled", "取消"),
+    ]
+
+    school = models.ForeignKey(
+        JuniorHighSchool,
+        verbose_name="送付先中学校",
+        on_delete=models.PROTECT,
+        related_name="scholarship_request_documents",
+    )
+
+    students = models.ManyToManyField(
+        ProspectiveStudent,
+        verbose_name="対象生徒",
+        related_name="scholarship_request_documents",
+    )
+
+    fiscal_year = models.IntegerField(
+        "年度（西暦）",
+    )
+
+    document_number = models.CharField(
+        "文書番号",
+        max_length=50,
+    )
+
+    issue_date = models.DateField(
+        "発行日",
+    )
+
+    seasonal_greeting = models.CharField(
+        "時候の挨拶",
+        max_length=50,
+    )
+
+    principal_name = models.CharField(
+        "校長名",
+        max_length=100,
+    )
+
+    created_by = models.ForeignKey(
+        Teacher,
+        verbose_name="作成者",
+        on_delete=models.PROTECT,
+        related_name="created_scholarship_request_documents",
+    )
+
+    created_at = models.DateTimeField(
+        "作成日時",
+        auto_now_add=True,
+    )
+
+    status = models.CharField(
+        "状態",
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default="issued",
+    )
+    corrected_from = models.ForeignKey(
+        "self",
+        verbose_name="訂正元文書",
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        related_name="corrected_documents",
+    )
+
+    correction_reason = models.TextField(
+        "訂正理由",
+        blank=True,
+    )
+
+    class Meta:
+        verbose_name = "奨学生募集依頼文書"
+        verbose_name_plural = "奨学生募集依頼文書"
+        ordering = [
+            "-issue_date",
+            "-created_at",
+        ]
+
+    def __str__(self):
+        return (
+            f"{self.document_number} "
+            f"{self.school.name}"
+        )

@@ -2,6 +2,7 @@ import re
 
 from django import forms
 from django.forms import modelformset_factory
+from django.utils import timezone
 
 from .models import (
     Club,
@@ -277,3 +278,181 @@ class ProspectiveStudentForm(forms.ModelForm):
         )
 
         return address
+def get_reiwa_year(year):
+    return year - 2018
+
+
+def get_japanese_date(date_obj):
+    reiwa_year = get_reiwa_year(
+        date_obj.year
+    )
+
+    return (
+        f"令和{reiwa_year}年"
+        f"{date_obj.month}月"
+        f"{date_obj.day}日"
+    )
+
+
+def get_fiscal_year_label(date_obj):
+    fiscal_year = (
+        date_obj.year
+        if date_obj.month >= 4
+        else date_obj.year - 1
+    )
+
+    reiwa_year = get_reiwa_year(
+        fiscal_year
+    )
+
+    return f"令和{reiwa_year}年度"
+
+
+def get_seasonal_greeting(month):
+    greetings = {
+        1: "新春の候",
+        2: "立春の候",
+        3: "早春の候",
+        4: "春暖の候",
+        5: "新緑の候",
+        6: "梅雨の候",
+        7: "盛夏の候",
+        8: "残暑の候",
+        9: "秋分の候",
+        10: "秋冷の候",
+        11: "晩秋の候",
+        12: "師走の候",
+    }
+
+    return greetings.get(
+        month,
+        "",
+    )
+
+
+class ScholarshipRequestDocumentForm(
+    forms.Form
+):
+    fiscal_year = forms.CharField(
+        label="募集年度",
+        max_length=20,
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control",
+                "readonly": True,
+            }
+        ),
+    )
+
+    document_number = forms.CharField(
+        label="文書番号",
+        max_length=50,
+        required=False,
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control",
+                "readonly": True,
+            }
+        ),
+    )
+
+    issue_date = forms.DateField(
+        label="発行日",
+        widget=forms.DateInput(
+            attrs={
+                "class": "form-control",
+                "type": "date",
+            }
+        ),
+    )
+
+    seasonal_greeting = forms.CharField(
+        label="時候の挨拶",
+        max_length=50,
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control",
+                "list": (
+                    "seasonal-greeting-list"
+                ),
+            }
+        ),
+    )
+
+    principal_name = forms.CharField(
+        label="校長名",
+        max_length=100,
+        initial="竹元 和寛",
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control",
+            }
+        ),
+    )
+
+    school = forms.ModelChoiceField(
+        label="送付先中学校",
+        queryset=(
+            JuniorHighSchool.objects.none()
+        ),
+        empty_label=(
+            "中学校を選択してください"
+        ),
+        widget=forms.Select(
+            attrs={
+                "class": "form-control",
+            }
+        ),
+    )
+
+    def __init__(
+        self,
+        *args,
+        next_document_number=None,
+        **kwargs,
+    ):
+        super().__init__(*args, **kwargs)
+
+        today = timezone.localdate()
+
+        self.fields["issue_date"].initial = today
+
+        self.fields["fiscal_year"].initial = (
+            get_fiscal_year_label(today)
+        )
+
+        self.fields["seasonal_greeting"].initial = (
+            get_seasonal_greeting(today.month)
+        )
+
+        if next_document_number:
+            self.fields["document_number"].initial = (
+                next_document_number
+            )
+        else:
+            self.fields["document_number"].initial = (
+                "PDF発行時に自動採番"
+            )
+
+        school_ids = (
+            ProspectiveStudent.objects
+            .filter(is_active=True)
+            .values_list(
+                "junior_high_school_id",
+                flat=True,
+            )
+            .distinct()
+        )
+
+        self.fields["school"].queryset = (
+            JuniorHighSchool.objects
+            .filter(
+                id__in=school_ids,
+                is_active=True,
+            )
+            .order_by(
+                "prefecture",
+                "city",
+                "name",
+            )
+        )

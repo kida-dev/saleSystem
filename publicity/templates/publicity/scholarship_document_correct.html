@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        発行文書訂正
+    </title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+
+            font-family:
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                "Yu Gothic",
+                Meiryo,
+                sans-serif;
+
+            background: #f4f7f9;
+            color: #222;
+        }
+
+        .page-header {
+            background: #245f73;
+            color: white;
+            padding: 24px 30px;
+        }
+
+        .page-header h1 {
+            margin: 0 0 8px;
+            font-size: 25px;
+        }
+
+        .page-header p {
+            margin: 0;
+            font-size: 14px;
+        }
+
+        .container {
+            max-width: 1050px;
+            margin: 28px auto 50px;
+            padding: 0 20px;
+        }
+
+        .card {
+            background: white;
+            border: 1px solid #d4dde2;
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 22px;
+
+            box-shadow:
+                0 2px 5px
+                rgba(0, 0, 0, 0.05);
+        }
+
+        .card h2 {
+            margin-top: 0;
+            color: #15536c;
+            font-size: 20px;
+        }
+
+        .notice {
+            padding: 15px 18px;
+            margin-bottom: 20px;
+
+            background: #fff3cd;
+            border: 1px solid #e4c45c;
+            border-radius: 5px;
+
+            line-height: 1.7;
+        }
+
+        .original-info {
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, 1fr);
+
+            gap: 14px;
+        }
+
+        .info-item {
+            padding: 12px 14px;
+
+            background: #f5f8fa;
+            border: 1px solid #d7e0e5;
+            border-radius: 5px;
+        }
+
+        .info-label {
+            display: block;
+
+            margin-bottom: 5px;
+
+            color: #555;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .info-value {
+            font-weight: bold;
+        }
+
+        .settings {
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, 1fr);
+
+            gap: 18px;
+        }
+
+        .field label {
+            display: block;
+
+            margin-bottom: 7px;
+
+            font-weight: bold;
+        }
+
+        .field input,
+        .field textarea {
+            width: 100%;
+
+            padding: 10px 12px;
+
+            border: 1px solid #aebbc2;
+            border-radius: 5px;
+
+            font-size: 14px;
+        }
+
+        .field textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .student-table {
+            width: 100%;
+
+            border-collapse: collapse;
+        }
+
+        .student-table th,
+        .student-table td {
+            padding: 10px 12px;
+
+            border: 1px solid #cad5db;
+
+            text-align: left;
+        }
+
+        .student-table th {
+            background: #eaf1f4;
+        }
+
+        .student-table tr:hover {
+            background: #f7fafb;
+        }
+
+        .button-area {
+            display: flex;
+
+            justify-content: space-between;
+
+            gap: 14px;
+
+            margin-top: 24px;
+        }
+
+        .button {
+            display: inline-block;
+
+            padding: 11px 20px;
+
+            border-radius: 5px;
+
+            text-decoration: none;
+
+            font-weight: bold;
+
+            cursor: pointer;
+        }
+
+        .back-button {
+            background: white;
+            color: #333;
+
+            border: 1px solid #999;
+        }
+
+        .save-button {
+            border: none;
+
+            background: #19749a;
+            color: white;
+        }
+
+        .save-button:hover {
+            background: #155f7e;
+        }
+
+        @media (
+            max-width: 750px
+        ) {
+
+            .original-info,
+            .settings {
+                grid-template-columns: 1fr;
+            }
+
+            .button-area {
+                flex-direction: column;
+            }
+
+            .button {
+                width: 100%;
+                text-align: center;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<header class="page-header">
+
+    <h1>
+        発行文書訂正
+    </h1>
+
+    <p>
+        元文書を残したまま、訂正版を新しい履歴として作成します。
+    </p>
+
+</header>
+
+
+<main class="container">
+
+
+    <!-- =========================
+         元文書
+    ========================== -->
+
+    <section class="card">
+
+        <h2>
+            1. 訂正元文書
+        </h2>
+
+        <div class="notice">
+
+            この文書自体は上書きしません。
+            訂正確定時に新しいDB内部IDで訂正版を作成し、
+            元文書は「訂正済」に変更します。
+
+        </div>
+
+        <div class="original-info">
+
+            <div class="info-item">
+
+                <span class="info-label">
+                    DB内部ID
+                </span>
+
+                <span class="info-value">
+                    {{ original.id }}
+                </span>
+
+            </div>
+
+
+            <div class="info-item">
+
+                <span class="info-label">
+                    文書番号
+                </span>
+
+                <span class="info-value">
+                    {{ original.document_number }}
+                </span>
+
+            </div>
+
+
+            <div class="info-item">
+
+                <span class="info-label">
+                    中学校
+                </span>
+
+                <span class="info-value">
+                    {{ original.school.name }}
+                </span>
+
+            </div>
+
+
+            <div class="info-item">
+
+                <span class="info-label">
+                    発行日
+                </span>
+
+                <span class="info-value">
+                    {{ original.issue_date|date:"Y/m/d" }}
+                </span>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         訂正入力
+    ========================== -->
+
+    <form
+        method="POST"
+    >
+
+        {% csrf_token %}
+
+
+        <section class="card">
+
+            <h2>
+                2. 文書内容の訂正
+            </h2>
+
+
+            <div class="settings">
+
+
+                <div class="field">
+
+                    <label for="document_number">
+                        文書番号
+                    </label>
+
+                    <input
+                        type="text"
+                        id="document_number"
+                        name="document_number"
+                        value="{{ original.document_number }}"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="field">
+
+                    <label for="issue_date">
+                        発行日
+                    </label>
+
+                    <input
+                        type="date"
+                        id="issue_date"
+                        name="issue_date"
+                        value="{{ original.issue_date|date:'Y-m-d' }}"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="field">
+
+                    <label for="seasonal_greeting">
+                        時候の挨拶
+                    </label>
+
+                    <input
+                        type="text"
+                        id="seasonal_greeting"
+                        name="seasonal_greeting"
+                        value="{{ original.seasonal_greeting }}"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="field">
+
+                    <label for="principal_name">
+                        校長名
+                    </label>
+
+                    <input
+                        type="text"
+                        id="principal_name"
+                        name="principal_name"
+                        value="{{ original.principal_name }}"
+                        required
+                    >
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================
+             対象生徒
+        ========================== -->
+
+        <section class="card">
+
+            <h2>
+                3. 対象生徒
+            </h2>
+
+            <div class="notice">
+
+                この中学校に登録されている生徒から、
+                訂正版に掲載する生徒を選択してください。
+                1文書につき最大10名です。
+
+            </div>
+
+
+            <table class="student-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            選択
+                        </th>
+
+                        <th>
+                            氏名
+                        </th>
+
+                        <th>
+                            部活動
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    {% for student in available_students %}
+
+                        <tr>
+
+                            <td>
+
+                                <input
+                                    type="checkbox"
+                                    name="student_ids"
+                                    value="{{ student.id }}"
+
+                                    {% if student.id in selected_student_ids %}
+                                        checked
+                                    {% endif %}
+                                >
+
+                            </td>
+
+                            <td>
+                                {{ student.name }}
+                            </td>
+
+                            <td>
+                                {{ student.club.name }}
+                            </td>
+
+                        </tr>
+
+                    {% empty %}
+
+                        <tr>
+
+                            <td
+                                colspan="3"
+                                style="text-align:center;"
+                            >
+                                対象生徒が登録されていません。
+                            </td>
+
+                        </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </section>
+
+
+        <!-- =========================
+             訂正理由
+        ========================== -->
+
+        <section class="card">
+
+            <h2>
+                4. 訂正理由
+            </h2>
+
+            <div class="field">
+
+                <label for="correction_reason">
+                    訂正理由
+                </label>
+
+                <textarea
+                    id="correction_reason"
+                    name="correction_reason"
+                    placeholder="例：対象生徒の変更、氏名誤記の訂正など"
+                    required
+                ></textarea>
+
+            </div>
+
+
+            <div class="button-area">
+
+                <a
+                    href="{% url 'publicity:scholarship_document_history' %}"
+                    class="button back-button"
+                >
+                    履歴へ戻る
+                </a>
+
+
+                <!--
+                    次工程で保存処理を実装するので、
+                    今はまだ押せない状態にしてあります。
+                -->
+
+                <button
+                    type="submit"
+                    class="button save-button"
+                    onclick="
+                        return confirm(
+                            'この内容で訂正版を作成しますか？'
+                        );
+                    "
+                >
+                    訂正版を作成
+                </button>
+
+            </div>
+
+        </section>
+
+
+    </form>
+
+
+</main>
+
+
+</body>
+
+</html>
