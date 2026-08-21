@@ -4,14 +4,25 @@ from .models import (
     DeliveryMethod,
     DocumentType,
     DocumentHistory,
+    DormitoryBenefitCategory,
+    DormitoryBenefitHistory,
     JuniorHighSchool, 
     JuniorHighClass,
     ProspectiveStudent,
+    ScholarshipAssignment,
     ScholarshipCategory,
+    ScholarshipInterview,
+    ScholarshipRankHistory,
     ScholarshipRequestDocument,
     Teacher,
     TeacherLoginEmail
 )
+
+admin.site.register(ScholarshipAssignment)
+admin.site.register(ScholarshipRankHistory)
+admin.site.register(ScholarshipInterview)
+admin.site.register(DormitoryBenefitCategory)
+admin.site.register(DormitoryBenefitHistory)
 
 class TeacherLoginEmailInline(admin.TabularInline):
     model = TeacherLoginEmail

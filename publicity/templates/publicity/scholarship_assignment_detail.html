@@ -1,0 +1,1246 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        奨学生・面談個人管理
+    </title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family:
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                "Yu Gothic",
+                "Meiryo",
+                sans-serif;
+
+            background: #f4f7f9;
+            color: #222;
+        }
+
+
+        /* ==================================================
+           ヘッダー
+        ================================================== */
+
+        .page-header {
+            background: #286b80;
+            color: white;
+            padding: 24px 32px;
+        }
+
+        .page-header h1 {
+            margin: 0 0 8px 0;
+            font-size: 26px;
+        }
+
+        .page-header p {
+            margin: 0;
+            font-size: 14px;
+        }
+
+
+        /* ==================================================
+           全体
+        ================================================== */
+
+        .container {
+            max-width: 1200px;
+            margin: 24px auto;
+            padding: 0 20px 50px;
+        }
+
+
+        .card {
+            background: white;
+            border: 1px solid #d5dee3;
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 20px;
+
+            box-shadow:
+                0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+
+        .card h2 {
+            margin-top: 0;
+            margin-bottom: 20px;
+            color: #075472;
+            font-size: 21px;
+        }
+
+
+        /* ==================================================
+           生徒基本情報
+        ================================================== */
+
+        .student-name {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 6px;
+        }
+
+
+        .student-furigana {
+            color: #667;
+            margin-bottom: 20px;
+        }
+
+
+        .info-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(
+                    auto-fit,
+                    minmax(210px, 1fr)
+                );
+
+            gap: 12px;
+        }
+
+
+        .info-box {
+            background: #f7fafb;
+            border: 1px solid #d9e3e8;
+            border-radius: 6px;
+            padding: 15px;
+        }
+
+
+        .info-label {
+            display: block;
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 6px;
+        }
+
+
+        .info-value {
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+
+        /* ==================================================
+           現在状況
+        ================================================== */
+
+        .status-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(
+                    auto-fit,
+                    minmax(180px, 1fr)
+                );
+
+            gap: 12px;
+        }
+
+
+        .status-box {
+
+            border: 1px solid #cbd9df;
+
+            border-radius: 7px;
+
+            padding: 18px;
+
+            background: #f8fbfc;
+        }
+
+
+        .status-label {
+
+            font-size: 12px;
+
+            color: #555;
+
+            margin-bottom: 8px;
+        }
+
+
+        .status-value {
+
+            font-size: 20px;
+
+            font-weight: bold;
+
+            color: #075472;
+        }
+
+
+        .rank-value {
+
+            display: inline-block;
+
+            min-width: 55px;
+
+            padding: 5px 12px;
+
+            border-radius: 20px;
+
+            background: #e7f1f5;
+
+            text-align: center;
+        }
+
+
+        /* ==================================================
+           面談前設定
+        ================================================== */
+
+        .form-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(
+                    auto-fit,
+                    minmax(250px, 1fr)
+                );
+
+            gap: 18px;
+        }
+
+
+        .form-group {
+
+            margin-bottom: 15px;
+        }
+
+
+        .form-group label {
+
+            display: block;
+
+            font-weight: bold;
+
+            margin-bottom: 7px;
+        }
+
+
+        select {
+
+            width: 100%;
+
+            padding: 11px;
+
+            border: 1px solid #b8c8cf;
+
+            border-radius: 5px;
+
+            background: white;
+
+            font-size: 15px;
+        }
+
+
+        /* ==================================================
+           注意表示
+        ================================================== */
+
+        .notice {
+
+            background: #edf6f9;
+
+            border-left: 4px solid #24728b;
+
+            padding: 15px 18px;
+
+            margin-bottom: 20px;
+
+            line-height: 1.7;
+        }
+
+
+        .warning {
+
+            background: #fff8df;
+
+            border-left: 4px solid #d49b18;
+
+            padding: 15px 18px;
+
+            margin-bottom: 20px;
+
+            line-height: 1.7;
+        }
+
+
+        /* ==================================================
+           ボタン
+        ================================================== */
+
+        .button-area {
+
+            display: flex;
+
+            flex-wrap: wrap;
+
+            gap: 10px;
+
+            margin-top: 20px;
+        }
+
+
+        .button {
+
+            display: inline-block;
+
+            padding: 11px 20px;
+
+            border-radius: 5px;
+
+            border: none;
+
+            cursor: pointer;
+
+            text-decoration: none;
+
+            font-weight: bold;
+
+            font-size: 14px;
+        }
+
+
+        .button-primary {
+
+            background: #08759b;
+
+            color: white;
+        }
+
+
+        .button-primary:hover {
+
+            background: #075f7d;
+        }
+
+
+        .button-secondary {
+
+            background: white;
+
+            color: #333;
+
+            border: 1px solid #aaa;
+        }
+
+
+        .button-disabled {
+
+            background: #dfe4e7;
+
+            color: #777;
+
+            cursor: not-allowed;
+        }
+
+
+        /* ==================================================
+           履歴
+        ================================================== */
+
+        .history-empty {
+
+            text-align: center;
+
+            padding: 30px;
+
+            color: #888;
+        }
+
+
+        table {
+
+            width: 100%;
+
+            border-collapse: collapse;
+
+            margin-top: 10px;
+        }
+
+
+        th,
+        td {
+
+            border: 1px solid #ccd7dc;
+
+            padding: 10px;
+
+            text-align: left;
+
+            font-size: 14px;
+        }
+
+
+        th {
+
+            background: #e8f0f3;
+        }
+
+
+        /* ==================================================
+           メッセージ
+        ================================================== */
+
+        .message {
+
+            padding: 13px 18px;
+
+            margin-bottom: 20px;
+
+            border-radius: 5px;
+
+            background: #dff2e3;
+
+            border: 1px solid #a8d5b1;
+
+            color: #246b34;
+        }
+
+
+        /* ==================================================
+           スマホ・iPad
+        ================================================== */
+
+        @media (
+            max-width: 768px
+        ) {
+
+            .page-header {
+
+                padding: 20px;
+            }
+
+
+            .container {
+
+                padding:
+                    0 12px 40px;
+            }
+
+
+            .card {
+
+                padding: 18px;
+            }
+
+
+            .student-name {
+
+                font-size: 23px;
+            }
+
+
+            .button {
+
+                width: 100%;
+
+                text-align: center;
+            }
+
+
+            table {
+
+                font-size: 12px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<header class="page-header">
+
+    <h1>
+        奨学生・面談個人管理
+    </h1>
+
+    <p>
+        奨学生候補のランク・寮費区分・面談状況を管理します。
+    </p>
+
+</header>
+
+
+
+<div class="container">
+
+
+    <!-- ==================================================
+         Django messages
+    =================================================== -->
+
+    {% if messages %}
+
+        {% for message in messages %}
+
+            <div class="message">
+                {{ message }}
+            </div>
+
+        {% endfor %}
+
+    {% endif %}
+
+
+
+    <!-- ==================================================
+         1. 生徒基本情報
+    =================================================== -->
+
+    <section class="card">
+
+        <h2>
+            1. 生徒基本情報
+        </h2>
+
+
+        <div class="student-name">
+
+            {{ student.name }}
+
+        </div>
+
+
+        {% if student.name_kana %}
+
+            <div class="student-furigana">
+
+                {{ student.name_kana }}
+
+            </div>
+
+        {% endif %}
+
+
+        <div class="info-grid">
+
+
+            <div class="info-box">
+
+                <span class="info-label">
+                    中学校
+                </span>
+
+                <span class="info-value">
+
+                    {% if student.junior_high_school %}
+
+                        {{ student.junior_high_school.name }}
+
+                    {% else %}
+
+                        -
+
+                    {% endif %}
+
+                </span>
+
+            </div>
+
+
+            <div class="info-box">
+
+                <span class="info-label">
+                    部活動
+                </span>
+
+                <span class="info-value">
+
+                    {% if student.club %}
+
+                        {{ student.club.name }}
+
+                    {% else %}
+
+                        -
+
+                    {% endif %}
+
+                </span>
+
+            </div>
+
+
+            <div class="info-box">
+
+                <span class="info-label">
+                    担当教員
+                </span>
+
+                <span class="info-value">
+
+                    {% if student.assigned_teacher %}
+
+                        {{ student.assigned_teacher.name }}
+
+                    {% else %}
+
+                        -
+
+                    {% endif %}
+
+                </span>
+
+            </div>
+
+
+            <div class="info-box">
+
+                <span class="info-label">
+                    奨学生管理状況
+                </span>
+
+                <span class="info-value">
+
+                    {{ assignment.get_status_display }}
+
+                </span>
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+
+    <!-- ==================================================
+         2. 現在の条件
+    =================================================== -->
+
+    <section class="card">
+
+        <h2>
+            2. 現在の奨学生条件
+        </h2>
+
+
+        <div class="status-grid">
+
+
+            <div class="status-box">
+
+                <div class="status-label">
+                    面談前ランク
+                </div>
+
+                <div class="status-value">
+
+                    <span class="rank-value">
+
+                        {% if assignment.interview_rank %}
+
+                            {{ assignment.interview_rank.name }}
+
+                        {% else %}
+
+                            -
+
+                        {% endif %}
+
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="status-box">
+
+                <div class="status-label">
+                    現在ランク
+                </div>
+
+                <div class="status-value">
+
+                    <span class="rank-value">
+
+                        {% if assignment.current_rank %}
+
+                            {{ assignment.current_rank.name }}
+
+                        {% else %}
+
+                            -
+
+                        {% endif %}
+
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="status-box">
+
+                <div class="status-label">
+                    面談前寮費区分
+                </div>
+
+                <div class="status-value">
+
+                    {% if assignment.interview_dormitory_benefit %}
+
+                        {{ assignment.interview_dormitory_benefit.name }}
+
+                    {% else %}
+
+                        -
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+
+            <div class="status-box">
+
+                <div class="status-label">
+                    現在寮費区分
+                </div>
+
+                <div class="status-value">
+
+                    {% if assignment.current_dormitory_benefit %}
+
+                        {{ assignment.current_dormitory_benefit.name }}
+
+                    {% else %}
+
+                        -
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+
+    <!-- ==================================================
+         3. 面談前条件設定
+    =================================================== -->
+
+    <section class="card">
+
+        <h2>
+            3. 面談前条件の設定
+        </h2>
+
+
+        <div class="notice">
+
+            <strong>
+                生徒・保護者との面談前に提示予定の条件を設定します。
+            </strong>
+
+            <br>
+
+            ここで登録したランク・寮費区分を基準として、
+            面談を実施します。
+
+        </div>
+
+
+        {% if assignment.interview_rank %}
+
+            <div class="warning">
+
+                現在、この生徒にはすでに
+                <strong>
+                    面談前ランク
+                    「{{ assignment.interview_rank.name }}」
+                </strong>
+                が設定されています。
+
+                <br>
+
+                変更する場合は、
+                面談開始前であることを確認してください。
+
+            </div>
+
+        {% endif %}
+
+
+        <form
+            method="post"
+        >
+
+            {% csrf_token %}
+
+            <input
+                type="hidden"
+                name="action"
+                value="set_initial_conditions"
+            >
+
+
+            <div class="form-grid">
+
+
+                <div class="form-group">
+
+                    <label
+                        for="interview_rank"
+                    >
+                        面談前ランク
+                    </label>
+
+
+                    <select
+                        id="interview_rank"
+                        name="interview_rank"
+                    >
+
+                        <option value="">
+                            未設定
+                        </option>
+
+
+                        {% for category in scholarship_categories %}
+
+                            <option
+                                value="{{ category.id }}"
+
+                                {% if assignment.interview_rank_id == category.id %}
+                                    selected
+                                {% endif %}
+                            >
+
+                                {{ category.name }}
+
+                            </option>
+
+                        {% endfor %}
+
+                    </select>
+
+                </div>
+
+
+
+                <div class="form-group">
+
+                    <label
+                        for="interview_dormitory_benefit"
+                    >
+                        面談前寮費区分
+                    </label>
+
+
+                    <select
+                        id="interview_dormitory_benefit"
+                        name="interview_dormitory_benefit"
+                    >
+
+                        <option value="">
+                            寮費待遇なし・未設定
+                        </option>
+
+
+                        {% for category in dormitory_categories %}
+
+                            <option
+                                value="{{ category.id }}"
+
+                                {% if assignment.interview_dormitory_benefit_id == category.id %}
+                                    selected
+                                {% endif %}
+                            >
+
+                                {{ category.name }}
+
+                            </option>
+
+                        {% endfor %}
+
+                    </select>
+
+                </div>
+
+
+            </div>
+
+
+            <div class="button-area">
+
+                <button
+                    type="submit"
+                    class="button button-primary"
+                >
+                    面談前条件を保存
+                </button>
+
+            </div>
+
+        </form>
+
+    </section>
+
+
+
+    <!-- ==================================================
+         4. 面談
+    =================================================== -->
+
+    <section class="card">
+
+        <h2>
+            4. 個人面談
+        </h2>
+
+
+        {% if assignment.interview_rank %}
+
+            <div class="notice">
+
+                面談前条件が登録されています。
+
+                <br>
+
+                次の工程では、生徒・保護者との面談を開始し、
+                面談内容・提示条件・仮承諾等を記録します。
+
+            </div>
+
+
+            <div class="button-area">
+
+                <!--
+                    次工程で面談URLを実装するため、
+                    現時点では無効
+                -->
+
+                <span
+                    class="button button-disabled"
+                >
+                    面談を開始
+                    （次工程）
+                </span>
+
+            </div>
+
+
+        {% else %}
+
+            <div class="warning">
+
+                面談を開始する前に、
+                「3. 面談前条件の設定」から
+                奨学生ランクを登録してください。
+
+            </div>
+
+        {% endif %}
+
+    </section>
+
+
+
+    <!-- ==================================================
+         5. 面談履歴
+    =================================================== -->
+
+    <section class="card">
+
+        <h2>
+            5. 面談履歴
+        </h2>
+
+
+        {% if interviews %}
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            実施日時
+                        </th>
+
+                        <th>
+                            担当者
+                        </th>
+
+                        <th>
+                            提示ランク
+                        </th>
+
+                        <th>
+                            寮費区分
+                        </th>
+
+                        <th>
+                            結果
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    {% for interview in interviews %}
+
+                        <tr>
+
+                            <td>
+
+                                {% if interview.interviewed_at %}
+
+                                    {{ interview.interviewed_at|date:"Y/m/d H:i" }}
+
+                                {% else %}
+
+                                    -
+
+                                {% endif %}
+
+                            </td>
+
+
+                            <td>
+
+                                {% if interview.interviewer %}
+
+                                    {{ interview.interviewer.name }}
+
+                                {% else %}
+
+                                    -
+
+                                {% endif %}
+
+                            </td>
+
+
+                            <td>
+
+                                {% if interview.presented_rank %}
+
+                                    {{ interview.presented_rank.name }}
+
+                                {% else %}
+
+                                    -
+
+                                {% endif %}
+
+                            </td>
+
+
+                            <td>
+
+                                {% if interview.presented_dormitory_benefit %}
+
+                                    {{ interview.presented_dormitory_benefit.name }}
+
+                                {% else %}
+
+                                    -
+
+                                {% endif %}
+
+                            </td>
+
+
+                            <td>
+
+                                {{ interview.get_result_display }}
+
+                            </td>
+
+                        </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+
+        {% else %}
+
+            <div class="history-empty">
+
+                まだ面談履歴はありません。
+
+            </div>
+
+        {% endif %}
+
+    </section>
+
+
+
+    <!-- ==================================================
+         6. ランク変更履歴
+    =================================================== -->
+
+    <section class="card">
+
+        <h2>
+            6. ランク変更履歴
+        </h2>
+
+
+        {% if rank_histories %}
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            変更日時
+                        </th>
+
+                        <th>
+                            変更前
+                        </th>
+
+                        <th>
+                            変更後
+                        </th>
+
+                        <th>
+                            変更者
+                        </th>
+
+                        <th>
+                            理由
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    {% for history in rank_histories %}
+
+                        <tr>
+
+                            <td>
+                                {{ history.changed_at|date:"Y/m/d H:i" }}
+                            </td>
+
+                            <td>
+
+                                {% if history.previous_rank %}
+
+                                    {{ history.previous_rank.name }}
+
+                                {% else %}
+
+                                    未設定
+
+                                {% endif %}
+
+                            </td>
+
+                            <td>
+                                {{ history.new_rank.name }}
+                            </td>
+
+                            <td>
+                                {{ history.changed_by.name }}
+                            </td>
+
+                            <td>
+                                {{ history.reason|default:"-" }}
+                            </td>
+
+                        </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+
+        {% else %}
+
+            <div class="history-empty">
+
+                ランク変更履歴はありません。
+
+            </div>
+
+        {% endif %}
+
+    </section>
+
+
+
+    <!-- ==================================================
+         7. 戻る
+    =================================================== -->
+
+    <section class="card">
+
+        <div class="button-area">
+
+            <a
+                href="{% url 'publicity:scholarship_management_list' %}"
+                class="button button-secondary"
+            >
+                奨学生・面談管理へ戻る
+            </a>
+
+        </div>
+
+    </section>
+
+
+</div>
+
+
+</body>
+
+</html>

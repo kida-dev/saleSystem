@@ -60,9 +60,15 @@ from .models import (
     Club,
     DocumentHistory,
     DocumentNumberSequence,
+    DormitoryBenefitCategory,
+    DormitoryBenefitHistory,
     JuniorHighClass,
     JuniorHighSchool,
     ProspectiveStudent,
+    ScholarshipAssignment,
+    ScholarshipCategory,
+    ScholarshipInterview,
+    ScholarshipRankHistory,
     ScholarshipRequestDocument,
     Teacher,
 )
@@ -76,7 +82,10 @@ def top(request):
         except Teacher.DoesNotExist:
             teacher = None
 
+    # --------------------------------------------------------
     # システムを利用できるか
+    # --------------------------------------------------------
+
     can_use_system = (
         request.user.is_authenticated
         and (
@@ -88,7 +97,10 @@ def top(request):
         )
     )
 
+    # --------------------------------------------------------
     # 広報機能を管理できるか
+    # --------------------------------------------------------
+
     can_manage_publicity = (
         request.user.is_superuser
         or (
@@ -101,7 +113,10 @@ def top(request):
         )
     )
 
+    # --------------------------------------------------------
     # 教員・権限管理を操作できるか
+    # --------------------------------------------------------
+
     can_manage_permissions = (
         request.user.is_superuser
         or (
@@ -111,6 +126,27 @@ def top(request):
         )
     )
 
+    # --------------------------------------------------------
+    # 奨学生・面談管理を利用できるか
+    # --------------------------------------------------------
+
+    can_manage_scholarship = (
+        request.user.is_superuser
+        or (
+            teacher is not None
+            and teacher.is_active
+            and teacher.role in {
+                "club_advisor",
+                "publicity_admin",
+                "system_admin",
+            }
+        )
+    )
+
+    # --------------------------------------------------------
+    # TOP表示
+    # --------------------------------------------------------
+
     return render(
         request,
         "publicity/top.html",
@@ -119,6 +155,9 @@ def top(request):
             "can_use_system": can_use_system,
             "can_manage_publicity": can_manage_publicity,
             "can_manage_permissions": can_manage_permissions,
+
+            # ★これが必要
+            "can_manage_scholarship": can_manage_scholarship,
         },
     )
 
@@ -3443,4 +3482,635 @@ def scholarship_document_correct(
                 available_students
             ),
         },
+    )
+
+# ============================================================
+# 奨学生・面談管理一覧
+# ============================================================
+
+@club_advisor_required
+def scholarship_management_list(request):
+    """
+    部顧問用
+    奨学生候補・面談管理一覧
+
+    原則として、
+    ログイン中の教員が担当している募集対象生徒のみ表示する。
+    """
+
+    # --------------------------------------------------------
+    # 検索条件
+    # --------------------------------------------------------
+
+    keyword = (
+        request.GET
+        .get("q", "")
+        .strip()
+    )
+
+    club_id = (
+        request.GET
+        .get("club", "")
+        .strip()
+    )
+
+    status = (
+        request.GET
+        .get("status", "")
+        .strip()
+    )
+
+
+    # --------------------------------------------------------
+    # 基本QuerySet
+    #
+    # 部顧問は自分が担当する生徒のみ表示
+    # --------------------------------------------------------
+
+    students = (
+        ProspectiveStudent.objects
+        .filter(
+            is_active=True,
+            assigned_teacher=request.teacher,
+        )
+        .select_related(
+            "junior_high_school",
+            "club",
+            "assigned_teacher",
+
+            # 奨学生管理
+            "scholarship_assignment",
+
+            # 奨学生ランク
+            "scholarship_assignment__interview_rank",
+            "scholarship_assignment__current_rank",
+            "scholarship_assignment__final_rank",
+
+            # 寮費区分
+            "scholarship_assignment__interview_dormitory_benefit",
+            "scholarship_assignment__current_dormitory_benefit",
+            "scholarship_assignment__final_dormitory_benefit",
+        )
+        .order_by(
+            "club__name",
+            "junior_high_school__name",
+            "name_kana",
+            "name",
+        )
+    )
+
+
+    # --------------------------------------------------------
+    # キーワード検索
+    # --------------------------------------------------------
+
+    if keyword:
+
+        students = students.filter(
+
+            Q(
+                name__icontains=keyword
+            )
+
+            | Q(
+                name_kana__icontains=keyword
+            )
+
+            | Q(
+                junior_high_school__name__icontains=keyword
+            )
+
+            | Q(
+                club__name__icontains=keyword
+            )
+        )
+
+
+    # --------------------------------------------------------
+    # 部活動絞り込み
+    # --------------------------------------------------------
+
+    if club_id.isdigit():
+
+        students = students.filter(
+            club_id=club_id
+        )
+
+
+    # --------------------------------------------------------
+    # 進行状況絞り込み
+    # --------------------------------------------------------
+
+    if status:
+
+        # 「未対応」の場合は、
+        # ScholarshipAssignment自体がまだ存在しない生徒も含める
+        if status == "not_started":
+
+            students = students.filter(
+
+                Q(
+                    scholarship_assignment__isnull=True
+                )
+
+                | Q(
+                    scholarship_assignment__status=(
+                        "not_started"
+                    )
+                )
+            )
+
+        else:
+
+            students = students.filter(
+                scholarship_assignment__status=(
+                    status
+                )
+            )
+
+
+    # --------------------------------------------------------
+    # 部活動選択肢
+    #
+    # ログイン教員が担当している生徒に使われている
+    # 部活動のみ表示
+    # --------------------------------------------------------
+
+    clubs = (
+        Club.objects
+        .filter(
+            prospective_students__assigned_teacher=(
+                request.teacher
+            ),
+            prospective_students__is_active=True,
+        )
+        .distinct()
+        .order_by(
+            "name"
+        )
+    )
+
+
+    # --------------------------------------------------------
+    # 件数集計
+    # --------------------------------------------------------
+
+    total_count = students.count()
+
+    not_started_count = (
+        students.filter(
+            Q(
+                scholarship_assignment__isnull=True
+            )
+            | Q(
+                scholarship_assignment__status=(
+                    "not_started"
+                )
+            )
+        )
+        .count()
+    )
+
+    interview_count = (
+        students.filter(
+            scholarship_assignment__status__in=[
+                "interview_scheduled",
+                "interviewed",
+                "temporary_accepted",
+            ]
+        )
+        .count()
+    )
+
+    adjusting_count = (
+        students.filter(
+            scholarship_assignment__status=(
+                "adjusting"
+            )
+        )
+        .count()
+    )
+
+    finalized_count = (
+        students.filter(
+            scholarship_assignment__status__in=[
+                "conference_confirmed",
+                "finalized",
+                "accepted",
+            ]
+        )
+        .count()
+    )
+
+
+    # --------------------------------------------------------
+    # ステータス選択肢
+    # ScholarshipAssignmentと同じ内容
+    # --------------------------------------------------------
+
+    status_choices = [
+        (
+            "",
+            "すべて",
+        ),
+        (
+            "not_started",
+            "未対応",
+        ),
+        (
+            "rank_set",
+            "ランク設定済",
+        ),
+        (
+            "interview_scheduled",
+            "面談予定",
+        ),
+        (
+            "interviewed",
+            "面談済",
+        ),
+        (
+            "temporary_accepted",
+            "仮承諾済",
+        ),
+        (
+            "adjusting",
+            "ランク調整中",
+        ),
+        (
+            "conference_confirmed",
+            "連絡会確認済",
+        ),
+        (
+            "finalized",
+            "最終確定",
+        ),
+        (
+            "accepted",
+            "正式承諾",
+        ),
+        (
+            "declined",
+            "辞退",
+        ),
+    ]
+
+
+    # --------------------------------------------------------
+    # Template
+    # --------------------------------------------------------
+
+    context = {
+
+        "students": students,
+
+        "clubs": clubs,
+
+        "keyword": keyword,
+
+        "selected_club": club_id,
+
+        "selected_status": status,
+
+        "status_choices": (
+            status_choices
+        ),
+
+        # 件数
+        "total_count": (
+            total_count
+        ),
+
+        "not_started_count": (
+            not_started_count
+        ),
+
+        "interview_count": (
+            interview_count
+        ),
+
+        "adjusting_count": (
+            adjusting_count
+        ),
+
+        "finalized_count": (
+            finalized_count
+        ),
+    }
+
+
+    return render(
+        request,
+        (
+            "publicity/"
+            "scholarship_management_list.html"
+        ),
+        context,
+    )
+
+# ============================================================
+# 奨学生・面談 個人管理
+# ============================================================
+
+@club_advisor_required
+def scholarship_assignment_detail(request, student_id):
+
+    teacher = request.teacher
+
+    # --------------------------------------------------------
+    # 対象生徒取得
+    #
+    # 部顧問
+    #   → 自分の担当生徒のみ
+    #
+    # 広報管理者・システム管理者
+    #   → 全生徒
+    # --------------------------------------------------------
+
+    student_queryset = (
+        ProspectiveStudent.objects
+        .select_related(
+            "junior_high_school",
+            "club",
+            "assigned_teacher",
+            "registered_by",
+        )
+        .filter(
+            is_active=True,
+        )
+    )
+
+    if teacher.role not in {
+        "publicity_admin",
+        "system_admin",
+    }:
+
+        student_queryset = student_queryset.filter(
+            Q(assigned_teacher=teacher)
+            | Q(registered_by=teacher)
+        )
+
+    student = get_object_or_404(
+        student_queryset,
+        id=student_id,
+    )
+
+
+    # --------------------------------------------------------
+    # 奨学生管理レコード取得
+    #
+    # 初回アクセス時にはまだ存在しないため、
+    # ここで自動作成する
+    # --------------------------------------------------------
+
+    assignment, created = (
+        ScholarshipAssignment.objects
+        .get_or_create(
+            student=student,
+        )
+    )
+
+
+    # --------------------------------------------------------
+    # 使用中の奨学金ランク
+    # --------------------------------------------------------
+
+    scholarship_categories = (
+        ScholarshipCategory.objects
+        .filter(
+            is_active=True
+        )
+        .order_by(
+            "name"
+        )
+    )
+
+
+    # --------------------------------------------------------
+    # 使用中の寮費区分
+    # --------------------------------------------------------
+
+    dormitory_categories = (
+        DormitoryBenefitCategory.objects
+        .filter(
+            is_active=True
+        )
+        .order_by(
+            "name"
+        )
+    )
+
+
+    # --------------------------------------------------------
+    # 面談履歴
+    # --------------------------------------------------------
+
+    interviews = (
+        assignment.interviews
+        .select_related(
+            "interviewer",
+            "presented_rank",
+            "presented_dormitory_benefit",
+        )
+        .all()
+    )
+
+
+    # --------------------------------------------------------
+    # ランク変更履歴
+    # --------------------------------------------------------
+
+    rank_histories = (
+        assignment.rank_histories
+        .select_related(
+            "previous_rank",
+            "new_rank",
+            "changed_by",
+        )
+        .all()
+    )
+
+
+    # --------------------------------------------------------
+    # 寮費変更履歴
+    # --------------------------------------------------------
+
+    dormitory_histories = (
+        assignment.dormitory_benefit_histories
+        .select_related(
+            "previous_benefit",
+            "new_benefit",
+            "changed_by",
+        )
+        .all()
+    )
+
+
+    # --------------------------------------------------------
+    # 面談前条件の登録
+    # --------------------------------------------------------
+
+    if request.method == "POST":
+
+        action = request.POST.get(
+            "action"
+        )
+
+        if action == "set_initial_conditions":
+
+            rank_id = request.POST.get(
+                "interview_rank"
+            )
+
+            dormitory_id = request.POST.get(
+                "interview_dormitory_benefit"
+            )
+
+            # ----------------------------------------------------
+            # 変更前の値を保持
+            # ----------------------------------------------------
+
+            old_rank = assignment.current_rank
+
+            old_dormitory_benefit = (
+                assignment.current_dormitory_benefit
+            )
+
+            # ----------------------------------------------------
+            # 新しいランク取得
+            # ----------------------------------------------------
+
+            rank = None
+
+            if rank_id:
+
+                rank = get_object_or_404(
+                    ScholarshipCategory,
+                    id=rank_id,
+                    is_active=True,
+                )
+
+            # ----------------------------------------------------
+            # 新しい寮費区分取得
+            # ----------------------------------------------------
+
+            dormitory_benefit = None
+
+            if dormitory_id:
+
+                dormitory_benefit = get_object_or_404(
+                    DormitoryBenefitCategory,
+                    id=dormitory_id,
+                    is_active=True,
+                )
+
+            # ----------------------------------------------------
+            # ランク変更履歴
+            # ----------------------------------------------------
+
+            if old_rank != rank:
+
+                # 新しいランクが設定される場合のみ履歴を作る
+                if rank is not None:
+
+                    ScholarshipRankHistory.objects.create(
+                        assignment=assignment,
+                        previous_rank=old_rank,
+                        new_rank=rank,
+                        reason="面談前条件の設定・変更",
+                        changed_by=teacher,
+                    )
+
+            # ----------------------------------------------------
+            # 寮費区分変更履歴
+            # ----------------------------------------------------
+
+            if old_dormitory_benefit != dormitory_benefit:
+
+                # 新しい寮費区分が設定される場合のみ履歴を作る
+                if dormitory_benefit is not None:
+
+                    DormitoryBenefitHistory.objects.create(
+                        assignment=assignment,
+                        previous_benefit=old_dormitory_benefit,
+                        new_benefit=dormitory_benefit,
+                        reason="面談前条件の設定・変更",
+                        changed_by=teacher,
+                    )
+
+            # ----------------------------------------------------
+            # 面談前条件を保存
+            # ----------------------------------------------------
+
+            assignment.interview_rank = rank
+
+            assignment.current_rank = rank
+
+            assignment.interview_dormitory_benefit = (
+                dormitory_benefit
+            )
+
+            assignment.current_dormitory_benefit = (
+                dormitory_benefit
+            )
+
+            if rank is not None:
+
+                assignment.status = "rank_set"
+
+            else:
+
+                assignment.status = "not_started"
+
+            assignment.save()
+
+            messages.success(
+                request,
+                "面談前の奨学生条件を保存しました。",
+            )
+
+            return redirect(
+                "publicity:scholarship_assignment_detail",
+                student_id=student.id,
+            )
+
+
+    # --------------------------------------------------------
+    # Template
+    # --------------------------------------------------------
+
+    context = {
+
+        "teacher": teacher,
+
+        "student": student,
+
+        "assignment": assignment,
+
+        "scholarship_categories": (
+            scholarship_categories
+        ),
+
+        "dormitory_categories": (
+            dormitory_categories
+        ),
+
+        "interviews": interviews,
+
+        "rank_histories": (
+            rank_histories
+        ),
+
+        "dormitory_histories": (
+            dormitory_histories
+        ),
+
+        "assignment_created": created,
+    }
+
+
+    return render(
+        request,
+        "publicity/scholarship_assignment_detail.html",
+        context,
     )

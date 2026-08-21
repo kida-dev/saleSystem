@@ -197,6 +197,46 @@ class ScholarshipCategory(models.Model):
     def __str__(self):
         return self.name
 
+# ============================================================
+# 寮費区分マスタ
+# ============================================================
+
+class DormitoryBenefitCategory(models.Model):
+
+    name = models.CharField(
+        "寮費区分名",
+        max_length=100,
+        unique=True,
+    )
+
+    description = models.TextField(
+        "説明",
+        blank=True,
+    )
+
+    is_active = models.BooleanField(
+        "使用中",
+        default=True,
+    )
+
+    created_at = models.DateTimeField(
+        "登録日時",
+        auto_now_add=True,
+    )
+
+    updated_at = models.DateTimeField(
+        "更新日時",
+        auto_now=True,
+    )
+
+    class Meta:
+        ordering = ["name"]
+        verbose_name = "寮費区分"
+        verbose_name_plural = "寮費区分"
+
+    def __str__(self):
+        return self.name
+
 
 class ProspectiveStudent(models.Model):
     name = models.CharField(
@@ -696,4 +736,399 @@ class ScholarshipRequestDocument(models.Model):
         return (
             f"{self.document_number} "
             f"{self.school.name}"
+        )
+
+# ============================================================
+# 奨学生候補管理
+# ============================================================
+
+class ScholarshipAssignment(models.Model):
+
+    STATUS_CHOICES = [
+        ("not_started", "未対応"),
+        ("rank_set", "ランク設定済"),
+        ("interview_scheduled", "面談予定"),
+        ("interviewed", "面談済"),
+        ("temporary_accepted", "仮承諾済"),
+        ("adjusting", "ランク調整中"),
+        ("conference_confirmed", "連絡会確認済"),
+        ("finalized", "最終確定"),
+        ("accepted", "正式承諾"),
+        ("declined", "辞退"),
+    ]
+
+    student = models.OneToOneField(
+        ProspectiveStudent,
+        verbose_name="対象生徒",
+        on_delete=models.CASCADE,
+        related_name="scholarship_assignment",
+    )
+
+    # --------------------------------------------------------
+    # 個人面談時に最初に提示したランク
+    # --------------------------------------------------------
+
+    interview_rank = models.ForeignKey(
+        ScholarshipCategory,
+        verbose_name="面談時ランク",
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        related_name="interview_assignments",
+    )
+
+    # --------------------------------------------------------
+    # 現在検討中のランク
+    # 面談後の変更は基本的にここへ反映
+    # --------------------------------------------------------
+
+    current_rank = models.ForeignKey(
+        ScholarshipCategory,
+        verbose_name="現在ランク",
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        related_name="current_assignments",
+    )
+
+    # --------------------------------------------------------
+    # 生徒指導連絡会後の最終確定ランク
+    # --------------------------------------------------------
+
+    final_rank = models.ForeignKey(
+        ScholarshipCategory,
+        verbose_name="最終確定ランク",
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        related_name="final_assignments",
+    )
+
+    status = models.CharField(
+        "進行状況",
+        max_length=30,
+        choices=STATUS_CHOICES,
+        default="not_started",
+    )
+
+    # --------------------------------------------------------
+    # 面談時の仮承諾
+    # --------------------------------------------------------
+
+    temporary_accepted = models.BooleanField(
+        "面談時仮承諾",
+        default=False,
+    )
+
+    temporary_accepted_at = models.DateTimeField(
+        "仮承諾日時",
+        null=True,
+        blank=True,
+    )
+
+    # --------------------------------------------------------
+    # 最終通知後の正式承諾
+    # --------------------------------------------------------
+
+    final_accepted = models.BooleanField(
+        "正式承諾",
+        default=False,
+    )
+
+    final_accepted_at = models.DateTimeField(
+        "正式承諾日時",
+        null=True,
+        blank=True,
+    )
+
+    # --------------------------------------------------------
+    # 最終ランク確定
+    # --------------------------------------------------------
+
+    finalized_at = models.DateTimeField(
+        "最終確定日時",
+        null=True,
+        blank=True,
+    )
+
+    created_at = models.DateTimeField(
+        "登録日時",
+        auto_now_add=True,
+    )
+
+    updated_at = models.DateTimeField(
+        "更新日時",
+        auto_now=True,
+    )
+
+    class Meta:
+        verbose_name = "奨学生候補管理"
+        verbose_name_plural = "奨学生候補管理"
+        ordering = [
+            "-updated_at",
+        ]
+
+    def __str__(self):
+        return (
+            f"{self.student.name} "
+            f"奨学生候補管理"
+        )
+
+    # --------------------------------------------------------
+    # 寮費待遇
+    # --------------------------------------------------------
+
+    interview_dormitory_benefit = models.ForeignKey(
+        DormitoryBenefitCategory,
+        verbose_name="面談時寮費区分",
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        related_name="interview_assignments",
+    )
+
+    current_dormitory_benefit = models.ForeignKey(
+        DormitoryBenefitCategory,
+        verbose_name="現在寮費区分",
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        related_name="current_assignments",
+    )
+
+    final_dormitory_benefit = models.ForeignKey(
+        DormitoryBenefitCategory,
+        verbose_name="最終確定寮費区分",
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        related_name="final_assignments",
+    )
+
+
+# ============================================================
+# 奨学生ランク変更履歴
+# ============================================================
+
+class ScholarshipRankHistory(models.Model):
+
+    assignment = models.ForeignKey(
+        ScholarshipAssignment,
+        verbose_name="奨学生候補",
+        on_delete=models.CASCADE,
+        related_name="rank_histories",
+    )
+
+    previous_rank = models.ForeignKey(
+        ScholarshipCategory,
+        verbose_name="変更前ランク",
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        related_name="+",
+    )
+
+    new_rank = models.ForeignKey(
+        ScholarshipCategory,
+        verbose_name="変更後ランク",
+        on_delete=models.PROTECT,
+        related_name="+",
+    )
+
+    reason = models.TextField(
+        "変更理由",
+        blank=True,
+    )
+
+    changed_by = models.ForeignKey(
+        Teacher,
+        verbose_name="変更者",
+        on_delete=models.PROTECT,
+        related_name="scholarship_rank_changes",
+    )
+
+    changed_at = models.DateTimeField(
+        "変更日時",
+        auto_now_add=True,
+    )
+
+    class Meta:
+        verbose_name = "奨学生ランク変更履歴"
+        verbose_name_plural = "奨学生ランク変更履歴"
+        ordering = [
+            "-changed_at",
+        ]
+
+    def __str__(self):
+
+        old_rank = (
+            self.previous_rank.name
+            if self.previous_rank
+            else "未設定"
+        )
+
+        return (
+            f"{self.assignment.student.name} "
+            f"{old_rank} → {self.new_rank.name}"
+        )
+
+
+# ============================================================
+# 奨学生面談
+# ============================================================
+
+class ScholarshipInterview(models.Model):
+
+    RESULT_CHOICES = [
+        ("pending", "未実施"),
+        ("temporary_accepted", "仮承諾"),
+        ("considering", "検討中"),
+        ("declined", "辞退"),
+    ]
+
+    assignment = models.ForeignKey(
+        ScholarshipAssignment,
+        verbose_name="奨学生候補",
+        on_delete=models.CASCADE,
+        related_name="interviews",
+    )
+
+    scheduled_at = models.DateTimeField(
+        "面談予定日時",
+        null=True,
+        blank=True,
+    )
+
+    interviewed_at = models.DateTimeField(
+        "面談実施日時",
+        null=True,
+        blank=True,
+    )
+
+    interviewer = models.ForeignKey(
+        Teacher,
+        verbose_name="面談担当者",
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        related_name="scholarship_interviews",
+    )
+
+    presented_rank = models.ForeignKey(
+        ScholarshipCategory,
+        verbose_name="面談時提示ランク",
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        related_name="+",
+    )
+
+    result = models.CharField(
+        "面談結果",
+        max_length=30,
+        choices=RESULT_CHOICES,
+        default="pending",
+    )
+
+    notes = models.TextField(
+        "面談記録・備考",
+        blank=True,
+    )
+
+    created_at = models.DateTimeField(
+        "登録日時",
+        auto_now_add=True,
+    )
+
+    updated_at = models.DateTimeField(
+        "更新日時",
+        auto_now=True,
+    )
+
+    presented_dormitory_benefit = models.ForeignKey(
+        DormitoryBenefitCategory,
+        verbose_name="面談時提示寮費区分",
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        related_name="+",
+    )
+
+    class Meta:
+        verbose_name = "奨学生面談"
+        verbose_name_plural = "奨学生面談"
+        ordering = [
+            "-created_at",
+        ]
+
+    def __str__(self):
+        return (
+            f"{self.assignment.student.name} "
+            f"面談"
+        )
+
+# ============================================================
+# 寮費区分変更履歴
+# ============================================================
+
+class DormitoryBenefitHistory(models.Model):
+
+    assignment = models.ForeignKey(
+        ScholarshipAssignment,
+        verbose_name="奨学生候補",
+        on_delete=models.CASCADE,
+        related_name="dormitory_benefit_histories",
+    )
+
+    previous_benefit = models.ForeignKey(
+        DormitoryBenefitCategory,
+        verbose_name="変更前寮費区分",
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        related_name="+",
+    )
+
+    new_benefit = models.ForeignKey(
+        DormitoryBenefitCategory,
+        verbose_name="変更後寮費区分",
+        on_delete=models.PROTECT,
+        related_name="+",
+    )
+
+    reason = models.TextField(
+        "変更理由",
+        blank=True,
+    )
+
+    changed_by = models.ForeignKey(
+        Teacher,
+        verbose_name="変更者",
+        on_delete=models.PROTECT,
+        related_name="dormitory_benefit_changes",
+    )
+
+    changed_at = models.DateTimeField(
+        "変更日時",
+        auto_now_add=True,
+    )
+
+    class Meta:
+        verbose_name = "寮費区分変更履歴"
+        verbose_name_plural = "寮費区分変更履歴"
+        ordering = [
+            "-changed_at",
+        ]
+
+    def __str__(self):
+
+        old_benefit = (
+            self.previous_benefit.name
+            if self.previous_benefit
+            else "未設定"
+        )
+
+        return (
+            f"{self.assignment.student.name} "
+            f"{old_benefit} → {self.new_benefit.name}"
         )

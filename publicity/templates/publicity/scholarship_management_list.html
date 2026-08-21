@@ -1,0 +1,1368 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        奨学生・面談管理
+    </title>
+
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+
+        body {
+
+            margin: 0;
+
+            font-family:
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                "Yu Gothic",
+                "YuGothic",
+                "Hiragino Kaku Gothic ProN",
+                Meiryo,
+                sans-serif;
+
+            background: #f4f7f9;
+
+            color: #222;
+        }
+
+
+        /* ==================================================
+           ヘッダー
+        ================================================== */
+
+        .page-header {
+
+            background: #28647a;
+
+            color: white;
+
+            padding: 26px 30px;
+        }
+
+
+        .page-header-inner {
+
+            max-width: 1250px;
+
+            margin: 0 auto;
+        }
+
+
+        .page-header h1 {
+
+            margin: 0 0 8px;
+
+            font-size: 27px;
+        }
+
+
+        .page-header p {
+
+            margin: 0;
+
+            font-size: 14px;
+
+            line-height: 1.7;
+        }
+
+
+        /* ==================================================
+           全体
+        ================================================== */
+
+        .container {
+
+            max-width: 1250px;
+
+            margin: 28px auto 50px;
+
+            padding: 0 20px;
+        }
+
+
+        .card {
+
+            background: white;
+
+            border:
+                1px solid #d5dfe4;
+
+            border-radius: 8px;
+
+            padding: 24px;
+
+            margin-bottom: 22px;
+
+            box-shadow:
+                0 2px 6px
+                rgba(0, 0, 0, 0.05);
+        }
+
+
+        .card h2 {
+
+            margin:
+                0 0 18px;
+
+            color: #15546d;
+
+            font-size: 20px;
+        }
+
+
+        /* ==================================================
+           説明
+        ================================================== */
+
+        .info-box {
+
+            padding: 17px 20px;
+
+            background: #eef6f9;
+
+            border-left:
+                5px solid #28647a;
+
+            line-height: 1.8;
+        }
+
+
+        .info-box strong {
+
+            color: #15546d;
+        }
+
+
+        /* ==================================================
+           集計カード
+        ================================================== */
+
+        .summary-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(5, 1fr);
+
+            gap: 14px;
+        }
+
+
+        .summary-item {
+
+            min-height: 95px;
+
+            padding: 17px;
+
+            background: #f7fafb;
+
+            border:
+                1px solid #d4dfe4;
+
+            border-radius: 7px;
+        }
+
+
+        .summary-label {
+
+            margin-bottom: 8px;
+
+            color: #555;
+
+            font-size: 13px;
+
+            font-weight: bold;
+        }
+
+
+        .summary-number {
+
+            color: #176d91;
+
+            font-size: 28px;
+
+            font-weight: bold;
+        }
+
+
+        .summary-unit {
+
+            margin-left: 4px;
+
+            font-size: 14px;
+        }
+
+
+        /* ==================================================
+           検索
+        ================================================== */
+
+        .search-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                2fr
+                1.2fr
+                1.4fr
+                auto;
+
+            gap: 14px;
+
+            align-items: end;
+        }
+
+
+        .field label {
+
+            display: block;
+
+            margin-bottom: 7px;
+
+            font-size: 14px;
+
+            font-weight: bold;
+        }
+
+
+        .field input,
+        .field select {
+
+            width: 100%;
+
+            height: 42px;
+
+            padding: 8px 11px;
+
+            background: white;
+
+            border:
+                1px solid #aebbc2;
+
+            border-radius: 5px;
+
+            font-size: 14px;
+        }
+
+
+        /* ==================================================
+           ボタン
+        ================================================== */
+
+        .button {
+
+            display: inline-block;
+
+            padding: 10px 18px;
+
+            border: none;
+
+            border-radius: 5px;
+
+            font-size: 14px;
+
+            font-weight: bold;
+
+            text-decoration: none;
+
+            cursor: pointer;
+
+            transition: 0.15s;
+        }
+
+
+        .button:hover {
+
+            opacity: 0.88;
+        }
+
+
+        .search-button {
+
+            height: 42px;
+
+            color: white;
+
+            background: #176d91;
+        }
+
+
+        .management-button {
+
+            color: white;
+
+            background: #19749a;
+
+            white-space: nowrap;
+        }
+
+
+        .management-button-disabled {
+
+            color: #777;
+
+            background: #e3e7e9;
+
+            cursor: not-allowed;
+
+            white-space: nowrap;
+        }
+
+
+        .reset-button {
+
+            color: #333;
+
+            background: white;
+
+            border:
+                1px solid #999;
+        }
+
+
+        /* ==================================================
+           一覧
+        ================================================== */
+
+        .result-header {
+
+            display: flex;
+
+            justify-content:
+                space-between;
+
+            align-items: center;
+
+            gap: 15px;
+
+            margin-bottom: 16px;
+        }
+
+
+        .result-count {
+
+            font-size: 15px;
+        }
+
+
+        .result-count strong {
+
+            color: #176d91;
+
+            font-size: 22px;
+        }
+
+
+        .table-wrapper {
+
+            width: 100%;
+
+            overflow-x: auto;
+        }
+
+
+        table {
+
+            width: 100%;
+
+            border-collapse:
+                collapse;
+
+            font-size: 14px;
+        }
+
+
+        th,
+        td {
+
+            padding: 11px 10px;
+
+            border:
+                1px solid #cbd6dc;
+
+            vertical-align: middle;
+        }
+
+
+        th {
+
+            background: #e9f0f3;
+
+            text-align: left;
+
+            white-space: nowrap;
+        }
+
+
+        tbody tr:hover {
+
+            background: #f7fbfc;
+        }
+
+
+        .number-column {
+
+            width: 60px;
+
+            text-align: center;
+        }
+
+
+        .student-name {
+
+            font-weight: bold;
+
+            white-space: nowrap;
+        }
+
+
+        .school-name {
+
+            min-width: 180px;
+        }
+
+
+        .club-name {
+
+            min-width: 120px;
+        }
+
+
+        .rank-cell {
+
+            min-width: 95px;
+
+            text-align: center;
+        }
+
+
+        .dormitory-cell {
+
+            min-width: 140px;
+        }
+
+
+        .status-cell {
+
+            min-width: 120px;
+
+            text-align: center;
+        }
+
+
+        .operation-cell {
+
+            min-width: 145px;
+
+            text-align: center;
+        }
+
+
+        /* ==================================================
+           ランク
+        ================================================== */
+
+        .rank {
+
+            display: inline-block;
+
+            min-width: 45px;
+
+            padding: 5px 9px;
+
+            border-radius: 20px;
+
+            font-size: 12px;
+
+            font-weight: bold;
+
+            text-align: center;
+        }
+
+
+        .rank-empty {
+
+            color: #777;
+
+            background: #eceff1;
+        }
+
+
+        .rank-value {
+
+            color: #145f7b;
+
+            background: #e4f1f6;
+        }
+
+
+        /* ==================================================
+           ステータス
+        ================================================== */
+
+        .status {
+
+            display: inline-block;
+
+            padding: 5px 10px;
+
+            border-radius: 20px;
+
+            font-size: 12px;
+
+            font-weight: bold;
+
+            white-space: nowrap;
+        }
+
+
+        .status-not-started {
+
+            color: #555;
+
+            background: #e7eaec;
+        }
+
+
+        .status-rank-set {
+
+            color: #15546d;
+
+            background: #dceef5;
+        }
+
+
+        .status-interview {
+
+            color: #715714;
+
+            background: #fff2c8;
+        }
+
+
+        .status-accepted {
+
+            color: #246638;
+
+            background: #dff1e4;
+        }
+
+
+        .status-adjusting {
+
+            color: #8a5a14;
+
+            background: #fce8ca;
+        }
+
+
+        .status-finalized {
+
+            color: #274c80;
+
+            background: #dce8f8;
+        }
+
+
+        .status-declined {
+
+            color: #8a3030;
+
+            background: #f5dddd;
+        }
+
+
+        /* ==================================================
+           データなし
+        ================================================== */
+
+        .empty {
+
+            padding: 45px 20px;
+
+            color: #777;
+
+            text-align: center;
+
+            line-height: 1.8;
+        }
+
+
+        /* ==================================================
+           レスポンシブ
+        ================================================== */
+
+        @media (
+            max-width: 1000px
+        ) {
+
+            .summary-grid {
+
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+
+
+            .search-grid {
+
+                grid-template-columns:
+                    1fr 1fr;
+            }
+        }
+
+
+        @media (
+            max-width: 650px
+        ) {
+
+            .summary-grid {
+
+                grid-template-columns:
+                    1fr;
+            }
+
+
+            .search-grid {
+
+                grid-template-columns:
+                    1fr;
+            }
+
+
+            .search-button {
+
+                width: 100%;
+            }
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- ==================================================
+         ヘッダー
+    =================================================== -->
+
+    <header class="page-header">
+
+        <div class="page-header-inner">
+
+            <h1>
+                奨学生・面談管理
+            </h1>
+
+            <p>
+                担当している募集対象生徒の
+                奨学生ランク・寮費区分・面談状況を管理します。
+            </p>
+
+        </div>
+
+    </header>
+
+
+    <main class="container">
+
+
+        <!-- ==================================================
+             1. 説明
+        =================================================== -->
+
+        <section class="card">
+
+            <h2>
+                1. 奨学生候補管理
+            </h2>
+
+            <div class="info-box">
+
+                <strong>
+                    担当している生徒の現在の状況を確認できます。
+                </strong>
+
+                <br>
+
+                面談時のランク設定、
+                面談後のランク変更、
+                寮費区分、
+                仮承諾などを、
+                生徒ごとに管理していきます。
+
+            </div>
+
+        </section>
+
+
+        <!-- ==================================================
+             2. 状況集計
+        =================================================== -->
+
+        <section class="card">
+
+            <h2>
+                2. 現在の状況
+            </h2>
+
+
+            <div class="summary-grid">
+
+
+                <div class="summary-item">
+
+                    <div class="summary-label">
+                        表示中
+                    </div>
+
+                    <span class="summary-number">
+                        {{ total_count }}
+                    </span>
+
+                    <span class="summary-unit">
+                        名
+                    </span>
+
+                </div>
+
+
+                <div class="summary-item">
+
+                    <div class="summary-label">
+                        未対応
+                    </div>
+
+                    <span class="summary-number">
+                        {{ not_started_count }}
+                    </span>
+
+                    <span class="summary-unit">
+                        名
+                    </span>
+
+                </div>
+
+
+                <div class="summary-item">
+
+                    <div class="summary-label">
+                        面談関連
+                    </div>
+
+                    <span class="summary-number">
+                        {{ interview_count }}
+                    </span>
+
+                    <span class="summary-unit">
+                        名
+                    </span>
+
+                </div>
+
+
+                <div class="summary-item">
+
+                    <div class="summary-label">
+                        ランク調整中
+                    </div>
+
+                    <span class="summary-number">
+                        {{ adjusting_count }}
+                    </span>
+
+                    <span class="summary-unit">
+                        名
+                    </span>
+
+                </div>
+
+
+                <div class="summary-item">
+
+                    <div class="summary-label">
+                        確定・確認済
+                    </div>
+
+                    <span class="summary-number">
+                        {{ finalized_count }}
+                    </span>
+
+                    <span class="summary-unit">
+                        名
+                    </span>
+
+                </div>
+
+
+            </div>
+
+        </section>
+
+
+        <!-- ==================================================
+             3. 検索
+        =================================================== -->
+
+        <section class="card">
+
+            <h2>
+                3. 生徒検索
+            </h2>
+
+
+            <form method="GET">
+
+
+                <div class="search-grid">
+
+
+                    <!-- キーワード -->
+
+                    <div class="field">
+
+                        <label for="q">
+                            氏名・学校名
+                        </label>
+
+                        <input
+                            type="text"
+                            id="q"
+                            name="q"
+                            value="{{ keyword }}"
+                            placeholder="氏名・ふりがな・中学校名"
+                        >
+
+                    </div>
+
+
+                    <!-- 部活動 -->
+
+                    <div class="field">
+
+                        <label for="club">
+                            部活動
+                        </label>
+
+                        <select
+                            id="club"
+                            name="club"
+                        >
+
+                            <option value="">
+                                すべて
+                            </option>
+
+
+                            {% for club in clubs %}
+
+                                <option
+                                    value="{{ club.id }}"
+
+                                    {% if selected_club == club.id|stringformat:"s" %}
+                                        selected
+                                    {% endif %}
+                                >
+                                    {{ club.name }}
+                                </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- 状態 -->
+
+                    <div class="field">
+
+                        <label for="status">
+                            進行状況
+                        </label>
+
+                        <select
+                            id="status"
+                            name="status"
+                        >
+
+                            {% for value, label in status_choices %}
+
+                                <option
+                                    value="{{ value }}"
+
+                                    {% if selected_status == value %}
+                                        selected
+                                    {% endif %}
+                                >
+                                    {{ label }}
+                                </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- 検索 -->
+
+                    <div>
+
+                        <button
+                            type="submit"
+                            class="button search-button"
+                        >
+                            検索
+                        </button>
+
+                    </div>
+
+
+                </div>
+
+
+            </form>
+
+        </section>
+
+
+        <!-- ==================================================
+             4. 担当生徒一覧
+        =================================================== -->
+
+        <section class="card">
+
+
+            <div class="result-header">
+
+                <h2 style="margin: 0;">
+                    4. 担当生徒一覧
+                </h2>
+
+
+                <div class="result-count">
+
+                    表示：
+
+                    <strong>
+                        {{ total_count }}
+                    </strong>
+
+                    名
+
+                </div>
+
+            </div>
+
+
+            {% if students %}
+
+
+                <div class="table-wrapper">
+
+
+                    <table>
+
+
+                        <thead>
+
+                            <tr>
+
+                                <th class="number-column">
+                                    No.
+                                </th>
+
+                                <th>
+                                    生徒氏名
+                                </th>
+
+                                <th>
+                                    中学校
+                                </th>
+
+                                <th>
+                                    部活動
+                                </th>
+
+                                <th>
+                                    面談時<br>ランク
+                                </th>
+
+                                <th>
+                                    現在<br>ランク
+                                </th>
+
+                                <th>
+                                    寮費区分
+                                </th>
+
+                                <th>
+                                    進行状況
+                                </th>
+
+                                <th>
+                                    操作
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody>
+
+
+                            {% for student in students %}
+
+
+                                <tr>
+
+
+                                    <!-- No. -->
+
+                                    <td class="number-column">
+
+                                        {{ forloop.counter }}
+
+                                    </td>
+
+
+                                    <!-- 氏名 -->
+
+                                    <td>
+
+                                        <span class="student-name">
+                                            {{ student.name }}
+                                        </span>
+
+                                        {% if student.name_kana %}
+
+                                            <br>
+
+                                            <small style="color:#777;">
+                                                {{ student.name_kana }}
+                                            </small>
+
+                                        {% endif %}
+
+                                    </td>
+
+
+                                    <!-- 中学校 -->
+
+                                    <td class="school-name">
+
+                                        {% if student.junior_high_school %}
+
+                                            {{ student.junior_high_school.name }}
+
+                                        {% else %}
+
+                                            -
+
+                                        {% endif %}
+
+                                    </td>
+
+
+                                    <!-- 部活動 -->
+
+                                    <td class="club-name">
+
+                                        {% if student.club %}
+
+                                            {{ student.club.name }}
+
+                                        {% else %}
+
+                                            -
+
+                                        {% endif %}
+
+                                    </td>
+
+
+                                    <!-- ==================================================
+                                         奨学生管理情報
+                                    =================================================== -->
+
+                                    {% if student.scholarship_assignment %}
+
+
+                                        {% with assignment=student.scholarship_assignment %}
+
+
+                                            <!-- 面談時ランク -->
+
+                                            <td class="rank-cell">
+
+                                                {% if assignment.interview_rank %}
+
+                                                    <span class="rank rank-value">
+
+                                                        {{ assignment.interview_rank.name }}
+
+                                                    </span>
+
+                                                {% else %}
+
+                                                    <span class="rank rank-empty">
+                                                        -
+                                                    </span>
+
+                                                {% endif %}
+
+                                            </td>
+
+
+                                            <!-- 現在ランク -->
+
+                                            <td class="rank-cell">
+
+                                                {% if assignment.current_rank %}
+
+                                                    <span class="rank rank-value">
+
+                                                        {{ assignment.current_rank.name }}
+
+                                                    </span>
+
+                                                {% else %}
+
+                                                    <span class="rank rank-empty">
+                                                        -
+                                                    </span>
+
+                                                {% endif %}
+
+                                            </td>
+
+
+                                            <!-- 寮費 -->
+
+                                            <td class="dormitory-cell">
+
+                                                {% if assignment.current_dormitory_benefit %}
+
+                                                    {{ assignment.current_dormitory_benefit.name }}
+
+                                                {% else %}
+
+                                                    -
+
+                                                {% endif %}
+
+                                            </td>
+
+
+                                            <!-- 状態 -->
+
+                                            <td class="status-cell">
+
+
+                                                {% if assignment.status == "not_started" %}
+
+                                                    <span class="status status-not-started">
+                                                        未対応
+                                                    </span>
+
+
+                                                {% elif assignment.status == "rank_set" %}
+
+                                                    <span class="status status-rank-set">
+                                                        ランク設定済
+                                                    </span>
+
+
+                                                {% elif assignment.status == "interview_scheduled" %}
+
+                                                    <span class="status status-interview">
+                                                        面談予定
+                                                    </span>
+
+
+                                                {% elif assignment.status == "interviewed" %}
+
+                                                    <span class="status status-interview">
+                                                        面談済
+                                                    </span>
+
+
+                                                {% elif assignment.status == "temporary_accepted" %}
+
+                                                    <span class="status status-accepted">
+                                                        仮承諾済
+                                                    </span>
+
+
+                                                {% elif assignment.status == "adjusting" %}
+
+                                                    <span class="status status-adjusting">
+                                                        ランク調整中
+                                                    </span>
+
+
+                                                {% elif assignment.status == "conference_confirmed" %}
+
+                                                    <span class="status status-finalized">
+                                                        連絡会確認済
+                                                    </span>
+
+
+                                                {% elif assignment.status == "finalized" %}
+
+                                                    <span class="status status-finalized">
+                                                        最終確定
+                                                    </span>
+
+
+                                                {% elif assignment.status == "accepted" %}
+
+                                                    <span class="status status-accepted">
+                                                        正式承諾
+                                                    </span>
+
+
+                                                {% elif assignment.status == "declined" %}
+
+                                                    <span class="status status-declined">
+                                                        辞退
+                                                    </span>
+
+
+                                                {% else %}
+
+                                                    <span class="status status-not-started">
+                                                        {{ assignment.get_status_display }}
+                                                    </span>
+
+                                                {% endif %}
+
+
+                                            </td>
+
+
+                                        {% endwith %}
+
+
+                                    {% else %}
+
+
+                                        <!-- 奨学生管理レコード未作成 -->
+
+
+                                        <td class="rank-cell">
+
+                                            <span class="rank rank-empty">
+                                                -
+                                            </span>
+
+                                        </td>
+
+
+                                        <td class="rank-cell">
+
+                                            <span class="rank rank-empty">
+                                                -
+                                            </span>
+
+                                        </td>
+
+
+                                        <td class="dormitory-cell">
+
+                                            -
+
+                                        </td>
+
+
+                                        <td class="status-cell">
+
+                                            <span class="status status-not-started">
+                                                未対応
+                                            </span>
+
+                                        </td>
+
+
+                                    {% endif %}
+
+
+                                    <!-- ==================================================
+                                         操作
+                                         個人管理画面は次工程でURLを作る
+                                    =================================================== -->
+
+                                    <td class="operation-cell">
+
+                                        <a
+                                            href="{% url 'publicity:scholarship_assignment_detail' student.id %}"
+                                            class="button management-button"
+                                        >
+                                            面談・ランク管理
+                                        </a>
+
+                                    </td>
+
+
+                                </tr>
+
+
+                            {% endfor %}
+
+
+                        </tbody>
+
+
+                    </table>
+
+
+                </div>
+
+
+            {% else %}
+
+
+                <div class="empty">
+
+                    条件に該当する担当生徒は
+                    登録されていません。
+
+                    <br>
+
+                    検索条件を変更して、
+                    再度確認してください。
+
+                </div>
+
+
+            {% endif %}
+
+
+        </section>
+
+
+    </main>
+
+
+</body>
+
+</html>

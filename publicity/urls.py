@@ -56,6 +56,16 @@ urlpatterns = [
         name="scholarship_document_correct",
     ),
     path(
+        "scholarship/manage/",
+        views.scholarship_management_list,
+        name="scholarship_management_list",
+    ),
+    path(
+        "scholarship/manage/student/<int:student_id>/",
+        views.scholarship_assignment_detail,
+        name="scholarship_assignment_detail",
+    ),
+    path(
         "api/schools/search/",
         views.junior_high_school_search,
         name="junior_high_school_search",
