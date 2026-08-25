@@ -349,6 +349,27 @@
 
                     {% endif %}
 
+                    {% if can_manage_publicity %}
+
+                        <a
+                            href="{% url 'publicity:recruitment_response_management_list' %}"
+                            class="menu-item"
+                        >
+
+                            <h3>
+                                募集連絡・面談管理
+                            </h3>
+
+                            <p>
+                                中学校への連絡、
+                                部顧問への確認、
+                                面談状況を管理します。
+                            </p>
+
+                        </a>
+
+                    {% endif %}
+
                     {% if can_manage_scholarship %}
 
                         <a
