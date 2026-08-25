@@ -469,6 +469,30 @@
             }
 
         }
+        /* ==================================================
+        変更理由入力欄
+        ================================================== */
+
+        .form-group textarea {
+
+            width: 100%;
+
+            min-height: 100px;
+
+            padding: 12px;
+
+            border: 1px solid #b8c8cf;
+
+            border-radius: 6px;
+
+            font-size: 15px;
+
+            font-family: inherit;
+
+            line-height: 1.6;
+
+            resize: vertical;
+        }
 
     </style>
 
@@ -950,12 +974,12 @@
                     現時点では無効
                 -->
 
-                <span
-                    class="button button-disabled"
+                <a
+                    href="{% url 'publicity:scholarship_interview' student.id %}"
+                    class="button button-primary"
                 >
                     面談を開始
-                    （次工程）
-                </span>
+                </a>
 
             </div>
 
@@ -974,16 +998,210 @@
 
     </section>
 
-
-
     <!-- ==================================================
-         5. 面談履歴
+        5. 面談後の条件調整
     =================================================== -->
 
     <section class="card">
 
         <h2>
-            5. 面談履歴
+            5. 面談後の条件調整
+        </h2>
+
+
+        {% if interviews %}
+
+            <div class="notice">
+
+                <strong>
+                    面談後に生徒の状況や評価が変化した場合、
+                    現在の奨学生条件を変更できます。
+                </strong>
+
+                <br>
+
+                ここで変更しても、
+                面談時に提示した条件は履歴として残ります。
+
+            </div>
+
+
+            <form method="post">
+
+                {% csrf_token %}
+
+                <input
+                    type="hidden"
+                    name="action"
+                    value="adjust_conditions"
+                >
+
+
+                <div class="form-grid">
+
+
+                    <!-- 現在ランク -->
+
+                    <div class="form-group">
+
+                        <label for="current_rank">
+                            現在ランク
+                        </label>
+
+                        <select
+                            id="current_rank"
+                            name="current_rank"
+                            required
+                        >
+
+                            {% for category in scholarship_categories %}
+
+                                <option
+                                    value="{{ category.id }}"
+
+                                    {% if assignment.current_rank_id == category.id %}
+                                        selected
+                                    {% endif %}
+                                >
+
+                                    {{ category.name }}
+
+                                </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- 現在寮費区分 -->
+
+                    <div class="form-group">
+
+                        <label for="current_dormitory_benefit">
+                            現在寮費区分
+                        </label>
+
+                        <select
+                            id="current_dormitory_benefit"
+                            name="current_dormitory_benefit"
+                        >
+
+                            {% if not assignment.current_dormitory_benefit %}
+
+                                <option value="" selected>
+                                    寮費待遇なし
+                                </option>
+
+                            {% endif %}
+
+
+                            {% for category in dormitory_categories %}
+
+                                <option
+                                    value="{{ category.id }}"
+
+                                    {% if assignment.current_dormitory_benefit_id == category.id %}
+                                        selected
+                                    {% endif %}
+                                >
+
+                                    {{ category.name }}
+
+                                </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                    </div>
+
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="rank_adjustment_reason">
+                        ランク変更理由
+                    </label>
+
+                    <textarea
+                        id="rank_adjustment_reason"
+                        name="rank_adjustment_reason"
+                        rows="4"
+                        placeholder="例：競技実績の向上、身体的成長、活動状況の再評価など"
+                    ></textarea>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="dormitory_adjustment_reason">
+                        寮費区分変更理由
+                    </label>
+
+                    <textarea
+                        id="dormitory_adjustment_reason"
+                        name="dormitory_adjustment_reason"
+                        rows="4"
+                        placeholder="寮費条件を変更する場合、その理由を入力してください。"
+                    ></textarea>
+
+                </div>
+
+
+                <div class="warning">
+
+                    この操作は
+                    <strong>面談時の条件を変更するものではありません。</strong>
+
+                    <br>
+
+                    面談時の提示内容はそのまま保存し、
+                    「現在検討中の条件」だけを変更します。
+
+                </div>
+
+
+                <div class="button-area">
+
+                    <button
+                        type="submit"
+                        class="button button-primary"
+                    >
+                        現在の条件を変更
+                    </button>
+
+                </div>
+
+
+            </form>
+
+
+        {% else %}
+
+            <div class="warning">
+
+                面談後の条件調整は、
+                最初の個人面談を実施した後に利用できます。
+
+            </div>
+
+        {% endif %}
+
+    </section>
+
+    <!-- ==================================================
+         6. 面談履歴
+    =================================================== -->
+
+    <section class="card">
+
+        <h2>
+            6. 面談履歴
         </h2>
 
 
@@ -1116,13 +1334,13 @@
 
 
     <!-- ==================================================
-         6. ランク変更履歴
+         7. ランク変更履歴
     =================================================== -->
 
     <section class="card">
 
         <h2>
-            6. ランク変更履歴
+            7. ランク変更履歴
         </h2>
 
 
@@ -1219,7 +1437,7 @@
 
 
     <!-- ==================================================
-         7. 戻る
+         8. 戻る
     =================================================== -->
 
     <section class="card">

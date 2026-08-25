@@ -1,0 +1,735 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        連絡・面談管理
+    </title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family:
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                "Yu Gothic",
+                "Meiryo",
+                sans-serif;
+            background: #f4f7f9;
+            color: #222;
+        }
+
+        .page-header {
+            background: #285b70;
+            color: white;
+            padding: 24px 30px;
+        }
+
+        .page-header h1 {
+            margin: 0 0 8px;
+            font-size: 25px;
+        }
+
+        .page-header p {
+            margin: 0;
+            font-size: 14px;
+        }
+
+        .container {
+            width: 94%;
+            max-width: 1150px;
+            margin: 26px auto 60px;
+        }
+
+        .card {
+            background: white;
+            border: 1px solid #d5dee3;
+            border-radius: 8px;
+            padding: 22px;
+            margin-bottom: 20px;
+            box-shadow:
+                0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .card h2 {
+            margin: 0 0 18px;
+            color: #174f69;
+            font-size: 19px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns:
+                repeat(4, 1fr);
+            gap: 12px;
+        }
+
+        .info-box {
+            background: #f8fbfc;
+            border: 1px solid #d4dee4;
+            border-radius: 6px;
+            padding: 13px;
+        }
+
+        .info-label {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .info-value {
+            font-weight: 700;
+        }
+
+        .student-name {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .student-kana {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 18px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns:
+                1fr 1fr;
+            gap: 18px;
+        }
+
+        .field {
+            margin-bottom: 16px;
+        }
+
+        .field-full {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            display: block;
+            font-weight: 700;
+            margin-bottom: 7px;
+            font-size: 14px;
+        }
+
+        select,
+        input[type="date"],
+        textarea {
+            width: 100%;
+            border: 1px solid #b7c3c9;
+            border-radius: 5px;
+            padding: 10px;
+            font-size: 15px;
+            background: white;
+        }
+
+        select,
+        input[type="date"] {
+            min-height: 44px;
+        }
+
+        textarea {
+            min-height: 105px;
+            resize: vertical;
+            line-height: 1.5;
+        }
+
+        .help {
+            margin-top: 5px;
+            color: #777;
+            font-size: 12px;
+        }
+
+        .notice {
+            background: #eaf4f8;
+            border-left: 4px solid #2d718c;
+            padding: 14px 16px;
+            line-height: 1.7;
+            margin-bottom: 18px;
+        }
+
+        .warning {
+            background: #fff7da;
+            border-left: 4px solid #e0a500;
+            padding: 14px 16px;
+            line-height: 1.7;
+            margin-top: 15px;
+        }
+
+        .actions {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .button {
+            display: inline-block;
+            border: 1px solid #999;
+            border-radius: 5px;
+            padding: 10px 17px;
+            text-decoration: none;
+            background: white;
+            color: #222;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .button-primary {
+            background: #1678a5;
+            color: white;
+            border-color: #1678a5;
+        }
+
+        .button-primary:hover {
+            background: #11678e;
+        }
+
+        .messages {
+            margin-bottom: 18px;
+        }
+
+        .message {
+            padding: 12px 15px;
+            border-radius: 5px;
+            margin-bottom: 8px;
+        }
+
+        .message.success {
+            background: #dff2e3;
+            border: 1px solid #aad0b3;
+            color: #246133;
+        }
+
+        .message.error {
+            background: #f9e1e1;
+            border: 1px solid #ddb2b2;
+            color: #8c2929;
+        }
+
+        @media (max-width: 800px) {
+
+            .info-grid,
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .field-full {
+                grid-column: auto;
+            }
+
+            .actions {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .button {
+                text-align: center;
+            }
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <header class="page-header">
+
+        <h1>
+            連絡・面談個人管理
+        </h1>
+
+        <p>
+            中学校からの返答、部顧問確認、
+            面談内容、面談結果を生徒ごとに管理します。
+        </p>
+
+    </header>
+
+
+    <main class="container">
+
+        {% if messages %}
+
+            <div class="messages">
+
+                {% for message in messages %}
+
+                    <div class="message {{ message.tags }}">
+                        {{ message }}
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        {% endif %}
+
+
+        <!-- ==================================================
+             1. 生徒情報
+        =================================================== -->
+
+        <section class="card">
+
+            <h2>
+                1. 生徒基本情報
+            </h2>
+
+            <div class="student-name">
+                {{ student.name }}
+            </div>
+
+            <div class="student-kana">
+                {{ student.name_kana }}
+            </div>
+
+            <div class="info-grid">
+
+                <div class="info-box">
+
+                    <div class="info-label">
+                        中学校
+                    </div>
+
+                    <div class="info-value">
+                        {{ student.junior_high_school.name }}
+                    </div>
+
+                </div>
+
+
+                <div class="info-box">
+
+                    <div class="info-label">
+                        地域
+                    </div>
+
+                    <div class="info-value">
+                        {{ student.junior_high_school.city }}
+                    </div>
+
+                </div>
+
+
+                <div class="info-box">
+
+                    <div class="info-label">
+                        部活動
+                    </div>
+
+                    <div class="info-value">
+                        {{ student.club.name }}
+                    </div>
+
+                </div>
+
+
+                <div class="info-box">
+
+                    <div class="info-label">
+                        担当教員
+                    </div>
+
+                    <div class="info-value">
+                        {{ student.assigned_teacher.name }}
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <form method="post">
+
+            {% csrf_token %}
+
+
+            <!-- ==================================================
+                 2. 中学校との連絡
+            =================================================== -->
+
+            <section class="card">
+
+                <h2>
+                    2. 中学校との連絡
+                </h2>
+
+                <div class="notice">
+                    中学校への連絡状況と、
+                    中学校から返答があった場合の内容を記録します。
+                </div>
+
+                <div class="form-grid">
+
+                    <div class="field">
+
+                        <label for="contact_status">
+                            中学校連絡状況
+                        </label>
+
+                        <select
+                            id="contact_status"
+                            name="contact_status"
+                        >
+
+                            {% for value, label in contact_status_choices %}
+
+                                <option
+                                    value="{{ value }}"
+                                    {% if student.contact_status == value %}
+                                        selected
+                                    {% endif %}
+                                >
+                                    {{ label }}
+                                </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="field">
+
+                        <label for="contact_date">
+                            中学校連絡日
+                        </label>
+
+                        <input
+                            type="date"
+                            id="contact_date"
+                            name="contact_date"
+                            value="{% if student.contact_date %}{{ student.contact_date|date:'Y-m-d' }}{% endif %}"
+                        >
+
+                    </div>
+
+
+                    <div class="field field-full">
+
+                        <label for="contact_memo">
+                            中学校からの連絡内容
+                        </label>
+
+                        <textarea
+                            id="contact_memo"
+                            name="contact_memo"
+                            placeholder="例：8月25日 ○○先生より電話。本人・保護者とも面談を希望。"
+                        >{{ student.contact_memo }}</textarea>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- ==================================================
+                 3. 部顧問への確認
+            =================================================== -->
+
+            <section class="card">
+
+                <h2>
+                    3. 部顧問への確認
+                </h2>
+
+                <div class="form-grid">
+
+                    <div class="field">
+
+                        <label for="advisor_response">
+                            部顧問返答
+                        </label>
+
+                        <select
+                            id="advisor_response"
+                            name="advisor_response"
+                        >
+
+                            {% for value, label in advisor_response_choices %}
+
+                                <option
+                                    value="{{ value }}"
+                                    {% if student.advisor_response == value %}
+                                        selected
+                                    {% endif %}
+                                >
+                                    {{ label }}
+                                </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="field field-full">
+
+                        <label for="advisor_response_memo">
+                            部顧問返答メモ
+                        </label>
+
+                        <textarea
+                            id="advisor_response_memo"
+                            name="advisor_response_memo"
+                            placeholder="例：顧問へ確認。面談を実施したいとの返答。"
+                        >{{ student.advisor_response_memo }}</textarea>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- ==================================================
+                 4. 面談
+            =================================================== -->
+
+            <section class="card">
+
+                <h2>
+                    4. 面談
+                </h2>
+
+                <div class="form-grid">
+
+                    <div class="field">
+
+                        <label for="interview_status">
+                            面談状況
+                        </label>
+
+                        <select
+                            id="interview_status"
+                            name="interview_status"
+                        >
+
+                            {% for value, label in interview_status_choices %}
+
+                                <option
+                                    value="{{ value }}"
+                                    {% if student.interview_status == value %}
+                                        selected
+                                    {% endif %}
+                                >
+                                    {{ label }}
+                                </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="field">
+
+                        <label for="interview_date">
+                            面談日
+                        </label>
+
+                        <input
+                            type="date"
+                            id="interview_date"
+                            name="interview_date"
+                            value="{% if student.interview_date %}{{ student.interview_date|date:'Y-m-d' }}{% endif %}"
+                        >
+
+                    </div>
+
+
+                    <div class="field field-full">
+
+                        <label for="interview_memo">
+                            面談内容・記録
+                        </label>
+
+                        <textarea
+                            id="interview_memo"
+                            name="interview_memo"
+                            placeholder="本人・保護者との面談内容、競技状況、希望条件などを記録します。"
+                        >{{ student.interview_memo }}</textarea>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- ==================================================
+                 5. 面談結果・ランク
+            =================================================== -->
+
+            <section class="card">
+
+                <h2>
+                    5. 面談結果・奨学金区分
+                </h2>
+
+                <div class="warning">
+                    奨学金ランクは、
+                    中学校からの反応や面談内容を確認した後に
+                    設定する運用を想定しています。
+                    未確定の場合は「未設定」のままで構いません。
+                </div>
+
+                <br>
+
+                <div class="form-grid">
+
+                    <div class="field">
+
+                        <label for="interview_result">
+                            面談結果
+                        </label>
+
+                        <select
+                            id="interview_result"
+                            name="interview_result"
+                        >
+
+                            {% for value, label in interview_result_choices %}
+
+                                <option
+                                    value="{{ value }}"
+                                    {% if student.interview_result == value %}
+                                        selected
+                                    {% endif %}
+                                >
+                                    {{ label }}
+                                </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="field">
+
+                        <label for="scholarship_category">
+                            奨学金ランク
+                        </label>
+
+                        <select
+                            id="scholarship_category"
+                            name="scholarship_category"
+                        >
+
+                            <option value="">
+                                未設定
+                            </option>
+
+                            {% for category in scholarship_categories %}
+
+                                <option
+                                    value="{{ category.id }}"
+                                    {% if student.scholarship_category_id == category.id %}
+                                        selected
+                                    {% endif %}
+                                >
+                                    {{ category.name }}
+                                </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- ==================================================
+                 6. 管理職メモ
+            =================================================== -->
+
+            <section class="card">
+
+                <h2>
+                    6. 管理職メモ
+                </h2>
+
+                <div class="notice">
+                    電話内容、部顧問への伝達事項、
+                    今後の対応などを自由に記録できます。
+                    紙の管理職メモと同じ感覚で使用できます。
+                </div>
+
+                <div class="field">
+
+                    <textarea
+                        id="management_memo"
+                        name="management_memo"
+                        placeholder="例：校長対応。○○中から連絡あり。○○顧問へ伝達済み。"
+                    >{{ student.management_memo }}</textarea>
+
+                </div>
+
+            </section>
+
+
+            <!-- ==================================================
+                 保存
+            =================================================== -->
+
+            <section class="card">
+
+                <div class="actions">
+
+                    <a
+                        href="{% url 'publicity:recruitment_response_management_list' %}"
+                        class="button"
+                    >
+                        募集連絡・面談一覧へ戻る
+                    </a>
+
+                    <button
+                        type="submit"
+                        class="button button-primary"
+                    >
+                        連絡・面談情報を保存
+                    </button>
+
+                </div>
+
+            </section>
+
+        </form>
+
+    </main>
+
+</body>
+
+</html>

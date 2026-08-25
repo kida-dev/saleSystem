@@ -6,12 +6,14 @@ from .models import (
     DocumentHistory,
     DormitoryBenefitCategory,
     DormitoryBenefitHistory,
+    DormitoryBenefitQuota,
     JuniorHighSchool, 
     JuniorHighClass,
     ProspectiveStudent,
     ScholarshipAssignment,
     ScholarshipCategory,
     ScholarshipInterview,
+    ScholarshipQuota,
     ScholarshipRankHistory,
     ScholarshipRequestDocument,
     Teacher,
@@ -338,4 +340,60 @@ class ScholarshipRequestDocumentAdmin(admin.ModelAdmin):
     ordering = (
         "-issue_date",
         "-created_at",
+    )
+
+@admin.register(ScholarshipQuota)
+class ScholarshipQuotaAdmin(admin.ModelAdmin):
+
+    list_display = (
+        "fiscal_year",
+        "club",
+        "category",
+        "quota",
+        "updated_at",
+    )
+
+    list_filter = (
+        "fiscal_year",
+        "club",
+        "category",
+    )
+
+    search_fields = (
+        "club__name",
+        "category__name",
+    )
+
+    ordering = (
+        "-fiscal_year",
+        "club__name",
+        "category__name",
+    )
+
+@admin.register(DormitoryBenefitQuota)
+class DormitoryBenefitQuotaAdmin(admin.ModelAdmin):
+
+    list_display = (
+        "fiscal_year",
+        "club",
+        "benefit",
+        "quota",
+        "updated_at",
+    )
+
+    list_filter = (
+        "fiscal_year",
+        "club",
+        "benefit",
+    )
+
+    search_fields = (
+        "club__name",
+        "benefit__name",
+    )
+
+    ordering = (
+        "-fiscal_year",
+        "club__name",
+        "benefit__name",
     )

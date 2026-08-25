@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        奨学生枠設定
+    </title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+
+            font-family:
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                "Yu Gothic",
+                Meiryo,
+                sans-serif;
+
+            background: #f4f7f9;
+            color: #222;
+        }
+
+
+        /* ==================================================
+           ヘッダー
+        ================================================== */
+
+        .page-header {
+            background: #286b80;
+            color: white;
+            padding: 24px 32px;
+        }
+
+        .page-header h1 {
+            margin: 0 0 8px;
+            font-size: 26px;
+        }
+
+        .page-header p {
+            margin: 0;
+            font-size: 14px;
+        }
+
+
+        /* ==================================================
+           全体
+        ================================================== */
+
+        .container {
+            max-width: 1200px;
+            margin: 24px auto;
+            padding: 0 20px 50px;
+        }
+
+
+        .card {
+            background: white;
+
+            border:
+                1px solid #d5dee3;
+
+            border-radius: 9px;
+
+            padding: 24px;
+
+            margin-bottom: 20px;
+
+            box-shadow:
+                0 2px 5px
+                rgba(0, 0, 0, 0.05);
+        }
+
+
+        .card h2 {
+            margin-top: 0;
+            margin-bottom: 20px;
+
+            color: #075472;
+
+            font-size: 21px;
+        }
+
+
+        /* ==================================================
+           メッセージ
+        ================================================== */
+
+        .message {
+            padding: 13px 17px;
+
+            margin-bottom: 18px;
+
+            border-radius: 6px;
+
+            background: #e2f3e6;
+
+            border:
+                1px solid #acd5b5;
+
+            color: #246b34;
+        }
+
+
+        /* ==================================================
+           説明
+        ================================================== */
+
+        .notice {
+            background: #edf6f9;
+
+            border-left:
+                4px solid #24728b;
+
+            padding: 15px 18px;
+
+            margin-bottom: 20px;
+
+            line-height: 1.7;
+        }
+
+
+        .warning {
+            background: #fff8df;
+
+            border-left:
+                4px solid #d39a18;
+
+            padding: 15px 18px;
+
+            margin-bottom: 20px;
+
+            line-height: 1.7;
+        }
+
+
+        /* ==================================================
+           年度
+        ================================================== */
+
+        .year-form {
+            display: flex;
+
+            align-items: end;
+
+            flex-wrap: wrap;
+
+            gap: 12px;
+        }
+
+
+        .form-group label {
+            display: block;
+
+            font-weight: bold;
+
+            margin-bottom: 7px;
+        }
+
+
+        .year-input {
+            width: 150px;
+
+            padding: 10px;
+
+            border:
+                1px solid #b7c5cc;
+
+            border-radius: 6px;
+
+            font-size: 16px;
+        }
+
+
+        .year-display {
+            font-size: 23px;
+
+            font-weight: bold;
+
+            color: #075472;
+        }
+
+
+        /* ==================================================
+           表
+        ================================================== */
+
+        .table-wrapper {
+            width: 100%;
+
+            overflow-x: auto;
+        }
+
+
+        .quota-table {
+            width: 100%;
+
+            min-width: 850px;
+
+            border-collapse: collapse;
+        }
+
+
+        .quota-table th,
+        .quota-table td {
+
+            border-bottom:
+                1px solid #d8e2e6;
+
+            padding: 12px;
+
+            text-align: center;
+        }
+
+
+        .quota-table th {
+            background: #eaf1f4;
+
+            color: #174d60;
+
+            font-weight: bold;
+
+            white-space: nowrap;
+        }
+
+
+        .quota-table th:first-child,
+        .quota-table td:first-child {
+
+            text-align: left;
+
+            min-width: 180px;
+        }
+
+
+        .club-name {
+            font-weight: bold;
+        }
+
+
+        /* ==================================================
+           SS / S / A
+        ================================================== */
+
+        .rank-header {
+            min-width: 110px;
+        }
+
+
+        .quota-input {
+            width: 85px;
+
+            padding: 10px 8px;
+
+            border:
+                1px solid #b8c7ce;
+
+            border-radius: 6px;
+
+            text-align: center;
+
+            font-size: 17px;
+        }
+
+
+        .quota-input:focus {
+            outline:
+                2px solid #74b5ca;
+
+            border-color:
+                #24728b;
+        }
+
+
+        /* ==================================================
+           寮費枠
+        ================================================== */
+
+        .dormitory-header {
+            min-width: 190px;
+
+            background: #fff6dc !important;
+
+            color: #73520b !important;
+        }
+
+
+        .dormitory-cell {
+            background: #fffcf3;
+        }
+
+
+        .dormitory-input {
+            width: 95px;
+
+            padding: 10px 8px;
+
+            border:
+                1px solid #cdbb83;
+
+            border-radius: 6px;
+
+            text-align: center;
+
+            font-size: 17px;
+
+            background: white;
+        }
+
+
+        .dormitory-input:focus {
+            outline:
+                2px solid #d7b75b;
+
+            border-color:
+                #b99329;
+        }
+
+
+        /* ==================================================
+           ボタン
+        ================================================== */
+
+        .button-area {
+            display: flex;
+
+            flex-wrap: wrap;
+
+            align-items: center;
+
+            gap: 12px;
+
+            margin-top: 24px;
+        }
+
+
+        .button {
+            display: inline-block;
+
+            padding: 11px 20px;
+
+            border-radius: 6px;
+
+            border: none;
+
+            cursor: pointer;
+
+            text-decoration: none;
+
+            font-weight: bold;
+
+            font-size: 15px;
+        }
+
+
+        .button-primary {
+            background: #08759b;
+            color: white;
+        }
+
+
+        .button-primary:hover {
+            background: #075f7d;
+        }
+
+
+        .button-secondary {
+            background: white;
+
+            color: #333;
+
+            border:
+                1px solid #aaa;
+        }
+
+
+        .save-button {
+            padding: 14px 28px;
+
+            font-size: 17px;
+        }
+
+
+        /* ==================================================
+           補足
+        ================================================== */
+
+        .help-text {
+            margin-top: 12px;
+
+            color: #666;
+
+            font-size: 13px;
+
+            line-height: 1.7;
+        }
+
+
+        .legend-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(
+                    auto-fit,
+                    minmax(220px, 1fr)
+                );
+
+            gap: 12px;
+
+            margin-top: 15px;
+        }
+
+
+        .legend-box {
+            background: #f8fbfc;
+
+            border:
+                1px solid #d8e2e6;
+
+            border-radius: 6px;
+
+            padding: 13px;
+        }
+
+
+        .legend-title {
+            font-weight: bold;
+
+            margin-bottom: 5px;
+        }
+
+
+        /* ==================================================
+           スマホ・iPad
+        ================================================== */
+
+        @media (
+            max-width: 768px
+        ) {
+
+            .page-header {
+                padding: 20px;
+            }
+
+
+            .container {
+                padding:
+                    0 12px 40px;
+            }
+
+
+            .card {
+                padding: 17px;
+            }
+
+
+            .button {
+                width: 100%;
+
+                text-align: center;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<header class="page-header">
+
+    <h1>
+        奨学生枠設定
+    </h1>
+
+    <p>
+        年度・部活動ごとの奨学生ランク枠と
+        寮費待遇枠を設定します。
+    </p>
+
+</header>
+
+
+<div class="container">
+
+
+    <!-- ==================================================
+         Django messages
+    =================================================== -->
+
+    {% if messages %}
+
+        {% for message in messages %}
+
+            <div class="message">
+                {{ message }}
+            </div>
+
+        {% endfor %}
+
+    {% endif %}
+
+
+    <!-- ==================================================
+         1. 年度
+    =================================================== -->
+
+    <section class="card">
+
+        <h2>
+            1. 対象年度
+        </h2>
+
+
+        <form
+            method="get"
+            class="year-form"
+        >
+
+            <div class="form-group">
+
+                <label
+                    for="fiscal_year"
+                >
+                    年度（西暦）
+                </label>
+
+
+                <input
+                    type="number"
+                    id="fiscal_year"
+                    name="fiscal_year"
+                    value="{{ fiscal_year }}"
+                    min="2020"
+                    max="2100"
+                    class="year-input"
+                    required
+                >
+
+            </div>
+
+
+            <button
+                type="submit"
+                class="button button-secondary"
+            >
+                年度を表示
+            </button>
+
+        </form>
+
+    </section>
+
+
+    <!-- ==================================================
+         2. 枠設定
+    =================================================== -->
+
+    <section class="card">
+
+        <h2>
+            2. 奨学生・寮費待遇枠
+        </h2>
+
+
+        <div class="notice">
+
+            <span class="year-display">
+                {{ fiscal_year }}年度
+            </span>
+
+            の枠を設定しています。
+
+            <br>
+
+            各部活動について、
+            <strong>
+                SS → S → A
+            </strong>
+            の奨学生ランク上限と、
+            寮施設管理費免除の上限人数を入力してください。
+
+        </div>
+
+
+        {% if not dormitory_quota_benefit %}
+
+            <div class="warning">
+
+                <strong>
+                    寮費区分「寮施設管理費免除」が
+                    登録されていません。
+                </strong>
+
+                <br>
+
+                Django管理画面から
+                対象となる寮費区分を確認してください。
+
+            </div>
+
+        {% endif %}
+
+
+        <form method="post">
+
+            {% csrf_token %}
+
+
+            <input
+                type="hidden"
+                name="fiscal_year"
+                value="{{ fiscal_year }}"
+            >
+
+
+            <div class="table-wrapper">
+
+
+                <table class="quota-table">
+
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                部活動
+                            </th>
+
+
+                            <!--
+                                Viewで
+                                SS → S → A
+                                の順に並べている
+                            -->
+
+                            {% for category in categories %}
+
+                                <th class="rank-header">
+
+                                    {{ category.name }}
+
+                                </th>
+
+                            {% endfor %}
+
+
+                            <th class="dormitory-header">
+
+                                寮施設管理費免除
+
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+
+                        {% for row in quota_rows %}
+
+                            <tr>
+
+
+                                <!-- 部活動 -->
+
+                                <td class="club-name">
+
+                                    {{ row.club.name }}
+
+                                </td>
+
+
+                                <!-- SS / S / A -->
+
+                                {% for item in row.values %}
+
+                                    <td>
+
+                                        <input
+                                            type="number"
+                                            name="{{ item.field_name }}"
+                                            value="{{ item.value }}"
+                                            min="0"
+                                            step="1"
+                                            class="quota-input"
+                                            aria-label="{{ row.club.name }} {{ item.category.name }} 上限人数"
+                                        >
+
+                                    </td>
+
+                                {% endfor %}
+
+
+                                <!-- 寮施設管理費免除 -->
+
+                                <td class="dormitory-cell">
+
+                                    {% if dormitory_quota_benefit %}
+
+                                        <input
+                                            type="number"
+                                            name="{{ row.dormitory_field_name }}"
+                                            value="{{ row.dormitory_value }}"
+                                            min="0"
+                                            step="1"
+                                            class="dormitory-input"
+                                            aria-label="{{ row.club.name }} 寮施設管理費免除 上限人数"
+                                        >
+
+                                    {% else %}
+
+                                        -
+
+                                    {% endif %}
+
+                                </td>
+
+
+                            </tr>
+
+
+                        {% empty %}
+
+
+                            <tr>
+
+                                <td
+                                    colspan="10"
+                                    style="text-align:center;"
+                                >
+                                    使用中の部活動がありません。
+                                </td>
+
+                            </tr>
+
+
+                        {% endfor %}
+
+
+                    </tbody>
+
+
+                </table>
+
+
+            </div>
+
+
+            <div class="help-text">
+
+                「0」は、その年度・部活動について
+                その区分の割当枠がないことを表します。
+
+                <br>
+
+                入力した人数は、
+                部顧問の奨学生・面談管理画面で
+                「現在人数 / 上限人数」として表示する予定です。
+
+            </div>
+
+
+            <div class="legend-grid">
+
+
+                <div class="legend-box">
+
+                    <div class="legend-title">
+                        奨学生ランク
+                    </div>
+
+                    SS・S・Aは、
+                    各部活動で設定できる
+                    奨学生ランクの上限人数です。
+
+                </div>
+
+
+                <div class="legend-box">
+
+                    <div class="legend-title">
+                        寮施設管理費免除
+                    </div>
+
+                    奨学生ランクとは別に、
+                    寮施設管理費免除を適用できる
+                    上限人数を管理します。
+
+                </div>
+
+
+            </div>
+
+
+            <div class="button-area">
+
+
+                <button
+                    type="submit"
+                    class="button button-primary save-button"
+                >
+                    {{ fiscal_year }}年度の枠を一括保存
+                </button>
+
+
+                <a
+                    href="{% url 'publicity:scholarship_management_list' %}"
+                    class="button button-secondary"
+                >
+                    奨学生・面談管理へ戻る
+                </a>
+
+
+            </div>
+
+
+        </form>
+
+    </section>
+
+
+</div>
+
+
+</body>
+
+</html>

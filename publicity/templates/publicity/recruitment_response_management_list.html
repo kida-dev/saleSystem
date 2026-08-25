@@ -1,0 +1,1006 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        募集連絡・面談管理
+    </title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family:
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                "Yu Gothic",
+                "Meiryo",
+                sans-serif;
+            background: #f4f7f9;
+            color: #222;
+        }
+
+        /* ======================================================
+           ヘッダー
+        ====================================================== */
+
+        .page-header {
+            background: #285b70;
+            color: white;
+            padding: 24px 30px;
+        }
+
+        .page-header h1 {
+            margin: 0 0 8px;
+            font-size: 25px;
+        }
+
+        .page-header p {
+            margin: 0;
+            font-size: 14px;
+        }
+
+        /* ======================================================
+           全体
+        ====================================================== */
+
+        .container {
+            width: 95%;
+            max-width: 1500px;
+            margin: 28px auto 60px;
+        }
+
+        .card {
+            background: white;
+            border: 1px solid #d5dee3;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 22px;
+            box-shadow:
+                0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .card h2 {
+            margin: 0 0 18px;
+            color: #174f69;
+            font-size: 19px;
+        }
+
+        /* ======================================================
+           上部ボタン
+        ====================================================== */
+
+        .top-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 10px 17px;
+            border-radius: 5px;
+            border: 1px solid #999;
+            background: white;
+            color: #222;
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .button:hover {
+            background: #f3f3f3;
+        }
+
+        .button-primary {
+            background: #1678a5;
+            border-color: #1678a5;
+            color: white;
+        }
+
+        .button-primary:hover {
+            background: #11678e;
+        }
+
+        /* ======================================================
+           進捗カード
+        ====================================================== */
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns:
+                repeat(auto-fit, minmax(145px, 1fr));
+            gap: 12px;
+        }
+
+        .summary-item {
+            border: 1px solid #d4dee4;
+            border-radius: 7px;
+            padding: 14px 10px;
+            text-align: center;
+            background: #fafcfd;
+        }
+
+        .summary-label {
+            font-size: 13px;
+            color: #555;
+            margin-bottom: 5px;
+        }
+
+        .summary-number {
+            font-size: 24px;
+            font-weight: 700;
+            color: #174f69;
+        }
+
+        .summary-number small {
+            font-size: 13px;
+            font-weight: normal;
+            margin-left: 3px;
+        }
+
+        .summary-important {
+            background: #edf7fb;
+            border-color: #9fc7d8;
+        }
+
+        .summary-success {
+            background: #eef8f0;
+            border-color: #abd2b2;
+        }
+
+        /* ======================================================
+           検索
+        ====================================================== */
+
+        .search-grid {
+            display: grid;
+            grid-template-columns:
+                2fr 1fr 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .search-grid-second {
+            display: grid;
+            grid-template-columns:
+                1fr 1fr 1fr auto;
+            gap: 12px;
+        }
+
+        input,
+        select {
+            width: 100%;
+            min-height: 42px;
+            border: 1px solid #b9c4ca;
+            border-radius: 5px;
+            padding: 8px 10px;
+            background: white;
+            font-size: 14px;
+        }
+
+        /* ======================================================
+           一覧
+        ====================================================== */
+
+        .result-info {
+            margin-bottom: 13px;
+            padding: 11px 14px;
+            background: #fff4ca;
+            border: 1px solid #e9c95f;
+            border-radius: 5px;
+        }
+
+        .table-wrap {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 1250px;
+        }
+
+        th,
+        td {
+            border: 1px solid #c9d4da;
+            padding: 10px 8px;
+            vertical-align: middle;
+            font-size: 13px;
+        }
+
+        th {
+            background: #e7f0f4;
+            font-weight: 700;
+            white-space: nowrap;
+            text-align: center;
+        }
+
+        td {
+            background: white;
+        }
+
+        .student-name {
+            font-weight: 700;
+        }
+
+        .school-name {
+            font-weight: 600;
+        }
+
+        .center {
+            text-align: center;
+        }
+
+        /* ======================================================
+           ステータス
+        ====================================================== */
+
+        .status {
+            display: inline-block;
+            min-width: 66px;
+            padding: 5px 8px;
+            border-radius: 20px;
+            text-align: center;
+            font-size: 12px;
+            white-space: nowrap;
+        }
+
+        .status-gray {
+            background: #eceff1;
+            color: #555;
+        }
+
+        .status-blue {
+            background: #dceff8;
+            color: #145b79;
+        }
+
+        .status-yellow {
+            background: #fff2c7;
+            color: #765d00;
+        }
+
+        .status-green {
+            background: #dff2e3;
+            color: #236634;
+        }
+
+        .status-red {
+            background: #f9e1e1;
+            color: #9b3030;
+        }
+
+        .rank {
+            font-weight: 700;
+            color: #174f69;
+        }
+
+        /* ======================================================
+           操作
+        ====================================================== */
+
+        .manage-button {
+            display: inline-block;
+            padding: 7px 11px;
+            background: #1678a5;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .manage-button:hover {
+            background: #11678e;
+        }
+
+        .empty {
+            padding: 35px;
+            text-align: center;
+            color: #666;
+        }
+
+        /* ======================================================
+           スマホ等
+        ====================================================== */
+
+        @media (max-width: 1000px) {
+
+            .search-grid,
+            .search-grid-second {
+                grid-template-columns: 1fr 1fr;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <!-- ======================================================
+         ヘッダー
+    ======================================================= -->
+
+    <header class="page-header">
+
+        <h1>
+            募集連絡・面談管理
+        </h1>
+
+        <p>
+            中学校への連絡から部顧問確認、
+            面談、奨学生候補決定までの進捗を管理します。
+        </p>
+
+    </header>
+
+
+    <main class="container">
+
+        <!-- ==================================================
+             上部
+        =================================================== -->
+
+        <section class="card">
+
+            <div class="top-actions">
+
+                <a
+                    href="{% url 'publicity:top' %}"
+                    class="button"
+                >
+                    トップへ戻る
+                </a>
+
+                <a
+                    href="{% url 'publicity:prospective_student_list' %}"
+                    class="button button-primary"
+                >
+                    募集対象生徒一覧
+                </a>
+
+            </div>
+
+        </section>
+
+
+        <!-- ==================================================
+             1. 進捗
+        =================================================== -->
+
+        <section class="card">
+
+            <h2>
+                1. 現在の進捗
+            </h2>
+
+            <div class="summary-grid">
+
+                <div class="summary-item">
+
+                    <div class="summary-label">
+                        募集対象者
+                    </div>
+
+                    <div class="summary-number">
+                        {{ total_count }}
+                        <small>名</small>
+                    </div>
+
+                </div>
+
+
+                <div class="summary-item">
+
+                    <div class="summary-label">
+                        未連絡
+                    </div>
+
+                    <div class="summary-number">
+                        {{ not_contacted_count }}
+                        <small>名</small>
+                    </div>
+
+                </div>
+
+
+                <div class="summary-item">
+
+                    <div class="summary-label">
+                        返答待ち
+                    </div>
+
+                    <div class="summary-number">
+                        {{ waiting_count }}
+                        <small>名</small>
+                    </div>
+
+                </div>
+
+
+                <div class="summary-item summary-important">
+
+                    <div class="summary-label">
+                        返答あり
+                    </div>
+
+                    <div class="summary-number">
+                        {{ responded_count }}
+                        <small>名</small>
+                    </div>
+
+                </div>
+
+
+                <div class="summary-item">
+
+                    <div class="summary-label">
+                        部顧問：面談する
+                    </div>
+
+                    <div class="summary-number">
+                        {{ advisor_accept_count }}
+                        <small>名</small>
+                    </div>
+
+                </div>
+
+
+                <div class="summary-item">
+
+                    <div class="summary-label">
+                        部顧問：面談しない
+                    </div>
+
+                    <div class="summary-number">
+                        {{ advisor_decline_count }}
+                        <small>名</small>
+                    </div>
+
+                </div>
+
+
+                <div class="summary-item summary-important">
+
+                    <div class="summary-label">
+                        面談予定
+                    </div>
+
+                    <div class="summary-number">
+                        {{ interview_scheduled_count }}
+                        <small>名</small>
+                    </div>
+
+                </div>
+
+
+                <div class="summary-item">
+
+                    <div class="summary-label">
+                        面談済
+                    </div>
+
+                    <div class="summary-number">
+                        {{ interview_completed_count }}
+                        <small>名</small>
+                    </div>
+
+                </div>
+
+
+                <div class="summary-item summary-success">
+
+                    <div class="summary-label">
+                        奨学生候補
+                    </div>
+
+                    <div class="summary-number">
+                        {{ candidate_count }}
+                        <small>名</small>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ==================================================
+             2. 検索
+        =================================================== -->
+
+        <section class="card">
+
+            <h2>
+                2. 絞り込み
+            </h2>
+
+            <form method="get">
+
+                <div class="search-grid">
+
+                    <input
+                        type="text"
+                        name="q"
+                        value="{{ keyword }}"
+                        placeholder="氏名・中学校・部活動・担当教員"
+                    >
+
+
+                    <select name="school">
+
+                        <option value="">
+                            すべての中学校
+                        </option>
+
+                        {% for school in schools %}
+
+                            <option
+                                value="{{ school.id }}"
+                                {% if selected_school == school.id|stringformat:"s" %}
+                                    selected
+                                {% endif %}
+                            >
+                                {{ school.name }}
+                            </option>
+
+                        {% endfor %}
+
+                    </select>
+
+
+                    <select name="club">
+
+                        <option value="">
+                            すべての部活動
+                        </option>
+
+                        {% for club in clubs %}
+
+                            <option
+                                value="{{ club.id }}"
+                                {% if selected_club == club.id|stringformat:"s" %}
+                                    selected
+                                {% endif %}
+                            >
+                                {{ club.name }}
+                            </option>
+
+                        {% endfor %}
+
+                    </select>
+
+
+                    <select name="contact_status">
+
+                        <option value="">
+                            中学校連絡：すべて
+                        </option>
+
+                        {% for value, label in contact_status_choices %}
+
+                            <option
+                                value="{{ value }}"
+                                {% if selected_contact_status == value %}
+                                    selected
+                                {% endif %}
+                            >
+                                {{ label }}
+                            </option>
+
+                        {% endfor %}
+
+                    </select>
+
+                </div>
+
+
+                <div class="search-grid-second">
+
+                    <select name="advisor_response">
+
+                        <option value="">
+                            部顧問返答：すべて
+                        </option>
+
+                        {% for value, label in advisor_response_choices %}
+
+                            <option
+                                value="{{ value }}"
+                                {% if selected_advisor_response == value %}
+                                    selected
+                                {% endif %}
+                            >
+                                {{ label }}
+                            </option>
+
+                        {% endfor %}
+
+                    </select>
+
+
+                    <select name="interview_status">
+
+                        <option value="">
+                            面談状況：すべて
+                        </option>
+
+                        {% for value, label in interview_status_choices %}
+
+                            <option
+                                value="{{ value }}"
+                                {% if selected_interview_status == value %}
+                                    selected
+                                {% endif %}
+                            >
+                                {{ label }}
+                            </option>
+
+                        {% endfor %}
+
+                    </select>
+
+
+                    <select name="interview_result">
+
+                        <option value="">
+                            面談結果：すべて
+                        </option>
+
+                        {% for value, label in interview_result_choices %}
+
+                            <option
+                                value="{{ value }}"
+                                {% if selected_interview_result == value %}
+                                    selected
+                                {% endif %}
+                            >
+                                {{ label }}
+                            </option>
+
+                        {% endfor %}
+
+                    </select>
+
+
+                    <button
+                        type="submit"
+                        class="button button-primary"
+                    >
+                        検索
+                    </button>
+
+                </div>
+
+            </form>
+
+        </section>
+
+
+        <!-- ==================================================
+             3. 一覧
+        =================================================== -->
+
+        <section class="card">
+
+            <h2>
+                3. 募集連絡・面談一覧
+            </h2>
+
+            <div class="result-info">
+
+                表示中：
+                <strong>
+                    {{ display_count }}
+                </strong>
+                名
+
+            </div>
+
+
+            <div class="table-wrap">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>No.</th>
+
+                            <th>地域</th>
+
+                            <th>中学校</th>
+
+                            <th>生徒氏名</th>
+
+                            <th>部活動</th>
+
+                            <th>担当教員</th>
+
+                            <th>中学校連絡</th>
+
+                            <th>部顧問返答</th>
+
+                            <th>面談</th>
+
+                            <th>面談結果</th>
+
+                            <th>ランク</th>
+
+                            <th>操作</th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        {% for student in students %}
+
+                            <tr>
+
+                                <td class="center">
+                                    {{ forloop.counter }}
+                                </td>
+
+
+                                <td class="center">
+
+                                    {{ student.junior_high_school.city }}
+
+                                </td>
+
+
+                                <td class="school-name">
+
+                                    {{ student.junior_high_school.name }}
+
+                                </td>
+
+
+                                <td class="student-name">
+
+                                    {{ student.name }}
+
+                                </td>
+
+
+                                <td>
+
+                                    {{ student.club.name }}
+
+                                </td>
+
+
+                                <td>
+
+                                    {{ student.assigned_teacher.name }}
+
+                                </td>
+
+
+                                <!-- 中学校連絡 -->
+
+                                <td class="center">
+
+                                    {% if student.contact_status == "not_contacted" %}
+
+                                        <span class="status status-gray">
+                                            未連絡
+                                        </span>
+
+                                    {% elif student.contact_status == "waiting" %}
+
+                                        <span class="status status-yellow">
+                                            返答待ち
+                                        </span>
+
+                                    {% elif student.contact_status == "responded" %}
+
+                                        <span class="status status-green">
+                                            返答あり
+                                        </span>
+
+                                    {% else %}
+
+                                        <span class="status status-blue">
+                                            {{ student.get_contact_status_display }}
+                                        </span>
+
+                                    {% endif %}
+
+                                </td>
+
+
+                                <!-- 部顧問 -->
+
+                                <td class="center">
+
+                                    {% if student.advisor_response == "accept" %}
+
+                                        <span class="status status-green">
+                                            面談する
+                                        </span>
+
+                                    {% elif student.advisor_response == "decline" %}
+
+                                        <span class="status status-red">
+                                            面談しない
+                                        </span>
+
+                                    {% elif student.advisor_response == "waiting" %}
+
+                                        <span class="status status-yellow">
+                                            確認中
+                                        </span>
+
+                                    {% else %}
+
+                                        <span class="status status-gray">
+                                            未確認
+                                        </span>
+
+                                    {% endif %}
+
+                                </td>
+
+
+                                <!-- 面談 -->
+
+                                <td class="center">
+
+                                    {% if student.interview_status == "scheduled" %}
+
+                                        <span class="status status-blue">
+                                            面談予定
+                                        </span>
+
+                                        {% if student.interview_date %}
+
+                                            <br>
+
+                                            <small>
+                                                {{ student.interview_date|date:"n/j" }}
+                                            </small>
+
+                                        {% endif %}
+
+                                    {% elif student.interview_status == "completed" %}
+
+                                        <span class="status status-green">
+                                            面談済
+                                        </span>
+
+                                    {% elif student.interview_status == "declined" %}
+
+                                        <span class="status status-red">
+                                            面談なし
+                                        </span>
+
+                                    {% else %}
+
+                                        <span class="status status-gray">
+                                            未確認
+                                        </span>
+
+                                    {% endif %}
+
+                                </td>
+
+
+                                <!-- 面談結果 -->
+
+                                <td class="center">
+
+                                    {% if student.interview_result == "candidate" %}
+
+                                        <span class="status status-green">
+                                            奨学生候補
+                                        </span>
+
+                                    {% elif student.interview_result == "considering" %}
+
+                                        <span class="status status-yellow">
+                                            継続検討
+                                        </span>
+
+                                    {% elif student.interview_result == "declined" %}
+
+                                        <span class="status status-red">
+                                            見送り
+                                        </span>
+
+                                    {% else %}
+
+                                        <span class="status status-gray">
+                                            未判定
+                                        </span>
+
+                                    {% endif %}
+
+                                </td>
+
+
+                                <!-- 奨学金区分 -->
+
+                                <td class="center rank">
+
+                                    {% if student.scholarship_category %}
+
+                                        {{ student.scholarship_category.name }}
+
+                                    {% else %}
+
+                                        －
+
+                                    {% endif %}
+
+                                </td>
+
+
+                                <!-- 操作 -->
+
+                                <td class="center">
+
+                                    <a
+                                        href="{% url 'publicity:recruitment_response_management_detail' student.id %}"
+                                        class="manage-button"
+                                    >
+                                        連絡・面談管理
+                                    </a>
+
+                                </td>
+
+                            </tr>
+
+                        {% empty %}
+
+                            <tr>
+
+                                <td
+                                    colspan="12"
+                                    class="empty"
+                                >
+                                    条件に該当する生徒はいません。
+                                </td>
+
+                            </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</body>
+
+</html>

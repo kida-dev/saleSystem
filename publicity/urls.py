@@ -66,6 +66,16 @@ urlpatterns = [
         name="scholarship_assignment_detail",
     ),
     path(
+        "scholarship/manage/student/<int:student_id>/interview/",
+        views.scholarship_interview,
+        name="scholarship_interview",
+    ),
+    path(
+        "scholarship/quotas/",
+        views.scholarship_quota_manage,
+        name="scholarship_quota_manage",
+    ),
+    path(
         "api/schools/search/",
         views.junior_high_school_search,
         name="junior_high_school_search",
@@ -89,6 +99,16 @@ urlpatterns = [
         "students/export/excel/",
         views.prospective_student_excel,
         name="prospective_student_excel",
+    ),
+    path(
+        "recruitment/manage/",
+        views.recruitment_response_management_list,
+        name="recruitment_response_management_list",
+    ),
+    path(
+        "recruitment/manage/student/<int:student_id>/",
+        views.recruitment_response_management_detail,
+        name="recruitment_response_management_detail",
     ),
     path("schools/", views.school_list, name="school_list"),
     path("schools/print/", views.school_print, name="school_print"),

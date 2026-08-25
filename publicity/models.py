@@ -239,6 +239,11 @@ class DormitoryBenefitCategory(models.Model):
 
 
 class ProspectiveStudent(models.Model):
+
+    # ============================================================
+    # 基本情報
+    # ============================================================
+
     name = models.CharField(
         "氏名",
         max_length=100,
@@ -277,6 +282,10 @@ class ProspectiveStudent(models.Model):
         related_name="prospective_students",
     )
 
+    # ============================================================
+    # 奨学金関係
+    # ============================================================
+
     scholarship_wanted = models.BooleanField(
         "奨学金希望",
         default=False,
@@ -296,6 +305,166 @@ class ProspectiveStudent(models.Model):
         related_name="prospective_students",
     )
 
+    # ============================================================
+    # 中学校への連絡状況
+    # ============================================================
+
+    CONTACT_STATUS_CHOICES = [
+        (
+            "not_contacted",
+            "未連絡",
+        ),
+        (
+            "contacted",
+            "連絡済",
+        ),
+        (
+            "waiting",
+            "返答待ち",
+        ),
+        (
+            "responded",
+            "返答あり",
+        ),
+    ]
+
+    contact_status = models.CharField(
+        "中学校連絡状況",
+        max_length=20,
+        choices=CONTACT_STATUS_CHOICES,
+        default="not_contacted",
+    )
+
+    contact_date = models.DateField(
+        "中学校連絡日",
+        blank=True,
+        null=True,
+    )
+
+    contact_memo = models.TextField(
+        "中学校からの連絡内容",
+        blank=True,
+    )
+
+    # ============================================================
+    # 部顧問への確認
+    # ============================================================
+
+    ADVISOR_RESPONSE_CHOICES = [
+        (
+            "not_confirmed",
+            "未確認",
+        ),
+        (
+            "waiting",
+            "確認中",
+        ),
+        (
+            "accept",
+            "面談する",
+        ),
+        (
+            "decline",
+            "面談しない",
+        ),
+    ]
+
+    advisor_response = models.CharField(
+        "部顧問返答",
+        max_length=20,
+        choices=ADVISOR_RESPONSE_CHOICES,
+        default="not_confirmed",
+    )
+
+    advisor_response_memo = models.TextField(
+        "部顧問返答メモ",
+        blank=True,
+    )
+
+    # ============================================================
+    # 面談管理
+    # ============================================================
+
+    INTERVIEW_STATUS_CHOICES = [
+        (
+            "not_decided",
+            "未確認",
+        ),
+        (
+            "scheduled",
+            "面談予定",
+        ),
+        (
+            "completed",
+            "面談済",
+        ),
+        (
+            "declined",
+            "面談なし",
+        ),
+    ]
+
+    interview_status = models.CharField(
+        "面談状況",
+        max_length=20,
+        choices=INTERVIEW_STATUS_CHOICES,
+        default="not_decided",
+    )
+
+    interview_date = models.DateField(
+        "面談日",
+        blank=True,
+        null=True,
+    )
+
+    interview_memo = models.TextField(
+        "面談メモ",
+        blank=True,
+    )
+
+    # ============================================================
+    # 面談結果
+    # ============================================================
+
+    INTERVIEW_RESULT_CHOICES = [
+        (
+            "undecided",
+            "未判定",
+        ),
+        (
+            "considering",
+            "継続検討",
+        ),
+        (
+            "candidate",
+            "奨学生候補",
+        ),
+        (
+            "declined",
+            "見送り",
+        ),
+    ]
+
+    interview_result = models.CharField(
+        "面談結果",
+        max_length=20,
+        choices=INTERVIEW_RESULT_CHOICES,
+        default="undecided",
+    )
+
+    # ============================================================
+    # 管理職メモ
+    # ============================================================
+
+    management_memo = models.TextField(
+        "管理職メモ",
+        blank=True,
+    )
+
+    # ============================================================
+    # 担当者
+    # ============================================================
+
     registered_by = models.ForeignKey(
         "Teacher",
         verbose_name="登録者",
@@ -309,6 +478,10 @@ class ProspectiveStudent(models.Model):
         on_delete=models.PROTECT,
         related_name="assigned_prospective_students",
     )
+
+    # ============================================================
+    # その他
+    # ============================================================
 
     dormitory = models.BooleanField(
         "寮希望",
@@ -335,7 +508,12 @@ class ProspectiveStudent(models.Model):
         auto_now=True,
     )
 
+    # ============================================================
+    # Meta
+    # ============================================================
+
     class Meta:
+
         ordering = [
             "-created_at",
             "name",
@@ -344,12 +522,24 @@ class ProspectiveStudent(models.Model):
         verbose_name = "募集対象生徒"
         verbose_name_plural = "募集対象生徒"
 
+    # ============================================================
+    # 表示
+    # ============================================================
+
     def __str__(self):
-        return f"{self.name}（{self.junior_high_school.name}）"
+
+        return (
+            f"{self.name}"
+            f"（{self.junior_high_school.name}）"
+        )
 
     @property
     def principal_name(self):
-        return self.junior_high_school.principal_name or ""
+
+        return (
+            self.junior_high_school.principal_name
+            or ""
+        )
 
 class Teacher(models.Model):
     ROLE_CHOICES = [
@@ -671,6 +861,13 @@ class ScholarshipRequestDocument(models.Model):
 
     fiscal_year = models.IntegerField(
         "年度（西暦）",
+    )
+
+    recruitment_year = models.CharField(
+        "募集年度",
+        max_length=20,
+        blank=True,
+        help_text="例：令和9年度",
     )
 
     document_number = models.CharField(
@@ -1131,4 +1328,140 @@ class DormitoryBenefitHistory(models.Model):
         return (
             f"{self.assignment.student.name} "
             f"{old_benefit} → {self.new_benefit.name}"
+        )
+
+class ScholarshipQuota(models.Model):
+
+    fiscal_year = models.IntegerField(
+        "年度（西暦）",
+        help_text="例：2027",
+    )
+
+    club = models.ForeignKey(
+        Club,
+        verbose_name="部活動",
+        on_delete=models.PROTECT,
+        related_name="scholarship_quotas",
+    )
+
+    category = models.ForeignKey(
+        ScholarshipCategory,
+        verbose_name="奨学金区分",
+        on_delete=models.PROTECT,
+        related_name="scholarship_quotas",
+    )
+
+    quota = models.PositiveIntegerField(
+        "上限人数",
+        default=0,
+    )
+
+    created_at = models.DateTimeField(
+        "登録日時",
+        auto_now_add=True,
+    )
+
+    updated_at = models.DateTimeField(
+        "更新日時",
+        auto_now=True,
+    )
+
+    class Meta:
+        verbose_name = "奨学生枠"
+        verbose_name_plural = "奨学生枠"
+
+        constraints = [
+            models.UniqueConstraint(
+                fields=[
+                    "fiscal_year",
+                    "club",
+                    "category",
+                ],
+                name="unique_scholarship_quota",
+            )
+        ]
+
+        ordering = [
+            "-fiscal_year",
+            "club__name",
+            "category__name",
+        ]
+
+    def __str__(self):
+
+        reiwa_year = self.fiscal_year - 2018
+
+        return (
+            f"令和{reiwa_year}年度 "
+            f"{self.club.name} "
+            f"{self.category.name} "
+            f"{self.quota}名"
+        )
+
+class DormitoryBenefitQuota(models.Model):
+
+    fiscal_year = models.IntegerField(
+        "年度（西暦）",
+        help_text="例：2027",
+    )
+
+    club = models.ForeignKey(
+        Club,
+        verbose_name="部活動",
+        on_delete=models.PROTECT,
+        related_name="dormitory_benefit_quotas",
+    )
+
+    benefit = models.ForeignKey(
+        DormitoryBenefitCategory,
+        verbose_name="寮費区分",
+        on_delete=models.PROTECT,
+        related_name="dormitory_benefit_quotas",
+    )
+
+    quota = models.PositiveIntegerField(
+        "上限人数",
+        default=0,
+    )
+
+    created_at = models.DateTimeField(
+        "登録日時",
+        auto_now_add=True,
+    )
+
+    updated_at = models.DateTimeField(
+        "更新日時",
+        auto_now=True,
+    )
+
+    class Meta:
+        verbose_name = "寮費待遇枠"
+        verbose_name_plural = "寮費待遇枠"
+
+        constraints = [
+            models.UniqueConstraint(
+                fields=[
+                    "fiscal_year",
+                    "club",
+                    "benefit",
+                ],
+                name="unique_dormitory_benefit_quota",
+            )
+        ]
+
+        ordering = [
+            "-fiscal_year",
+            "club__name",
+            "benefit__name",
+        ]
+
+    def __str__(self):
+
+        reiwa_year = self.fiscal_year - 2018
+
+        return (
+            f"令和{reiwa_year}年度 "
+            f"{self.club.name} "
+            f"{self.benefit.name} "
+            f"{self.quota}名"
         )

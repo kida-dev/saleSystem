@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        奨学生 面談
+    </title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family:
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                "Yu Gothic",
+                Meiryo,
+                sans-serif;
+
+            background: #f4f7f9;
+            color: #222;
+        }
+
+        .page-header {
+            background: #286b80;
+            color: white;
+            padding: 22px 24px;
+        }
+
+        .page-header h1 {
+            margin: 0 0 6px;
+            font-size: 25px;
+        }
+
+        .page-header p {
+            margin: 0;
+            font-size: 14px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 22px auto;
+            padding: 0 16px 50px;
+        }
+
+        .card {
+            background: white;
+            border: 1px solid #d5dee3;
+            border-radius: 9px;
+            padding: 22px;
+            margin-bottom: 20px;
+
+            box-shadow:
+                0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .card h2 {
+            margin-top: 0;
+            margin-bottom: 18px;
+            color: #075472;
+            font-size: 20px;
+        }
+
+        .student-name {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 12px;
+        }
+
+        .student-info {
+            display: grid;
+
+            grid-template-columns:
+                repeat(
+                    auto-fit,
+                    minmax(180px, 1fr)
+                );
+
+            gap: 12px;
+        }
+
+        .info-box {
+            background: #f7fafb;
+            border: 1px solid #d9e3e8;
+            border-radius: 6px;
+            padding: 14px;
+        }
+
+        .info-label {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 6px;
+        }
+
+        .info-value {
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .condition-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(
+                    auto-fit,
+                    minmax(200px, 1fr)
+                );
+
+            gap: 14px;
+        }
+
+        .condition-box {
+            border: 1px solid #cad8de;
+            border-radius: 7px;
+            padding: 16px;
+            background: #f8fbfc;
+        }
+
+        .condition-label {
+            font-size: 12px;
+            color: #555;
+            margin-bottom: 8px;
+        }
+
+        .condition-value {
+            font-size: 23px;
+            font-weight: bold;
+            color: #075472;
+        }
+
+        .notice {
+            background: #edf6f9;
+            border-left: 4px solid #24728b;
+            padding: 15px 17px;
+            margin-bottom: 20px;
+            line-height: 1.7;
+        }
+
+        .warning {
+            background: #fff8df;
+            border-left: 4px solid #d39a18;
+            padding: 15px 17px;
+            margin-bottom: 20px;
+            line-height: 1.7;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 15px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .help-text {
+            color: #666;
+            font-size: 12px;
+            margin-top: 6px;
+            line-height: 1.6;
+        }
+
+        select,
+        textarea,
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+
+            border:
+                1px solid #b8c7ce;
+
+            border-radius: 6px;
+
+            font-size: 16px;
+
+            background: white;
+        }
+
+        textarea {
+            min-height: 110px;
+            resize: vertical;
+        }
+
+        .two-column {
+            display: grid;
+
+            grid-template-columns:
+                repeat(
+                    2,
+                    minmax(0, 1fr)
+                );
+
+            gap: 18px;
+        }
+
+        .button-area {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 26px;
+        }
+
+        .button {
+            display: inline-block;
+
+            border: none;
+            border-radius: 6px;
+
+            padding: 13px 22px;
+
+            font-size: 15px;
+            font-weight: bold;
+
+            text-decoration: none;
+
+            cursor: pointer;
+        }
+
+        .button-primary {
+            background: #08759b;
+            color: white;
+        }
+
+        .button-primary:hover {
+            background: #075f7d;
+        }
+
+        .button-secondary {
+            background: white;
+            color: #333;
+
+            border:
+                1px solid #aaa;
+        }
+
+        .save-button {
+            font-size: 18px;
+            padding: 16px 28px;
+        }
+
+        .message {
+            padding: 13px 16px;
+            margin-bottom: 18px;
+
+            border-radius: 6px;
+
+            background: #e2f3e6;
+            border: 1px solid #acd5b5;
+
+            color: #246b34;
+        }
+
+        @media (
+            max-width: 700px
+        ) {
+
+            .two-column {
+                grid-template-columns: 1fr;
+            }
+
+            .student-name {
+                font-size: 24px;
+            }
+
+            .card {
+                padding: 17px;
+            }
+
+            .button {
+                width: 100%;
+                text-align: center;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<header class="page-header">
+
+    <h1>
+        奨学生 面談
+    </h1>
+
+    <p>
+        生徒・保護者との面談内容と、
+        今回提示する奨学生条件を記録します。
+    </p>
+
+</header>
+
+
+<div class="container">
+
+
+    {% if messages %}
+
+        {% for message in messages %}
+
+            <div class="message">
+                {{ message }}
+            </div>
+
+        {% endfor %}
+
+    {% endif %}
+
+
+    <!-- ==================================================
+         1. 生徒情報
+    =================================================== -->
+
+    <section class="card">
+
+        <h2>
+            1. 面談対象生徒
+        </h2>
+
+
+        <div class="student-name">
+
+            {{ student.name }}
+
+        </div>
+
+
+        <div class="student-info">
+
+
+            <div class="info-box">
+
+                <div class="info-label">
+                    中学校
+                </div>
+
+                <div class="info-value">
+
+                    {% if student.junior_high_school %}
+
+                        {{ student.junior_high_school.name }}
+
+                    {% else %}
+
+                        -
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+
+            <div class="info-box">
+
+                <div class="info-label">
+                    部活動
+                </div>
+
+                <div class="info-value">
+
+                    {% if student.club %}
+
+                        {{ student.club.name }}
+
+                    {% else %}
+
+                        -
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+
+            <div class="info-box">
+
+                <div class="info-label">
+                    面談担当者
+                </div>
+
+                <div class="info-value">
+
+                    {{ teacher.name }}
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+    <!-- ==================================================
+         2. 面談前の条件
+    =================================================== -->
+
+    <section class="card">
+
+        <h2>
+            2. 面談前の設定
+        </h2>
+
+
+        <div class="condition-grid">
+
+
+            <div class="condition-box">
+
+                <div class="condition-label">
+                    面談前ランク
+                </div>
+
+                <div class="condition-value">
+
+                    {% if assignment.interview_rank %}
+
+                        {{ assignment.interview_rank.name }}
+
+                    {% else %}
+
+                        -
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+
+            <div class="condition-box">
+
+                <div class="condition-label">
+                    現在ランク
+                </div>
+
+                <div class="condition-value">
+
+                    {% if assignment.current_rank %}
+
+                        {{ assignment.current_rank.name }}
+
+                    {% else %}
+
+                        -
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+
+            <div class="condition-box">
+
+                <div class="condition-label">
+                    現在寮費区分
+                </div>
+
+                <div class="condition-value">
+
+                    {% if assignment.current_dormitory_benefit %}
+
+                        {{ assignment.current_dormitory_benefit.name }}
+
+                    {% else %}
+
+                        待遇なし
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+    <!-- ==================================================
+         3. 今回の面談
+    =================================================== -->
+
+    <section class="card">
+
+        <h2>
+            3. 今回の面談内容
+        </h2>
+
+
+        <div class="notice">
+
+            面談前に設定した条件を基準として、
+            今回実際に本人・保護者へ提示する条件を選択してください。
+
+            <br>
+
+            面談中に評価が変わった場合は、
+            この画面でランクや寮費条件を変更できます。
+
+        </div>
+
+
+        <form method="post">
+
+            {% csrf_token %}
+
+
+            <div class="two-column">
+
+
+                <!-- 提示ランク -->
+
+                <div class="form-group">
+
+                    <label
+                        for="presented_rank"
+                    >
+                        今回提示するランク
+                    </label>
+
+
+                    <select
+                        id="presented_rank"
+                        name="presented_rank"
+                        required
+                    >
+
+
+                        {% for category in scholarship_categories %}
+
+                            <option
+                                value="{{ category.id }}"
+
+                                {% if assignment.current_rank_id == category.id %}
+                                    selected
+                                {% endif %}
+                            >
+
+                                {{ category.name }}
+
+                            </option>
+
+                        {% endfor %}
+
+                    </select>
+
+
+                    <div class="help-text">
+
+                        面談前と同じランクの場合は、
+                        そのままで構いません。
+
+                    </div>
+
+                </div>
+
+
+                <!-- 寮費 -->
+
+                <div class="form-group">
+
+                    <label
+                        for="presented_dormitory_benefit"
+                    >
+                        今回提示する寮費区分
+                    </label>
+
+
+                    <select
+                        id="presented_dormitory_benefit"
+                        name="presented_dormitory_benefit"
+                    >
+
+                        <option value="">
+                            寮費待遇なし
+                        </option>
+
+
+                        {% for category in dormitory_categories %}
+
+                            <option
+                                value="{{ category.id }}"
+
+                                {% if assignment.current_dormitory_benefit_id == category.id %}
+                                    selected
+                                {% endif %}
+                            >
+
+                                {{ category.name }}
+
+                            </option>
+
+                        {% endfor %}
+
+                    </select>
+
+                </div>
+
+
+            </div>
+
+
+            <!-- ランク変更理由 -->
+
+            <div class="form-group">
+
+                <label
+                    for="rank_change_reason"
+                >
+                    ランク変更理由
+                </label>
+
+
+                <textarea
+                    id="rank_change_reason"
+                    name="rank_change_reason"
+                    placeholder="面談前ランクから変更する場合、その理由を入力してください。"
+                ></textarea>
+
+
+                <div class="help-text">
+
+                    ランクを変更しない場合は空欄で構いません。
+
+                </div>
+
+            </div>
+
+
+            <!-- 寮費変更理由 -->
+
+            <div class="form-group">
+
+                <label
+                    for="dormitory_change_reason"
+                >
+                    寮費区分変更理由
+                </label>
+
+
+                <textarea
+                    id="dormitory_change_reason"
+                    name="dormitory_change_reason"
+                    placeholder="寮費区分を変更する場合、その理由を入力してください。"
+                ></textarea>
+
+
+                <div class="help-text">
+
+                    寮費区分を変更しない場合は空欄で構いません。
+
+                </div>
+
+            </div>
+
+
+            <!-- 面談結果 -->
+
+            <div class="form-group">
+
+                <label
+                    for="result"
+                >
+                    面談結果
+                </label>
+
+
+                <select
+                    id="result"
+                    name="result"
+                    required
+                >
+
+
+                    {% for value, label in result_choices %}
+
+                        <option
+                            value="{{ value }}"
+                        >
+
+                            {{ label }}
+
+                        </option>
+
+                    {% endfor %}
+
+                </select>
+
+
+                <div class="help-text">
+
+                    面談後の本人・保護者の意思を選択してください。
+
+                </div>
+
+            </div>
+
+
+            <!-- 面談メモ -->
+
+            <div class="form-group">
+
+                <label
+                    for="notes"
+                >
+                    面談記録・備考
+                </label>
+
+
+                <textarea
+                    id="notes"
+                    name="notes"
+                    placeholder="本人・保護者へ説明した内容、反応、今後の確認事項などを記録してください。"
+                ></textarea>
+
+            </div>
+
+
+            <div class="warning">
+
+                <strong>
+                    保存前に提示ランク・寮費区分・面談結果を確認してください。
+                </strong>
+
+                <br>
+
+                ランクまたは寮費区分を変更した場合は、
+                変更履歴にも自動的に記録されます。
+
+            </div>
+
+
+            <div class="button-area">
+
+
+                <button
+                    type="submit"
+                    class="button button-primary save-button"
+                >
+                    面談内容を保存
+                </button>
+
+
+                <a
+                    href="{% url 'publicity:scholarship_assignment_detail' student.id %}"
+                    class="button button-secondary"
+                >
+                    個人管理へ戻る
+                </a>
+
+
+            </div>
+
+
+        </form>
+
+    </section>
+
+
+</div>
+
+
+</body>
+
+</html>

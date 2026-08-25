@@ -376,6 +376,132 @@
             overflow-x: auto;
         }
 
+        /* ==================================================
+        奨学生枠・現在人数
+        ================================================== */
+
+        .quota-summary-grid {
+            display: grid;
+            grid-template-columns:
+                repeat(
+                    auto-fit,
+                    minmax(280px, 1fr)
+                );
+            gap: 16px;
+        }
+
+        .quota-club-card {
+            border: 1px solid #d2dee3;
+            border-radius: 8px;
+            background: #f9fbfc;
+            overflow: hidden;
+        }
+
+        .quota-club-title {
+            padding: 13px 16px;
+            background: #eaf2f5;
+            color: #075472;
+            font-size: 17px;
+            font-weight: bold;
+        }
+
+        .quota-list {
+            padding: 14px 16px;
+        }
+
+        .quota-row {
+            display: grid;
+            grid-template-columns:
+                minmax(100px, 1fr)
+                auto;
+            gap: 12px;
+            align-items: center;
+
+            padding: 9px 0;
+
+            border-bottom: 1px solid #e3eaed;
+        }
+
+        .quota-row:last-child {
+            border-bottom: none;
+        }
+
+        .quota-label {
+            font-weight: bold;
+        }
+
+        .quota-number {
+            min-width: 105px;
+            text-align: right;
+            white-space: nowrap;
+        }
+
+        .quota-current {
+            font-size: 20px;
+            font-weight: bold;
+            color: #075472;
+        }
+
+        .quota-limit {
+            color: #555;
+        }
+
+        .quota-status {
+            margin-top: 3px;
+            font-size: 12px;
+        }
+
+        .quota-normal {
+            color: #28723a;
+        }
+
+        .quota-full {
+            color: #a66b00;
+            font-weight: bold;
+        }
+
+        .quota-over {
+            color: #b3261e;
+            font-weight: bold;
+        }
+
+        .dormitory-quota-row {
+            margin-top: 8px;
+            padding-top: 13px;
+            border-top: 2px solid #e6d49a;
+        }
+
+        .dormitory-quota-label {
+            color: #785a08;
+        }
+
+        .quota-year {
+            font-weight: bold;
+            color: #075472;
+        }
+
+        .quota-note {
+            margin-bottom: 18px;
+            padding: 13px 16px;
+
+            background: #edf6f9;
+            border-left: 4px solid #24728b;
+
+            line-height: 1.7;
+        }
+
+        .quota-settings-link {
+            margin-top: 15px;
+        }
+
+        @media (max-width: 700px) {
+
+            .quota-summary-grid {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
 
         table {
 
@@ -813,6 +939,283 @@
 
 
             </div>
+
+        </section>
+
+        <!-- ==================================================
+            3. 奨学生枠・現在人数
+        =================================================== -->
+
+        <section class="card">
+
+            <h2>
+                3. 奨学生枠・現在人数
+            </h2>
+
+
+            <div class="quota-note">
+
+                <span class="quota-year">
+                    {{ fiscal_year }}年度
+                </span>
+                の担当部活動ごとの奨学生枠を表示しています。
+
+                <br>
+
+                「現在人数 / 上限人数」で表示し、
+                上限到達・超過も確認できます。
+
+            </div>
+
+
+            {% if quota_summary_rows %}
+
+                <div class="quota-summary-grid">
+
+
+                    {% for row in quota_summary_rows %}
+
+                        <div class="quota-club-card">
+
+
+                            <!-- 部活動名 -->
+
+                            <div class="quota-club-title">
+
+                                {{ row.club.name }}
+
+                            </div>
+
+
+                            <div class="quota-list">
+
+
+                                <!-- =================================
+                                    SS / S / A
+                                ================================== -->
+
+                                {% for rank in row.rank_summaries %}
+
+                                    <div class="quota-row">
+
+
+                                        <div class="quota-label">
+
+                                            {{ rank.category.name }}
+
+                                        </div>
+
+
+                                        <div class="quota-number">
+
+                                            <span class="quota-current">
+                                                {{ rank.current_count }}
+                                            </span>
+
+                                            <span class="quota-limit">
+                                                / {{ rank.quota_count }}名
+                                            </span>
+
+
+                                            <div class="quota-status">
+
+
+                                                {% if rank.is_over %}
+
+                                                    <span class="quota-over">
+
+                                                        ⚠
+                                                        上限を
+                                                        {{ rank.remaining|stringformat:"+d"|slice:"1:" }}
+                                                        名超過
+
+                                                    </span>
+
+
+                                                {% elif rank.is_full %}
+
+                                                    <span class="quota-full">
+
+                                                        上限到達
+
+                                                    </span>
+
+
+                                                {% elif rank.quota_count == 0 %}
+
+                                                    <span class="quota-normal">
+
+                                                        枠設定なし
+
+                                                    </span>
+
+
+                                                {% else %}
+
+                                                    <span class="quota-normal">
+
+                                                        残り
+                                                        {{ rank.remaining }}
+                                                        名
+
+                                                    </span>
+
+                                                {% endif %}
+
+
+                                            </div>
+
+                                        </div>
+
+
+                                    </div>
+
+                                {% endfor %}
+
+
+                                <!-- =================================
+                                    寮施設管理費免除
+                                ================================== -->
+
+                                <div
+                                    class="
+                                        quota-row
+                                        dormitory-quota-row
+                                    "
+                                >
+
+
+                                    <div
+                                        class="
+                                            quota-label
+                                            dormitory-quota-label
+                                        "
+                                    >
+
+                                        {% if dormitory_quota_benefit %}
+
+                                            {{ dormitory_quota_benefit.name }}
+
+                                        {% else %}
+
+                                            寮施設管理費免除
+
+                                        {% endif %}
+
+                                    </div>
+
+
+                                    <div class="quota-number">
+
+                                        <span class="quota-current">
+
+                                            {{ row.dormitory_current_count }}
+
+                                        </span>
+
+                                        <span class="quota-limit">
+
+                                            /
+                                            {{ row.dormitory_quota_count }}
+                                            名
+
+                                        </span>
+
+
+                                        <div class="quota-status">
+
+
+                                            {% if row.dormitory_is_over %}
+
+                                                <span class="quota-over">
+
+                                                    ⚠ 上限超過
+
+                                                </span>
+
+
+                                            {% elif row.dormitory_is_full %}
+
+                                                <span class="quota-full">
+
+                                                    上限到達
+
+                                                </span>
+
+
+                                            {% elif row.dormitory_quota_count == 0 %}
+
+                                                <span class="quota-normal">
+
+                                                    枠設定なし
+
+                                                </span>
+
+
+                                            {% else %}
+
+                                                <span class="quota-normal">
+
+                                                    残り
+                                                    {{ row.dormitory_remaining }}
+                                                    名
+
+                                                </span>
+
+                                            {% endif %}
+
+
+                                        </div>
+
+                                    </div>
+
+
+                                </div>
+
+
+                            </div>
+
+                        </div>
+
+                    {% endfor %}
+
+
+                </div>
+
+
+            {% else %}
+
+                <div
+                    style="
+                        text-align:center;
+                        padding:28px;
+                        color:#888;
+                    "
+                >
+
+                    担当部活動の奨学生枠情報はありません。
+
+                </div>
+
+            {% endif %}
+
+
+            <!--
+                管理職等にだけ出したい場合は、
+                後で権限制御を追加可能
+            -->
+
+            <div class="quota-settings-link">
+
+                <a
+                    href="{% url 'publicity:scholarship_quota_manage' %}?fiscal_year={{ fiscal_year }}"
+                    class="button"
+                >
+                    奨学生枠設定を確認
+                </a>
+
+            </div>
+
 
         </section>
 
