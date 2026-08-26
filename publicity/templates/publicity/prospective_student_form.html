@@ -365,6 +365,131 @@
             color: #666;
         }
 
+
+        /* ============================================================
+           中学校 手動登録
+        ============================================================ */
+        .manual-school-area {
+            margin-top: 14px;
+            padding: 14px 16px;
+            background: #fff8e5;
+            border: 1px solid #e5c96f;
+            border-radius: 6px;
+        }
+
+        .manual-school-guide {
+            margin: 0 0 10px;
+            color: #5f531f;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .manual-school-open-button {
+            padding: 9px 14px;
+            color: #664d03;
+            background: #fff;
+            border: 1px solid #c9a83c;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .manual-school-open-button:hover {
+            background: #fff4c7;
+        }
+
+        .manual-school-form {
+            display: none;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #e0cd89;
+        }
+
+        .manual-school-form.is-open {
+            display: block;
+        }
+
+        .manual-school-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 13px;
+        }
+
+        .manual-school-field {
+            margin-bottom: 13px;
+        }
+
+        .manual-school-field.full {
+            grid-column: 1 / -1;
+        }
+
+        .manual-school-field label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            font-size: 13px;
+        }
+
+        .manual-school-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #a9b3b8;
+            border-radius: 5px;
+            background: #fff;
+            font-size: 15px;
+        }
+
+        .manual-school-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 8px;
+        }
+
+        .manual-school-save {
+            padding: 10px 16px;
+            color: #fff;
+            background: #1769aa;
+            border: 1px solid #1769aa;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .manual-school-save:disabled {
+            opacity: 0.65;
+            cursor: wait;
+        }
+
+        .manual-school-cancel {
+            padding: 10px 16px;
+            background: #fff;
+            border: 1px solid #999;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .manual-school-message {
+            display: none;
+            margin-top: 12px;
+            padding: 10px 12px;
+            border-radius: 5px;
+            line-height: 1.6;
+        }
+
+        .manual-school-message.success {
+            display: block;
+            color: #155724;
+            background: #dff1e4;
+            border: 1px solid #a9d2b4;
+        }
+
+        .manual-school-message.error {
+            display: block;
+            color: #842029;
+            background: #f8d7da;
+            border: 1px solid #e0aeb4;
+        }
+
         @media (max-width: 600px) {
             .header {
                 padding: 18px;
@@ -395,6 +520,24 @@
 
             .additional-content {
                 padding: 18px;
+            }
+
+            .manual-school-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .manual-school-field.full {
+                grid-column: auto;
+            }
+
+            .manual-school-actions {
+                display: block;
+            }
+
+            .manual-school-save,
+            .manual-school-cancel {
+                width: 100%;
+                margin-bottom: 8px;
             }
         }
     </style>
@@ -497,6 +640,127 @@
                     <div class="school-search-note">
                         学校名または市町村名を1文字以上入力すると、
                         登録済みの中学校を検索できます。
+                    </div>
+
+                    <div class="manual-school-area">
+                        <p class="manual-school-guide">
+                            全国検索に学校が表示されない場合は、
+                            中学校を手動で登録できます。
+                            新設・統廃合・名称変更などで一覧にない学校も登録可能です。
+                        </p>
+
+                        <button
+                            type="button"
+                            id="manual-school-open-button"
+                            class="manual-school-open-button"
+                        >
+                            ＋ 検索結果にない中学校を登録
+                        </button>
+
+                        <div
+                            id="manual-school-form"
+                            class="manual-school-form"
+                        >
+                            <div class="manual-school-grid">
+                                <div class="manual-school-field full">
+                                    <label for="manual-school-name">
+                                        学校名
+                                        <span class="required">必須</span>
+                                    </label>
+                                    <input
+                                        type="text"
+                                        id="manual-school-name"
+                                        class="manual-school-input"
+                                        placeholder="例：水上村立水上中学校"
+                                    >
+                                </div>
+
+                                <div class="manual-school-field">
+                                    <label for="manual-school-prefecture">
+                                        都道府県
+                                        <span class="required">必須</span>
+                                    </label>
+                                    <input
+                                        type="text"
+                                        id="manual-school-prefecture"
+                                        class="manual-school-input"
+                                        placeholder="例：熊本県"
+                                    >
+                                </div>
+
+                                <div class="manual-school-field">
+                                    <label for="manual-school-city">
+                                        市町村
+                                        <span class="required">必須</span>
+                                    </label>
+                                    <input
+                                        type="text"
+                                        id="manual-school-city"
+                                        class="manual-school-input"
+                                        placeholder="例：水上村"
+                                    >
+                                </div>
+
+                                <div class="manual-school-field">
+                                    <label for="manual-school-principal">
+                                        校長名
+                                    </label>
+                                    <input
+                                        type="text"
+                                        id="manual-school-principal"
+                                        class="manual-school-input"
+                                        placeholder="不明の場合は空欄で構いません"
+                                    >
+                                </div>
+
+                                <div class="manual-school-field">
+                                    <label for="manual-school-tel">
+                                        電話番号
+                                    </label>
+                                    <input
+                                        type="text"
+                                        id="manual-school-tel"
+                                        class="manual-school-input"
+                                        placeholder="例：0966-00-0000"
+                                    >
+                                </div>
+
+                                <div class="manual-school-field full">
+                                    <label for="manual-school-address">
+                                        学校所在地
+                                    </label>
+                                    <input
+                                        type="text"
+                                        id="manual-school-address"
+                                        class="manual-school-input"
+                                        placeholder="分かる場合のみ入力してください"
+                                    >
+                                </div>
+                            </div>
+
+                            <div
+                                id="manual-school-message"
+                                class="manual-school-message"
+                            ></div>
+
+                            <div class="manual-school-actions">
+                                <button
+                                    type="button"
+                                    id="manual-school-save"
+                                    class="manual-school-save"
+                                >
+                                    この中学校を登録して選択
+                                </button>
+
+                                <button
+                                    type="button"
+                                    id="manual-school-cancel"
+                                    class="manual-school-cancel"
+                                >
+                                    閉じる
+                                </button>
+                            </div>
+                        </div>
                     </div>
 
                     {% for error in form.junior_high_school.errors %}
@@ -974,6 +1238,287 @@
         updatePrincipalName(
             schoolTomSelect.getValue()
         );
+
+        // ========================================================
+        // 中学校 手動登録
+        // ========================================================
+        const manualOpenButton =
+            document.getElementById("manual-school-open-button");
+        const manualForm =
+            document.getElementById("manual-school-form");
+        const manualSaveButton =
+            document.getElementById("manual-school-save");
+        const manualCancelButton =
+            document.getElementById("manual-school-cancel");
+        const manualMessage =
+            document.getElementById("manual-school-message");
+        const manualSchoolName =
+            document.getElementById("manual-school-name");
+        const manualPrefecture =
+            document.getElementById("manual-school-prefecture");
+        const manualCity =
+            document.getElementById("manual-school-city");
+        const manualPrincipal =
+            document.getElementById("manual-school-principal");
+        const manualTel =
+            document.getElementById("manual-school-tel");
+        const manualAddress =
+            document.getElementById("manual-school-address");
+
+        const quickCreateUrl =
+            "{% url 'publicity:junior_high_school_quick_create' %}";
+
+        function getCsrfToken() {
+            const csrfInput =
+                document.querySelector(
+                    "input[name='csrfmiddlewaretoken']"
+                );
+
+            return csrfInput
+                ? csrfInput.value
+                : "";
+        }
+
+        function showManualSchoolError(message) {
+            if (!manualMessage) {
+                return;
+            }
+
+            manualMessage.className =
+                "manual-school-message error";
+            manualMessage.textContent =
+                message;
+        }
+
+        if (manualOpenButton && manualForm) {
+            manualOpenButton.addEventListener(
+                "click",
+                function () {
+                    manualForm.classList.add("is-open");
+
+                    if (manualMessage) {
+                        manualMessage.className =
+                            "manual-school-message";
+                        manualMessage.textContent = "";
+                    }
+
+                    const currentSearchText =
+                        schoolTomSelect.control_input
+                            ? schoolTomSelect.control_input.value.trim()
+                            : "";
+
+                    if (
+                        currentSearchText
+                        && manualSchoolName
+                        && !manualSchoolName.value
+                    ) {
+                        manualSchoolName.value =
+                            currentSearchText;
+                    }
+
+                    if (manualSchoolName) {
+                        manualSchoolName.focus();
+                    }
+                }
+            );
+        }
+
+        if (manualCancelButton && manualForm) {
+            manualCancelButton.addEventListener(
+                "click",
+                function () {
+                    manualForm.classList.remove("is-open");
+                }
+            );
+        }
+
+        if (manualSaveButton) {
+            manualSaveButton.addEventListener(
+                "click",
+                function () {
+                    const name =
+                        manualSchoolName
+                            ? manualSchoolName.value.trim()
+                            : "";
+                    const prefecture =
+                        manualPrefecture
+                            ? manualPrefecture.value.trim()
+                            : "";
+                    const city =
+                        manualCity
+                            ? manualCity.value.trim()
+                            : "";
+                    const principal =
+                        manualPrincipal
+                            ? manualPrincipal.value.trim()
+                            : "";
+                    const tel =
+                        manualTel
+                            ? manualTel.value.trim()
+                            : "";
+                    const address =
+                        manualAddress
+                            ? manualAddress.value.trim()
+                            : "";
+
+                    if (!name) {
+                        showManualSchoolError(
+                            "学校名を入力してください。"
+                        );
+                        manualSchoolName.focus();
+                        return;
+                    }
+
+                    if (!prefecture) {
+                        showManualSchoolError(
+                            "都道府県を入力してください。"
+                        );
+                        manualPrefecture.focus();
+                        return;
+                    }
+
+                    if (!city) {
+                        showManualSchoolError(
+                            "市町村を入力してください。"
+                        );
+                        manualCity.focus();
+                        return;
+                    }
+
+                    manualSaveButton.disabled = true;
+                    manualSaveButton.textContent =
+                        "登録しています…";
+
+                    const formData = new FormData();
+                    formData.append("name", name);
+                    formData.append("prefecture", prefecture);
+                    formData.append("city", city);
+                    formData.append(
+                        "principal_name",
+                        principal
+                    );
+                    formData.append("tel", tel);
+                    formData.append("address", address);
+
+                    fetch(
+                        quickCreateUrl,
+                        {
+                            method: "POST",
+                            credentials: "same-origin",
+                            headers: {
+                                "X-CSRFToken":
+                                    getCsrfToken(),
+                                "X-Requested-With":
+                                    "XMLHttpRequest",
+                            },
+                            body: formData,
+                        }
+                    )
+                    .then(async function (response) {
+                        let data = {};
+
+                        try {
+                            data = await response.json();
+                        } catch (error) {
+                            throw new Error(
+                                "サーバーから正しい応答を取得できませんでした。"
+                            );
+                        }
+
+                        if (!response.ok) {
+                            throw new Error(
+                                data.message
+                                || "中学校を登録できませんでした。"
+                            );
+                        }
+
+                        return data;
+                    })
+                    .then(function (data) {
+                        if (
+                            !data.school
+                            || !data.school.id
+                        ) {
+                            throw new Error(
+                                "登録した学校情報を取得できませんでした。"
+                            );
+                        }
+
+                        const school = data.school;
+                        const schoolId =
+                            String(school.id);
+
+                        schoolTomSelect.addOption({
+                            id: schoolId,
+                            name: school.name,
+                            label: school.name,
+                            prefecture:
+                                school.prefecture || "",
+                            city:
+                                school.city || "",
+                            address:
+                                school.address
+                                || address
+                                || "",
+                            principal_name:
+                                school.principal_name || "",
+                        });
+
+                        schoolTomSelect.setValue(
+                            schoolId
+                        );
+
+                        updatePrincipalName(
+                            schoolId
+                        );
+
+                        if (manualMessage) {
+                            manualMessage.className =
+                                "manual-school-message success";
+                            manualMessage.textContent =
+                                data.message
+                                || (
+                                    school.name
+                                    + "を登録しました。"
+                                );
+                        }
+
+                        manualSchoolName.value = "";
+                        manualPrefecture.value = "";
+                        manualCity.value = "";
+                        manualPrincipal.value = "";
+                        manualTel.value = "";
+                        manualAddress.value = "";
+
+                        setTimeout(
+                            function () {
+                                if (manualForm) {
+                                    manualForm.classList.remove(
+                                        "is-open"
+                                    );
+                                }
+                            },
+                            700
+                        );
+                    })
+                    .catch(function (error) {
+                        console.error(error);
+
+                        showManualSchoolError(
+                            error.message
+                            || "中学校を登録できませんでした。"
+                        );
+                    })
+                    .finally(function () {
+                        manualSaveButton.disabled =
+                            false;
+                        manualSaveButton.textContent =
+                            "この中学校を登録して選択";
+                    });
+                }
+            );
+        }
+
     });
 </script>
 

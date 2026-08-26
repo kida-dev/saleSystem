@@ -6665,3 +6665,191 @@ def recruitment_response_management_detail(
         ),
         context,
     )
+
+@club_advisor_required
+@transaction.atomic
+def junior_high_school_quick_create(request):
+    """
+    募集対象生徒登録画面から、
+    文科省マスタに存在しない中学校を手動登録する。
+    """
+
+    if request.method != "POST":
+        return JsonResponse(
+            {
+                "success": False,
+                "message": "POSTで送信してください。",
+            },
+            status=405,
+        )
+
+    # ============================================================
+    # 入力値
+    # ============================================================
+
+    name = request.POST.get(
+        "name",
+        "",
+    ).strip()
+
+    prefecture = request.POST.get(
+        "prefecture",
+        "",
+    ).strip()
+
+    city = request.POST.get(
+        "city",
+        "",
+    ).strip()
+
+    principal_name = request.POST.get(
+        "principal_name",
+        "",
+    ).strip()
+
+    tel = request.POST.get(
+        "tel",
+        "",
+    ).strip()
+
+    address = request.POST.get(
+        "address",
+        "",
+    ).strip()
+
+    # ============================================================
+    # 必須チェック
+    # ============================================================
+
+    if not name:
+        return JsonResponse(
+            {
+                "success": False,
+                "message": "学校名を入力してください。",
+            },
+            status=400,
+        )
+
+    if not prefecture:
+        return JsonResponse(
+            {
+                "success": False,
+                "message": "都道府県を入力してください。",
+            },
+            status=400,
+        )
+
+    if not city:
+        return JsonResponse(
+            {
+                "success": False,
+                "message": "市町村を入力してください。",
+            },
+            status=400,
+        )
+
+    # ============================================================
+    # 重複チェック
+    #
+    # 同じ都道府県・市町村・学校名がすでにある場合は
+    # 新規作成せず、その学校を返す。
+    # ============================================================
+
+    existing_school = (
+        JuniorHighSchool.objects
+        .filter(
+            name__iexact=name,
+            prefecture__iexact=prefecture,
+            city__iexact=city,
+        )
+        .first()
+    )
+
+    if existing_school:
+
+        # 無効になっていた場合は復活
+        if not existing_school.is_active:
+            existing_school.is_active = True
+            existing_school.save(
+                update_fields=[
+                    "is_active",
+                    "updated_at",
+                ]
+            )
+
+        return JsonResponse(
+            {
+                "success": True,
+                "created": False,
+                "school": {
+                    "id": existing_school.id,
+                    "name": existing_school.name,
+                    "prefecture": (
+                        existing_school.prefecture
+                        or ""
+                    ),
+                    "city": (
+                        existing_school.city
+                        or ""
+                    ),
+                    "principal_name": (
+                        existing_school.principal_name
+                        or ""
+                    ),
+                },
+                "message": (
+                    "すでに登録されている中学校を"
+                    "選択しました。"
+                ),
+            },
+            json_dumps_params={
+                "ensure_ascii": False,
+            },
+        )
+
+    # ============================================================
+    # 新規登録
+    # ============================================================
+
+    school = JuniorHighSchool.objects.create(
+        name=name,
+        prefecture=prefecture,
+        city=city,
+        principal_name=principal_name,
+        tel=tel,
+        address=address,
+
+        # 文科省データではなく手動登録
+        is_from_mext=False,
+
+        is_active=True,
+    )
+
+    return JsonResponse(
+        {
+            "success": True,
+            "created": True,
+            "school": {
+                "id": school.id,
+                "name": school.name,
+                "prefecture": (
+                    school.prefecture
+                    or ""
+                ),
+                "city": (
+                    school.city
+                    or ""
+                ),
+                "principal_name": (
+                    school.principal_name
+                    or ""
+                ),
+            },
+            "message": (
+                f"{school.name}を登録しました。"
+            ),
+        },
+        json_dumps_params={
+            "ensure_ascii": False,
+        },
+    )

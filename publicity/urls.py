@@ -110,6 +110,11 @@ urlpatterns = [
         views.recruitment_response_management_detail,
         name="recruitment_response_management_detail",
     ),
+    path(
+        "prospective-students/school/quick-create/",
+        views.junior_high_school_quick_create,
+        name="junior_high_school_quick_create",
+    ),
     path("schools/", views.school_list, name="school_list"),
     path("schools/print/", views.school_print, name="school_print"),
     path("school/<int:pk>/edit/", views.school_edit, name="school_edit"),
