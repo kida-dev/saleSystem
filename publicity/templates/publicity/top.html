@@ -392,27 +392,17 @@
                     {% if can_manage_publicity %}
 
                         <a
-                            href="{% url 'publicity:label_select' %}"
+                            href="{% url 'publicity:miyazaki_material_distribution' %}"
                             class="menu-item"
                         >
-                            <h3>宛名シール作成</h3>
+                            <h3>
+                                宛名・資料印刷
+                            </h3>
 
                             <p>
-                                対象の中学校を選択して、
-                                宛名シールを作成します。
-                            </p>
-                        </a>
-
-                        <a
-                            href="{% url 'publicity:label_pdf' %}"
-                            target="_blank"
-                            class="menu-item"
-                        >
-                            <h3>宛名シールPDF</h3>
-
-                            <p>
-                                登録されている中学校の
-                                宛名シールPDFを表示します。
+                                宮崎県内の中学校を選択して、
+                                宛名シールや資料持参・封入用の
+                                一覧を作成します。
                             </p>
                         </a>
 

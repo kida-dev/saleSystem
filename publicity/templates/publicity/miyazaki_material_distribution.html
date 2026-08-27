@@ -1,0 +1,1359 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>宛名シール・資料印刷</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding-bottom: 110px;
+            font-family:
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                "Yu Gothic",
+                "Meiryo",
+                sans-serif;
+            background: #f4f7f9;
+            color: #222;
+        }
+
+        .page-header {
+            padding: 22px 30px;
+            background: #285b70;
+            color: white;
+        }
+
+        .page-header h1 {
+            margin: 0 0 6px;
+            font-size: 25px;
+        }
+
+        .page-header p {
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        .container {
+            width: 95%;
+            max-width: 1400px;
+            margin: 24px auto 50px;
+        }
+
+        .card {
+            margin-bottom: 20px;
+            padding: 20px;
+            background: white;
+            border: 1px solid #d5dee3;
+            border-radius: 8px;
+            box-shadow:
+                0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .card h2 {
+            margin: 0 0 16px;
+            color: #174f69;
+            font-size: 19px;
+        }
+
+        /* ==========================================
+           ボタン
+        ========================================== */
+
+        .button {
+            display: inline-block;
+            padding: 10px 17px;
+            border: 1px solid #999;
+            border-radius: 5px;
+            background: white;
+            color: #222;
+            text-decoration: none;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .button:hover {
+            background: #f1f1f1;
+        }
+
+        .button-primary {
+            color: white;
+            background: #1678a5;
+            border-color: #1678a5;
+        }
+
+        .button-primary:hover {
+            background: #11678e;
+        }
+
+        .button-green {
+            color: white;
+            background: #338a54;
+            border-color: #338a54;
+        }
+
+        .button-green:hover {
+            background: #287344;
+        }
+
+        .button-orange {
+            color: white;
+            background: #c77a14;
+            border-color: #c77a14;
+        }
+
+        .button-orange:hover {
+            background: #aa6610;
+        }
+
+        .top-actions {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        /* ==========================================
+           目的選択
+        ========================================== */
+
+        .purpose-grid {
+            display: grid;
+            grid-template-columns:
+                repeat(2, minmax(0, 1fr));
+            gap: 16px;
+        }
+
+        .purpose-card {
+            display: block;
+            padding: 20px;
+            border: 2px solid #cad7dd;
+            border-radius: 8px;
+            background: #fafcfd;
+            color: #222;
+            text-decoration: none;
+            transition: 0.15s;
+        }
+
+        .purpose-card:hover {
+            border-color: #4b8ba5;
+            background: #f0f7fa;
+        }
+
+        .purpose-card.active {
+            border-color: #1678a5;
+            background: #e9f5fa;
+            box-shadow:
+                0 0 0 2px rgba(22, 120, 165, 0.12);
+        }
+
+        .purpose-card h3 {
+            margin: 0 0 8px;
+            color: #174f69;
+            font-size: 19px;
+        }
+
+        .purpose-card p {
+            margin: 0;
+            line-height: 1.7;
+            font-size: 14px;
+        }
+
+        .purpose-badge {
+            display: inline-block;
+            margin-bottom: 9px;
+            padding: 4px 9px;
+            border-radius: 15px;
+            background: #dcecf3;
+            color: #174f69;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        /* ==========================================
+           地域・検索
+        ========================================== */
+
+        .area-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 17px;
+        }
+
+        .area-button {
+            display: inline-block;
+            padding: 9px 13px;
+            border: 1px solid #8ca4af;
+            border-radius: 5px;
+            background: #f8fbfc;
+            color: #254e60;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .area-button:hover {
+            background: #e7f1f5;
+        }
+
+        .area-button.active {
+            color: white;
+            background: #39778f;
+            border-color: #39778f;
+        }
+
+        .search-row {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 10px;
+            max-width: 750px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            min-height: 42px;
+            padding: 8px 11px;
+            border: 1px solid #b8c5cb;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .description-box {
+            margin-top: 15px;
+            padding: 12px 14px;
+            background: #edf6fa;
+            border-left: 4px solid #3982a0;
+            line-height: 1.7;
+            font-size: 14px;
+        }
+
+        /* ==========================================
+           学校操作
+        ========================================== */
+
+        .school-tools {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 9px;
+            align-items: center;
+            margin-bottom: 14px;
+        }
+
+        .tool-button {
+            padding: 8px 13px;
+            border: 1px solid #89a5b3;
+            border-radius: 5px;
+            background: #eef5f8;
+            color: #174f69;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .tool-button:hover {
+            background: #dcecf3;
+        }
+
+        .school-count {
+            margin-left: auto;
+            padding: 7px 11px;
+            border-radius: 5px;
+            background: #fff3c7;
+            border: 1px solid #e6c95f;
+            font-weight: 700;
+        }
+
+        /* ==========================================
+           一覧
+        ========================================== */
+
+        .table-wrap {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 10px 9px;
+            border: 1px solid #cbd5da;
+            vertical-align: middle;
+            font-size: 14px;
+        }
+
+        th {
+            background: #e7f0f4;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        tbody tr:hover td {
+            background: #f7fbfd;
+        }
+
+        .center {
+            text-align: center;
+        }
+
+        .school-name {
+            font-weight: 700;
+        }
+
+        .school-checkbox {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .student-count {
+            display: inline-block;
+            min-width: 50px;
+            padding: 4px 8px;
+            border-radius: 14px;
+            background: #e6f2e8;
+            color: #28643a;
+            font-weight: 700;
+        }
+
+        .student-count.zero {
+            background: #eceff1;
+            color: #777;
+        }
+
+        .empty {
+            padding: 30px;
+            color: #666;
+            text-align: center;
+        }
+
+        /* ==========================================
+           固定印刷バー
+        ========================================== */
+
+        .print-bar {
+            position: fixed;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 1000;
+
+            padding: 13px 3%;
+
+            background:
+                rgba(35, 68, 83, 0.97);
+
+            color: white;
+
+            box-shadow:
+                0 -3px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .print-bar-inner {
+            max-width: 1400px;
+            margin: auto;
+
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .selected-info {
+            margin-right: auto;
+            font-size: 16px;
+        }
+
+        .selected-info strong {
+            font-size: 22px;
+        }
+
+        .print-bar .button {
+            min-width: 180px;
+            text-align: center;
+        }
+
+        /* ==========================================
+           レスポンシブ
+        ========================================== */
+
+        @media (max-width: 800px) {
+
+            .purpose-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .top-actions {
+                flex-direction: column;
+            }
+
+            .school-count {
+                width: 100%;
+                margin-left: 0;
+            }
+
+            .print-bar-inner {
+                flex-wrap: wrap;
+            }
+
+            .selected-info {
+                width: 100%;
+            }
+
+            .print-bar .button {
+                flex: 1;
+                min-width: 140px;
+            }
+
+            body {
+                padding-bottom: 160px;
+            }
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<header class="page-header">
+
+    <h1>
+        宛名シール・資料印刷
+    </h1>
+
+    <p>
+        印刷する目的を選択し、
+        対象となる中学校を選んでください。
+    </p>
+
+</header>
+
+
+<main class="container">
+
+
+    <!-- ==========================================
+         戻る
+    =========================================== -->
+
+    <section class="card">
+
+        <div class="top-actions">
+
+            <a
+                href="{% url 'publicity:top' %}"
+                class="button"
+            >
+                トップへ戻る
+            </a>
+
+            <a
+                href="{% url 'publicity:school_list' %}"
+                class="button"
+            >
+                中学校一覧
+            </a>
+
+        </div>
+
+    </section>
+
+
+    <!-- ==========================================
+         1. 印刷目的
+    =========================================== -->
+
+    <section class="card">
+
+        <h2>
+            1. 印刷目的を選択
+        </h2>
+
+        <div class="purpose-grid">
+
+
+            <!-- オープンスクール -->
+
+            <a
+                href="?purpose=open_school"
+                class="
+                    purpose-card
+                    {% if selected_purpose == 'open_school' %}
+                        active
+                    {% endif %}
+                "
+            >
+
+                <span class="purpose-badge">
+                    宮崎県内
+                </span>
+
+                <h3>
+                    オープンスクール用
+                </h3>
+
+                <p>
+                    宮崎県内の中学校を対象に、
+                    オープンスクール案内等を郵送するための
+                    宛名シールを作成します。
+                    持参・封入用一覧の作成にも使用できます。
+                </p>
+
+            </a>
+
+
+            <!-- 募集対象生徒登録校 -->
+
+            <a
+                href="?purpose=prospective"
+                class="
+                    purpose-card
+                    {% if selected_purpose == 'prospective' %}
+                        active
+                    {% endif %}
+                "
+            >
+
+                <span class="purpose-badge">
+                    県内・県外
+                </span>
+
+                <h3>
+                    募集対象生徒登録校
+                </h3>
+
+                <p>
+                    募集対象生徒が登録されている
+                    中学校だけを抽出します。
+                    奨学金案内等の郵送用宛名シールに使用します。
+                </p>
+
+            </a>
+
+        </div>
+
+    </section>
+
+
+    <!-- ==========================================
+         2. 地域
+    =========================================== -->
+
+    <section class="card">
+
+        <h2>
+            2. 地域を絞り込む
+        </h2>
+
+        <div class="area-buttons">
+
+
+            <!-- すべて -->
+
+            <a
+                href="?purpose={{ selected_purpose }}"
+                class="
+                    area-button
+                    {% if not selected_area %}
+                        active
+                    {% endif %}
+                "
+            >
+                すべて
+            </a>
+
+
+            <!-- 主要4地域 -->
+
+            <a
+                href="?purpose={{ selected_purpose }}&area=local"
+                class="
+                    area-button
+                    {% if selected_area == 'local' %}
+                        active
+                    {% endif %}
+                "
+            >
+                小林・高原・えびの・都城
+            </a>
+
+
+            <!-- 個別 -->
+
+            <a
+                href="?purpose={{ selected_purpose }}&area=kobayashi"
+                class="
+                    area-button
+                    {% if selected_area == 'kobayashi' %}
+                        active
+                    {% endif %}
+                "
+            >
+                小林市
+            </a>
+
+            <a
+                href="?purpose={{ selected_purpose }}&area=takaharu"
+                class="
+                    area-button
+                    {% if selected_area == 'takaharu' %}
+                        active
+                    {% endif %}
+                "
+            >
+                高原町
+            </a>
+
+            <a
+                href="?purpose={{ selected_purpose }}&area=ebino"
+                class="
+                    area-button
+                    {% if selected_area == 'ebino' %}
+                        active
+                    {% endif %}
+                "
+            >
+                えびの市
+            </a>
+
+            <a
+                href="?purpose={{ selected_purpose }}&area=miyakonojo"
+                class="
+                    area-button
+                    {% if selected_area == 'miyakonojo' %}
+                        active
+                    {% endif %}
+                "
+            >
+                都城市
+            </a>
+
+
+            <!-- 4地域以外 -->
+
+            <a
+                href="?purpose={{ selected_purpose }}&area=other"
+                class="
+                    area-button
+                    {% if selected_area == 'other' %}
+                        active
+                    {% endif %}
+                "
+            >
+                主要4地域以外
+            </a>
+
+
+            <!-- prospectiveだけ県内外を表示 -->
+
+            {% if selected_purpose == "prospective" %}
+
+                <a
+                    href="?purpose={{ selected_purpose }}&area=miyazaki"
+                    class="
+                        area-button
+                        {% if selected_area == 'miyazaki' %}
+                            active
+                        {% endif %}
+                    "
+                >
+                    宮崎県内
+                </a>
+
+                <a
+                    href="?purpose={{ selected_purpose }}&area=outside_miyazaki"
+                    class="
+                        area-button
+                        {% if selected_area == 'outside_miyazaki' %}
+                            active
+                        {% endif %}
+                    "
+                >
+                    宮崎県外
+                </a>
+
+            {% endif %}
+
+        </div>
+
+
+        <!-- 検索 -->
+
+        <form method="get">
+
+            <input
+                type="hidden"
+                name="purpose"
+                value="{{ selected_purpose }}"
+            >
+
+            <input
+                type="hidden"
+                name="area"
+                value="{{ selected_area }}"
+            >
+
+            <div class="search-row">
+
+                <input
+                    type="text"
+                    name="q"
+                    value="{{ keyword }}"
+                    placeholder="学校名・市町村・都道府県で検索"
+                >
+
+                <button
+                    type="submit"
+                    class="button button-primary"
+                >
+                    検索
+                </button>
+
+            </div>
+
+        </form>
+
+
+        {% if selected_purpose == "open_school" %}
+
+            <div class="description-box">
+
+                <strong>
+                    オープンスクール用
+                </strong>
+
+                を選択しています。
+
+                宮崎県内の中学校
+                <strong>
+                    {{ school_count }}校
+                </strong>
+                が現在の条件に該当します。
+
+            </div>
+
+        {% else %}
+
+            <div class="description-box">
+
+                <strong>
+                    募集対象生徒登録校
+                </strong>
+
+                を選択しています。
+
+                募集対象生徒が1名以上登録されている中学校のうち、
+                <strong>
+                    {{ school_count }}校
+                </strong>
+                が現在の条件に該当します。
+
+            </div>
+
+        {% endif %}
+
+    </section>
+
+
+    <!-- ==========================================
+         3. 学校選択
+    =========================================== -->
+
+    <section class="card">
+
+        <h2>
+            3. 中学校を選択
+        </h2>
+
+
+        <div class="school-tools">
+
+            <button
+                type="button"
+                class="tool-button"
+                id="select-all"
+            >
+                表示中をすべて選択
+            </button>
+
+            <button
+                type="button"
+                class="tool-button"
+                id="clear-all"
+            >
+                全選択解除
+            </button>
+
+
+            <span class="school-count">
+
+                表示：
+                {{ school_count }}校
+
+                ／
+
+                選択：
+                <span id="selected-count-top">
+                    0
+                </span>
+                校
+
+            </span>
+
+        </div>
+
+
+        <div class="table-wrap">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            選択
+                        </th>
+
+                        <th>
+                            都道府県
+                        </th>
+
+                        <th>
+                            市町村
+                        </th>
+
+                        <th>
+                            中学校
+                        </th>
+
+                        {% if selected_purpose == "prospective" %}
+
+                            <th>
+                                募集対象生徒
+                            </th>
+
+                        {% endif %}
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    {% for school in schools %}
+
+                        <tr>
+
+                            <td class="center">
+
+                                <input
+                                    type="checkbox"
+                                    class="school-checkbox"
+                                    value="{{ school.id }}"
+                                >
+
+                            </td>
+
+
+                            <td class="center">
+
+                                {{ school.prefecture|default:"-" }}
+
+                            </td>
+
+
+                            <td class="center">
+
+                                {{ school.city|default:"-" }}
+
+                            </td>
+
+
+                            <td class="school-name">
+
+                                {{ school.name }}
+
+                            </td>
+
+
+                            {% if selected_purpose == "prospective" %}
+
+                                <td class="center">
+
+                                    {% if school.prospective_count %}
+
+                                        <span class="student-count">
+
+                                            {{ school.prospective_count }}名
+
+                                        </span>
+
+                                    {% else %}
+
+                                        <span
+                                            class="
+                                                student-count
+                                                zero
+                                            "
+                                        >
+                                            0名
+                                        </span>
+
+                                    {% endif %}
+
+                                </td>
+
+                            {% endif %}
+
+                        </tr>
+
+
+                    {% empty %}
+
+                        <tr>
+
+                            <td
+                                colspan="
+                                    {% if selected_purpose == 'prospective' %}
+                                        5
+                                    {% else %}
+                                        4
+                                    {% endif %}
+                                "
+                                class="empty"
+                            >
+
+                                条件に該当する中学校はありません。
+
+                            </td>
+
+                        </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<!-- ==============================================
+     常時表示する印刷操作バー
+================================================ -->
+
+<div class="print-bar">
+
+    <div class="print-bar-inner">
+
+        <div class="selected-info">
+
+            選択中：
+
+            <strong id="selected-count-bottom">
+                0
+            </strong>
+
+            校
+
+        </div>
+
+        <label
+            style="
+                display: flex;
+                align-items: center;
+                gap: 7px;
+                padding: 8px 12px;
+                background: rgba(255,255,255,0.12);
+                border-radius: 5px;
+                cursor: pointer;
+                white-space: nowrap;
+            "
+        >
+
+            <input
+                type="checkbox"
+                id="show-tel"
+                style="
+                    width: 18px;
+                    height: 18px;
+                "
+            >
+
+            TELを表示
+            （レターパック等）
+
+        </label>
+
+
+        <button
+            type="button"
+            class="button button-green"
+            id="label-pdf-button"
+        >
+            宛名シールPDF
+        </button>
+
+
+        {% if selected_purpose == "open_school" %}
+
+            <button
+                type="button"
+                class="button button-orange"
+                id="delivery-list-button"
+            >
+                持参・封入一覧PDF
+            </button>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+
+<script>
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        const checkboxes =
+            Array.from(
+                document.querySelectorAll(
+                    ".school-checkbox"
+                )
+            );
+
+
+        const selectedCountTop =
+            document.getElementById(
+                "selected-count-top"
+            );
+
+
+        const selectedCountBottom =
+            document.getElementById(
+                "selected-count-bottom"
+            );
+
+
+        const selectAllButton =
+            document.getElementById(
+                "select-all"
+            );
+
+
+        const clearAllButton =
+            document.getElementById(
+                "clear-all"
+            );
+
+
+        const labelPdfButton =
+            document.getElementById(
+                "label-pdf-button"
+            );
+        
+        const showTelCheckbox =
+            document.getElementById(
+                "show-tel"
+            );
+
+        const deliveryListButton =
+            document.getElementById(
+                "delivery-list-button"
+            );
+
+
+        // ==========================================
+        // 選択件数
+        // ==========================================
+
+        function updateSelectedCount() {
+
+            const count =
+                checkboxes.filter(
+                    function (checkbox) {
+
+                        return checkbox.checked;
+
+                    }
+                ).length;
+
+
+            if (selectedCountTop) {
+
+                selectedCountTop.textContent =
+                    count;
+
+            }
+
+
+            if (selectedCountBottom) {
+
+                selectedCountBottom.textContent =
+                    count;
+
+            }
+
+        }
+
+
+        // ==========================================
+        // 個別選択
+        // ==========================================
+
+        checkboxes.forEach(
+            function (checkbox) {
+
+                checkbox.addEventListener(
+                    "change",
+                    updateSelectedCount
+                );
+
+            }
+        );
+
+
+        // ==========================================
+        // 全選択
+        // ==========================================
+
+        if (selectAllButton) {
+
+            selectAllButton.addEventListener(
+                "click",
+                function () {
+
+                    checkboxes.forEach(
+                        function (checkbox) {
+
+                            checkbox.checked =
+                                true;
+
+                        }
+                    );
+
+                    updateSelectedCount();
+
+                }
+            );
+
+        }
+
+
+        // ==========================================
+        // 全解除
+        // ==========================================
+
+        if (clearAllButton) {
+
+            clearAllButton.addEventListener(
+                "click",
+                function () {
+
+                    checkboxes.forEach(
+                        function (checkbox) {
+
+                            checkbox.checked =
+                                false;
+
+                        }
+                    );
+
+                    updateSelectedCount();
+
+                }
+            );
+
+        }
+
+
+        // ==========================================
+        // 選択ID
+        // ==========================================
+
+        function getSelectedSchoolIds() {
+
+            return checkboxes
+                .filter(
+                    function (checkbox) {
+
+                        return checkbox.checked;
+
+                    }
+                )
+                .map(
+                    function (checkbox) {
+
+                        return checkbox.value;
+
+                    }
+                );
+
+        }
+
+
+        // ==========================================
+        // 宛名シールPDF
+        // ==========================================
+
+        if (labelPdfButton) {
+
+            labelPdfButton.addEventListener(
+                "click",
+                function () {
+
+                    const schoolIds =
+                        getSelectedSchoolIds();
+
+
+                    if (schoolIds.length === 0) {
+
+                        alert(
+                            "中学校を1校以上選択してください。"
+                        );
+
+                        return;
+
+                    }
+
+
+                    const params =
+                        new URLSearchParams();
+
+
+                    schoolIds.forEach(
+                        function (schoolId) {
+
+                            params.append(
+                                "school_ids",
+                                schoolId
+                            );
+
+                        }
+                    );
+                    
+                    if (
+                        showTelCheckbox
+                        && showTelCheckbox.checked
+                    ) {
+
+                        params.append(
+                            "show_tel",
+                            "1"
+                        );
+
+                    }
+
+                    const url =
+                        "{% url 'publicity:label_pdf' %}"
+                        + "?"
+                        + params.toString();
+
+
+                    window.open(
+                        url,
+                        "_blank"
+                    );
+
+                }
+            );
+
+        }
+
+
+        // ==========================================
+        // 持参・封入一覧PDF
+        //
+        // オープンスクール用のみ表示
+        // ==========================================
+
+        if (deliveryListButton) {
+
+            deliveryListButton.addEventListener(
+                "click",
+                function () {
+
+                    const schoolIds =
+                        getSelectedSchoolIds();
+
+
+                    if (schoolIds.length === 0) {
+
+                        alert(
+                            "中学校を1校以上選択してください。"
+                        );
+
+                        return;
+
+                    }
+
+
+                    const params =
+                        new URLSearchParams();
+
+
+                    schoolIds.forEach(
+                        function (schoolId) {
+
+                            params.append(
+                                "school_ids",
+                                schoolId
+                            );
+
+                        }
+                    );
+
+
+                    const url =
+                        "{% url 'publicity:miyazaki_material_delivery_list_pdf' %}"
+                        + "?"
+                        + params.toString();
+
+
+                    window.open(
+                        url,
+                        "_blank"
+                    );
+
+                }
+            );
+
+        }
+
+
+        updateSelectedCount();
+
+    }
+);
+
+</script>
+
+
+</body>
+
+</html>

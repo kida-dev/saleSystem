@@ -105,7 +105,7 @@
         .search-grid {
             display: grid;
             grid-template-columns:
-                2fr 2fr 1.5fr auto;
+                1.7fr 1.2fr 1.4fr 1.7fr 1.3fr auto;
             gap: 14px;
             align-items: end;
         }
@@ -454,6 +454,90 @@
 
                     </div>
 
+                    <!-- ==========================================
+                        地域
+                    ========================================== -->
+
+                    <div class="field">
+
+                        <label for="region">
+                            地域
+                        </label>
+
+                        <select
+                            id="region"
+                            name="region"
+                            onchange="updateAreaField()"
+                        >
+
+                            <option value="">
+                                すべて
+                            </option>
+
+                            <option
+                                value="miyazaki"
+                                {% if selected_region == "miyazaki" %}
+                                    selected
+                                {% endif %}
+                            >
+                                宮崎県内
+                            </option>
+
+                            <option
+                                value="outside"
+                                {% if selected_region == "outside" %}
+                                    selected
+                                {% endif %}
+                            >
+                                宮崎県外
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- ==========================================
+                        宮崎県内エリア
+                    ========================================== -->
+
+                    <div class="field">
+
+                        <label for="area">
+                            県内エリア
+                        </label>
+
+                        <select
+                            id="area"
+                            name="area"
+                        >
+
+                            <option value="">
+                                県内すべて
+                            </option>
+
+                            <option
+                                value="direct"
+                                {% if selected_area == "direct" %}
+                                    selected
+                                {% endif %}
+                            >
+                                小林・高原・えびの・都城
+                            </option>
+
+                            <option
+                                value="other"
+                                {% if selected_area == "other" %}
+                                    selected
+                                {% endif %}
+                            >
+                                上記4市町村以外
+                            </option>
+
+                        </select>
+
+                    </div>
+
 
                     <!-- 中学校 -->
 
@@ -584,6 +668,14 @@
 
                     <button
                         type="button"
+                        class="button select-button"
+                        onclick="selectUnshippedStudents()"
+                    >
+                        未発送のみ選択
+                    </button>
+
+                    <button
+                        type="button"
                         class="button secondary-button"
                         onclick="clearAllStudents()"
                     >
@@ -644,6 +736,10 @@
                                     </th>
 
                                     <th>
+                                        発送状況
+                                    </th>
+
+                                    <th>
                                         担当教員
                                     </th>
 
@@ -668,6 +764,10 @@
                                                 value="{{ student.id }}"
                                                 class="checkbox student-checkbox"
                                                 data-school-id="{{ student.junior_high_school_id }}"
+                                                data-shipped="{% if student.has_been_shipped %}1{% else %}0{% endif %}"
+                                                {% if not student.has_been_shipped %}
+                                                    checked
+                                                {% endif %}
                                                 onchange="updateSelectionSummary()"
                                             >
 
@@ -742,6 +842,46 @@
 
                                                 <span class="scholarship-no">
                                                     希望なし
+                                                </span>
+
+                                            {% endif %}
+
+                                        </td>
+
+                                        <!-- 発送状況 -->
+
+                                        <td>
+
+                                            {% if student.has_been_shipped %}
+
+                                                <span
+                                                    style="
+                                                        display: inline-block;
+                                                        padding: 4px 9px;
+                                                        border-radius: 14px;
+                                                        background: #eeeeee;
+                                                        color: #666;
+                                                        font-weight: bold;
+                                                        font-size: 12px;
+                                                    "
+                                                >
+                                                    発送済み
+                                                </span>
+
+                                            {% else %}
+
+                                                <span
+                                                    style="
+                                                        display: inline-block;
+                                                        padding: 4px 9px;
+                                                        border-radius: 14px;
+                                                        background: #e5f4e9;
+                                                        color: #28703d;
+                                                        font-weight: bold;
+                                                        font-size: 12px;
+                                                    "
+                                                >
+                                                    未発送
                                                 </span>
 
                                             {% endif %}
@@ -917,6 +1057,26 @@
 
         }
 
+        /*
+        * 未発送生徒だけ選択
+        */
+        function selectUnshippedStudents() {
+
+            const checkboxes =
+                getStudentCheckboxes();
+
+            checkboxes.forEach(
+                function (checkbox) {
+
+                    checkbox.checked =
+                        checkbox.dataset.shipped !== "1";
+
+                }
+            );
+
+            updateSelectionSummary();
+        }
+
 
         /*
          * 全解除
@@ -1018,6 +1178,39 @@
 
         }
 
+        /*
+        * 地域に応じて県内エリアを制御
+        */
+        function updateAreaField() {
+
+            const region =
+                document.getElementById(
+                    "region"
+                );
+
+            const area =
+                document.getElementById(
+                    "area"
+                );
+
+            if (!region || !area) {
+                return;
+            }
+
+            if (region.value === "miyazaki") {
+
+                area.disabled = false;
+
+            } else {
+
+                area.disabled = true;
+
+                if (region.value === "outside") {
+                    area.value = "";
+                }
+            }
+        }
+
 
         /*
          * 初期表示
@@ -1026,6 +1219,7 @@
             "DOMContentLoaded",
             function () {
 
+                updateAreaField();
                 updateSelectionSummary();
 
             }

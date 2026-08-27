@@ -541,6 +541,105 @@ class ProspectiveStudent(models.Model):
             or ""
         )
 
+class ScholarshipShippingRecord(models.Model):
+
+    SHIPPING_TYPE_CHOICES = [
+        ("mail", "郵送"),
+        ("hand_delivery", "持参"),
+        ("resend", "再発送"),
+    ]
+
+    student = models.ForeignKey(
+        ProspectiveStudent,
+        on_delete=models.PROTECT,
+        related_name="scholarship_shipping_records",
+        verbose_name="対象生徒",
+    )
+
+    document = models.ForeignKey(
+        "ScholarshipRequestDocument",
+        on_delete=models.PROTECT,
+        related_name="shipping_records",
+        verbose_name="発行文書",
+        null=True,
+        blank=True,
+    )
+
+    shipping_type = models.CharField(
+        "発送方法",
+        max_length=20,
+        choices=SHIPPING_TYPE_CHOICES,
+        default="mail",
+    )
+
+    shipping_order = models.PositiveIntegerField(
+        "発送順",
+        null=True,
+        blank=True,
+    )
+
+    is_shipped = models.BooleanField(
+        "発送済み",
+        default=False,
+    )
+
+    shipped_at = models.DateTimeField(
+        "発送日時",
+        null=True,
+        blank=True,
+    )
+
+    notes = models.CharField(
+        "発送メモ",
+        max_length=255,
+        blank=True,
+    )
+
+    created_by = models.ForeignKey(
+        "Teacher",
+        on_delete=models.PROTECT,
+        related_name="created_shipping_records",
+        verbose_name="登録者",
+        null=True,
+        blank=True,
+    )
+
+    created_at = models.DateTimeField(
+        "登録日時",
+        auto_now_add=True,
+    )
+
+    updated_at = models.DateTimeField(
+        "更新日時",
+        auto_now=True,
+    )
+
+    class Meta:
+        verbose_name = "奨学生文書発送履歴"
+        verbose_name_plural = "奨学生文書発送履歴"
+
+        ordering = [
+            "shipping_order",
+            "student__junior_high_school__prefecture",
+            "student__junior_high_school__city",
+            "student__junior_high_school__name",
+            "student__name",
+        ]
+
+    def __str__(self):
+
+        status = (
+            "発送済み"
+            if self.is_shipped
+            else "未発送"
+        )
+
+        return (
+            f"{self.student.name} "
+            f"{self.get_shipping_type_display()} "
+            f"{status}"
+        )
+
 class Teacher(models.Model):
     ROLE_CHOICES = [
         ("club_advisor", "部活動顧問"),

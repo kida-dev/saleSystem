@@ -12,8 +12,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.staticfiles import finders
 from django.core.exceptions import PermissionDenied
 from django.db import transaction
-from django.db.models import Case, When, Value, IntegerField
-from django.db.models import Q
+from django.db.models import Q, Case, When, Value, IntegerField,Count
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import (
     get_object_or_404,
@@ -76,6 +75,7 @@ from .models import (
     ScholarshipQuota,
     ScholarshipRankHistory,
     ScholarshipRequestDocument,
+    ScholarshipShippingRecord,
     Teacher,
 )
 
@@ -224,30 +224,400 @@ def label_select(request):
         "schools": schools
     })
 
+# ============================================================
+# 宮崎県内 資料配布管理
+# ============================================================
+
+@publicity_admin_required
+def miyazaki_material_distribution(request):
+    """
+    宛名シール・資料印刷の対象校選択画面。
+
+    purpose:
+        open_school
+            オープンスクール用
+            → 宮崎県内の有効な中学校
+
+        prospective
+            募集対象生徒登録校
+            → ProspectiveStudent が1名以上いる中学校
+    """
+
+    # ========================================================
+    # GET条件
+    # ========================================================
+
+    purpose = (
+        request.GET
+        .get("purpose", "open_school")
+        .strip()
+    )
+
+    area = (
+        request.GET
+        .get("area", "")
+        .strip()
+    )
+
+    keyword = (
+        request.GET
+        .get("q", "")
+        .strip()
+    )
+
+    # ========================================================
+    # 印刷目的
+    # ========================================================
+
+    if purpose not in {
+        "open_school",
+        "prospective",
+    }:
+        purpose = "open_school"
+
+    # ========================================================
+    # 基本QuerySet
+    # ========================================================
+
+    schools = (
+        JuniorHighSchool.objects
+        .filter(
+            is_active=True,
+        )
+    )
+
+    # ========================================================
+    # 目的別の母集団
+    # ========================================================
+
+    if purpose == "open_school":
+
+        # ----------------------------------------------------
+        # オープンスクール用
+        #
+        # 宮崎県内の中学校マスタを対象
+        # ----------------------------------------------------
+
+        schools = schools.filter(
+            prefecture="宮崎県"
+        )
+
+    elif purpose == "prospective":
+
+        # ----------------------------------------------------
+        # 募集対象生徒登録校
+        #
+        # 県内外を問わず、
+        # 有効な募集対象生徒が1名以上いる学校
+        # ----------------------------------------------------
+
+        schools = (
+            schools
+            .filter(
+                prospective_students__is_active=True
+            )
+            .distinct()
+        )
+
+    # ========================================================
+    # 地域条件
+    # ========================================================
+
+    main_cities = [
+        "小林市",
+        "高原町",
+        "えびの市",
+        "都城市",
+    ]
+
+    if area == "local":
+
+        schools = schools.filter(
+            city__in=main_cities
+        )
+
+    elif area == "other":
+
+        schools = schools.exclude(
+            city__in=main_cities
+        )
+
+    elif area == "miyazaki":
+
+        schools = schools.filter(
+            prefecture="宮崎県"
+        )
+
+    elif area == "outside_miyazaki":
+
+        # オープンスクール用では
+        # 元々宮崎県内限定なので0件になる。
+        schools = schools.exclude(
+            prefecture="宮崎県"
+        )
+
+    elif area == "kobayashi":
+
+        schools = schools.filter(
+            city="小林市"
+        )
+
+    elif area == "takaharu":
+
+        schools = schools.filter(
+            city="高原町"
+        )
+
+    elif area == "ebino":
+
+        schools = schools.filter(
+            city="えびの市"
+        )
+
+    elif area == "miyakonojo":
+
+        schools = schools.filter(
+            city="都城市"
+        )
+
+    # ========================================================
+    # キーワード検索
+    # ========================================================
+
+    if keyword:
+
+        schools = schools.filter(
+            Q(
+                name__icontains=keyword
+            )
+            | Q(
+                prefecture__icontains=keyword
+            )
+            | Q(
+                city__icontains=keyword
+            )
+            | Q(
+                address__icontains=keyword
+            )
+            | Q(
+                official_address__icontains=keyword
+            )
+        )
+
+    # ========================================================
+    # 地域優先順
+    # ========================================================
+
+    schools = (
+        schools
+        .annotate(
+            area_order=Case(
+
+                When(
+                    city__icontains="小林",
+                    then=Value(1),
+                ),
+
+                When(
+                    city__icontains="高原",
+                    then=Value(2),
+                ),
+
+                When(
+                    city__icontains="えびの",
+                    then=Value(3),
+                ),
+
+                When(
+                    city__icontains="都城",
+                    then=Value(4),
+                ),
+
+                When(
+                    prefecture="宮崎県",
+                    then=Value(50),
+                ),
+
+                default=Value(99),
+
+                output_field=IntegerField(),
+            )
+        )
+        .order_by(
+            "area_order",
+            "prefecture",
+            "city",
+            "name",
+        )
+    )
+
+    # ========================================================
+    # 募集対象生徒数
+    # ========================================================
+
+    prospective_counts = {
+
+        row[
+            "junior_high_school_id"
+        ]: row[
+            "student_count"
+        ]
+
+        for row in (
+            ProspectiveStudent.objects
+            .filter(
+                is_active=True
+            )
+            .values(
+                "junior_high_school_id"
+            )
+            .annotate(
+                student_count=Count("id")
+            )
+        )
+    }
+
+    # ========================================================
+    # Template用
+    # ========================================================
+
+    school_list = []
+
+    for school in schools:
+
+        school.prospective_count = (
+            prospective_counts.get(
+                school.id,
+                0,
+            )
+        )
+
+        school_list.append(
+            school
+        )
+
+    # ========================================================
+    # Context
+    # ========================================================
+
+    context = {
+
+        "schools": school_list,
+
+        "selected_purpose": purpose,
+
+        "selected_area": area,
+
+        "keyword": keyword,
+
+        "school_count": len(
+            school_list
+        ),
+
+    }
+
+    return render(
+        request,
+        (
+            "publicity/"
+            "miyazaki_material_distribution.html"
+        ),
+        context,
+    )
+
 @publicity_admin_required
 def label_pdf(request):
-    school_ids = request.GET.getlist("school_ids")
+
+    # ========================================================
+    # GETパラメータ
+    # ========================================================
+
+    school_ids = request.GET.getlist(
+        "school_ids"
+    )
+
+    # TELを表示するか
+    # show_tel=1 の場合のみ表示
+    show_tel = (
+        request.GET.get(
+            "show_tel",
+            "0"
+        )
+        == "1"
+    )
+
+    # ========================================================
+    # 対象中学校
+    # ========================================================
 
     if school_ids:
-        schools = JuniorHighSchool.objects.filter(
-            id__in=school_ids
-        ).order_by("number", "id")
+
+        schools = (
+            JuniorHighSchool.objects
+            .filter(
+                id__in=school_ids
+            )
+            .order_by(
+                "number",
+                "id",
+            )
+        )
+
     else:
-        schools = JuniorHighSchool.objects.all().order_by("number", "id")
 
-    response = HttpResponse(content_type="application/pdf")
-    response["Content-Disposition"] = 'inline; filename="junior_high_labels.pdf"'
+        schools = (
+            JuniorHighSchool.objects
+            .all()
+            .order_by(
+                "number",
+                "id",
+            )
+        )
 
-    p = canvas.Canvas(response, pagesize=A4)
+    # ========================================================
+    # PDFレスポンス
+    # ========================================================
+
+    response = HttpResponse(
+        content_type="application/pdf"
+    )
+
+    response[
+        "Content-Disposition"
+    ] = (
+        'inline; '
+        'filename="junior_high_labels.pdf"'
+    )
+
+    p = canvas.Canvas(
+        response,
+        pagesize=A4,
+    )
+
+    # ========================================================
+    # フォント
+    # ========================================================
 
     font_path = os.path.join(
         settings.BASE_DIR,
         "static",
         "fonts",
-        "ipaexm.ttf"
+        "ipaexm.ttf",
     )
 
-    pdfmetrics.registerFont(TTFont("IPAexMincho", font_path))
+    pdfmetrics.registerFont(
+        TTFont(
+            "IPAexMincho",
+            font_path,
+        )
+    )
+
+    # ========================================================
+    # 用紙設定
+    #
+    # FJA210A
+    # A4 / 12面 / 2列×6段
+    # ========================================================
 
     page_width, page_height = A4
 
@@ -260,44 +630,203 @@ def label_pdf(request):
     cols = 2
     labels_per_page = 12
 
+    # ========================================================
+    # 右列位置補正
+    #
+    # 担当者要望：
+    # 右側の列のみ左へ5mm移動
+    # ========================================================
+
+    right_column_adjustment = 5 * mm
+
     label_index = 0
 
+    # ========================================================
+    # ラベル生成
+    # ========================================================
+
     for school in schools:
-        pos = label_index % labels_per_page
+
+        pos = (
+            label_index
+            % labels_per_page
+        )
 
         col = pos % cols
         row = pos // cols
 
-        x = margin_left + (col * label_width)
-        y = page_height - margin_top - ((row + 1) * label_height)
+        # ----------------------------------------------------
+        # ラベル基準位置
+        # ----------------------------------------------------
 
-        text_x = x + 5 * mm
-        text_y = y + label_height - 9 * mm
-
-        p.setFont("IPAexMincho", 8)
-        p.drawString(text_x, text_y, school.address or "")
-
-        p.setFont("IPAexMincho", 10)
-        p.drawString(text_x, text_y - 9 * mm, school.name)
-
-        p.setFont("IPAexMincho", 9)
-        p.drawString(
-            text_x,
-            text_y - 18 * mm,
-            "校長様"
+        x = (
+            margin_left
+            + (
+                col
+                * label_width
+            )
         )
 
-        p.setFont("IPAexMincho", 7)
+        # 右列だけ左へ5mm
+        if col == 1:
+
+            x += right_column_adjustment
+
+        y = (
+            page_height
+            - margin_top
+            - (
+                (row + 1)
+                * label_height
+            )
+        )
+
+        # ----------------------------------------------------
+        # ラベル内余白
+        # ----------------------------------------------------
+
+        text_x = (
+            x
+            + 5 * mm
+        )
+
+        text_y = (
+            y
+            + label_height
+            - 7 * mm
+        )
+
+        # ====================================================
+        # 郵便番号
+        # ====================================================
+
+        postal_code = (
+            school.official_postal_code
+            or ""
+        ).strip()
+
+        # 念のため「〒」がDB側に入っていても二重にしない
+        postal_code = (
+            postal_code
+            .replace("〒", "")
+            .strip()
+        )
+
+        if postal_code:
+
+            postal_text = (
+                f"〒{postal_code}"
+            )
+
+        else:
+
+            postal_text = ""
+
+        p.setFont(
+            "IPAexMincho",
+            8,
+        )
+
         p.drawString(
             text_x,
-            text_y - 27 * mm,
-            f"TEL：{school.tel}"
+            text_y,
+            postal_text,
         )
+
+        # ====================================================
+        # 住所
+        #
+        # 文科省データの正式住所を優先。
+        # なければ従来address。
+        # ====================================================
+
+        address = (
+            school.official_address
+            or school.address
+            or ""
+        ).strip()
+
+        p.setFont(
+            "IPAexMincho",
+            8,
+        )
+
+        p.drawString(
+            text_x,
+            text_y - 6 * mm,
+            address,
+        )
+
+        # ====================================================
+        # 学校名
+        # ====================================================
+
+        p.setFont(
+            "IPAexMincho",
+            10,
+        )
+
+        p.drawString(
+            text_x,
+            text_y - 15 * mm,
+            school.name,
+        )
+
+        # ====================================================
+        # 宛名
+        # ====================================================
+
+        p.setFont(
+            "IPAexMincho",
+            9,
+        )
+
+        p.drawString(
+            text_x,
+            text_y - 23 * mm,
+            "学校長　様",
+        )
+
+        # ====================================================
+        # TEL
+        #
+        # show_tel=1 の場合のみ表示
+        # ====================================================
+
+        if (
+            show_tel
+            and school.tel
+        ):
+
+            p.setFont(
+                "IPAexMincho",
+                7,
+            )
+
+            p.drawString(
+                text_x,
+                text_y - 30 * mm,
+                f"TEL：{school.tel}",
+            )
+
+        # ====================================================
+        # 次のラベル
+        # ====================================================
 
         label_index += 1
 
-        if label_index % labels_per_page == 0:
+        # 12枚ごとに改ページ
+        if (
+            label_index
+            % labels_per_page
+            == 0
+        ):
+
             p.showPage()
+
+    # ========================================================
+    # PDF終了
+    # ========================================================
 
     p.save()
 
@@ -1388,21 +1917,26 @@ def document_management_top(request):
 
 @system_admin_required
 def scholarship_document_student_select(request):
+
+    # ========================================================
+    # 基本QuerySet
+    # ========================================================
+
     students = (
         ProspectiveStudent.objects
-        .filter(is_active=True)
+        .filter(
+            is_active=True
+        )
         .select_related(
             "junior_high_school",
             "club",
             "assigned_teacher",
         )
-        .order_by(
-            "junior_high_school__prefecture",
-            "junior_high_school__city",
-            "junior_high_school__name",
-            "name",
-        )
     )
+
+    # ========================================================
+    # GET条件
+    # ========================================================
 
     keyword = request.GET.get(
         "q",
@@ -1419,25 +1953,194 @@ def scholarship_document_student_select(request):
         "",
     ).strip()
 
+    region = request.GET.get(
+        "region",
+        "",
+    ).strip()
+
+    area = request.GET.get(
+        "area",
+        "",
+    ).strip()
+
+    # ========================================================
+    # キーワード検索
+    # ========================================================
+
     if keyword:
+
         students = students.filter(
-            Q(name__icontains=keyword)
-            | Q(name_kana__icontains=keyword)
+            Q(
+                name__icontains=keyword
+            )
+            | Q(
+                name_kana__icontains=keyword
+            )
             | Q(
                 junior_high_school__name__icontains=keyword
             )
-            | Q(club__name__icontains=keyword)
+            | Q(
+                club__name__icontains=keyword
+            )
         )
 
+    # ========================================================
+    # 地域
+    #
+    # miyazaki = 宮崎県内
+    # outside  = 宮崎県外
+    # ========================================================
+
+    if region == "miyazaki":
+
+        students = students.filter(
+            junior_high_school__prefecture="宮崎県"
+        )
+
+    elif region == "outside":
+
+        students = students.exclude(
+            junior_high_school__prefecture="宮崎県"
+        )
+
+    # ========================================================
+    # 宮崎県内エリア
+    #
+    # direct = 校長直接持参地域
+    # other  = それ以外
+    # ========================================================
+
+    direct_cities = [
+        "小林市",
+        "高原町",
+        "えびの市",
+        "都城市",
+    ]
+
+    # areaは宮崎県内選択時のみ有効にする
+    if region == "miyazaki":
+
+        if area == "direct":
+
+            students = students.filter(
+                junior_high_school__city__in=direct_cities
+            )
+
+        elif area == "other":
+
+            students = students.exclude(
+                junior_high_school__city__in=direct_cities
+            )
+
+    else:
+
+        # URLに古いareaが残っていても無効化
+        area = ""
+
+    # ========================================================
+    # 中学校
+    # ========================================================
+
     if school_id.isdigit():
+
         students = students.filter(
             junior_high_school_id=school_id
         )
 
+    # ========================================================
+    # 部活動
+    # ========================================================
+
     if club_id.isdigit():
+
         students = students.filter(
             club_id=club_id
         )
+
+    # ========================================================
+    # 表示順
+    #
+    # 県内では
+    # 小林 → 高原 → えびの → 都城 → その他
+    #
+    # 県外では
+    # 都道府県 → 市町村 → 学校
+    # ========================================================
+
+    students = (
+        students
+        .annotate(
+            area_order=Case(
+
+                When(
+                    junior_high_school__city="小林市",
+                    then=Value(1),
+                ),
+
+                When(
+                    junior_high_school__city="高原町",
+                    then=Value(2),
+                ),
+
+                When(
+                    junior_high_school__city="えびの市",
+                    then=Value(3),
+                ),
+
+                When(
+                    junior_high_school__city="都城市",
+                    then=Value(4),
+                ),
+
+                default=Value(99),
+
+                output_field=IntegerField(),
+            )
+        )
+        .order_by(
+            "area_order",
+            "junior_high_school__prefecture",
+            "junior_high_school__city",
+            "junior_high_school__name",
+            "name",
+        )
+    )
+
+    # ========================================================
+    # 発送済み判定
+    #
+    # 一度でも発送済みの履歴がある生徒は
+    # 初期チェックをOFFにする
+    # ========================================================
+
+    shipped_student_ids = set(
+        ScholarshipShippingRecord.objects
+        .filter(
+            is_shipped=True,
+            student_id__in=students.values_list(
+                "id",
+                flat=True,
+            ),
+        )
+        .values_list(
+            "student_id",
+            flat=True,
+        )
+    )
+
+    student_list = list(students)
+
+    for student in student_list:
+
+        student.has_been_shipped = (
+            student.id in shipped_student_ids
+        )
+
+    # ========================================================
+    # 中学校選択肢
+    #
+    # 現在の地域条件に該当する学校だけ表示
+    # ========================================================
 
     schools = (
         JuniorHighSchool.objects
@@ -1455,6 +2158,10 @@ def scholarship_document_student_select(request):
         .distinct()
     )
 
+    # ========================================================
+    # 部活動選択肢
+    # ========================================================
+
     clubs = (
         Club.objects
         .filter(
@@ -1463,9 +2170,15 @@ def scholarship_document_student_select(request):
                 flat=True,
             )
         )
-        .order_by("name")
+        .order_by(
+            "name"
+        )
         .distinct()
     )
+
+    # ========================================================
+    # Template
+    # ========================================================
 
     return render(
         request,
@@ -1474,9 +2187,14 @@ def scholarship_document_student_select(request):
             "students": students,
             "schools": schools,
             "clubs": clubs,
+
             "keyword": keyword,
+
             "selected_school": school_id,
             "selected_club": club_id,
+
+            "selected_region": region,
+            "selected_area": area,
         },
     )
 
@@ -6853,3 +7571,920 @@ def junior_high_school_quick_create(request):
             "ensure_ascii": False,
         },
     )
+# ============================================================
+# 宮崎県内 中学校資料 持参用人数リストPDF
+# ============================================================
+
+@publicity_admin_required
+def miyazaki_material_delivery_list_pdf(request):
+    """
+    宮崎県内の選択した中学校について、
+    資料持参・封入作業用の一覧PDFを作成する。
+
+    クラス数 ＝ 必要な封筒数
+    各クラスの total ＝ 各封筒へ入れる資料数
+
+    並び順：
+    小林市
+    → 高原町
+    → えびの市
+    → 都城市
+    → 三股町
+    → 宮崎市
+    → その他宮崎県内
+    """
+
+    # ========================================================
+    # 選択学校ID
+    # ========================================================
+
+    school_ids = request.GET.getlist(
+        "school_ids"
+    )
+
+    if not school_ids:
+        return HttpResponse(
+            "中学校を1校以上選択してください。",
+            status=400,
+        )
+
+    # ========================================================
+    # 対象中学校
+    # ========================================================
+
+    schools = (
+        JuniorHighSchool.objects
+        .filter(
+            id__in=school_ids,
+            is_active=True,
+            prefecture="宮崎県",
+        )
+        .prefetch_related(
+            "classes"
+        )
+        .annotate(
+            area_order=Case(
+
+                When(
+                    city__icontains="小林",
+                    then=Value(1),
+                ),
+
+                When(
+                    city__icontains="高原",
+                    then=Value(2),
+                ),
+
+                When(
+                    city__icontains="えびの",
+                    then=Value(3),
+                ),
+
+                When(
+                    city__icontains="都城",
+                    then=Value(4),
+                ),
+
+                When(
+                    city__icontains="三股",
+                    then=Value(5),
+                ),
+
+                When(
+                    city__icontains="宮崎",
+                    then=Value(6),
+                ),
+
+                default=Value(99),
+
+                output_field=IntegerField(),
+            )
+        )
+        .order_by(
+            "area_order",
+            "city",
+            "name",
+        )
+    )
+
+    schools = list(schools)
+
+    if not schools:
+        return HttpResponse(
+            "対象となる宮崎県内の中学校がありません。",
+            status=400,
+        )
+
+    # ========================================================
+    # 市町村単位でグループ化
+    # ========================================================
+
+    grouped_schools = {}
+
+    for school in schools:
+
+        city_name = (
+            school.city.strip()
+            if school.city
+            else "市町村未設定"
+        )
+
+        if city_name not in grouped_schools:
+            grouped_schools[city_name] = []
+
+        grouped_schools[
+            city_name
+        ].append(
+            school
+        )
+
+    # ========================================================
+    # PDF準備
+    # ========================================================
+
+    buffer = BytesIO()
+
+    pdf = canvas.Canvas(
+        buffer,
+        pagesize=A4,
+    )
+
+    width, height = A4
+
+    # ========================================================
+    # 日本語フォント
+    # ========================================================
+
+    font_min = "HeiseiMin-W3"
+    font_gothic = "HeiseiKakuGo-W5"
+
+    pdfmetrics.registerFont(
+        UnicodeCIDFont(
+            font_min
+        )
+    )
+
+    pdfmetrics.registerFont(
+        UnicodeCIDFont(
+            font_gothic
+        )
+    )
+
+    # ========================================================
+    # レイアウト
+    # ========================================================
+
+    left_margin = 18 * mm
+    right_margin = 18 * mm
+
+    top_margin = 18 * mm
+    bottom_margin = 16 * mm
+
+    content_width = (
+        width
+        - left_margin
+        - right_margin
+    )
+
+    page_number = 1
+
+    # ========================================================
+    # ページヘッダー
+    # ========================================================
+
+    def draw_page_header():
+
+        pdf.setFont(
+            font_gothic,
+            16,
+        )
+
+        pdf.drawCentredString(
+            width / 2,
+            height - top_margin,
+            "宮崎県内 中学校資料持参・封入一覧",
+        )
+
+        pdf.setFont(
+            font_min,
+            9.5,
+        )
+
+        pdf.drawString(
+            left_margin,
+            height - top_margin - 9 * mm,
+            (
+                "クラスごとに封筒を用意し、"
+                "記載人数分の資料を封入してください。"
+            ),
+        )
+
+        today = timezone.localdate()
+
+        reiwa_year = (
+            today.year - 2018
+        )
+
+        date_label = (
+            f"令和{reiwa_year}年"
+            f"{today.month}月"
+            f"{today.day}日"
+        )
+
+        pdf.drawRightString(
+            width - right_margin,
+            height - top_margin - 9 * mm,
+            date_label,
+        )
+
+        pdf.setFont(
+            font_min,
+            8.5,
+        )
+
+        pdf.drawRightString(
+            width - right_margin,
+            bottom_margin - 5 * mm,
+            f"{page_number}ページ",
+        )
+
+        return (
+            height
+            - top_margin
+            - 18 * mm
+        )
+
+    # ========================================================
+    # 改ページ
+    # ========================================================
+
+    def new_page():
+
+        nonlocal page_number
+
+        pdf.showPage()
+
+        page_number += 1
+
+        return draw_page_header()
+
+    # ========================================================
+    # 最初のページ
+    # ========================================================
+
+    current_y = (
+        draw_page_header()
+    )
+
+    # ========================================================
+    # サイズ設定
+    # ========================================================
+
+    city_header_height = 10 * mm
+    school_header_height = 10 * mm
+    table_header_height = 8 * mm
+    class_row_height = 8 * mm
+    summary_height = 9 * mm
+
+    # ========================================================
+    # 市町村単位
+    # ========================================================
+
+    for city_name, city_schools in (
+        grouped_schools.items()
+    ):
+
+        # 市町村見出し＋最低限の学校情報が
+        # 入らない場合は改ページ
+        if (
+            current_y - 42 * mm
+            < bottom_margin
+        ):
+            current_y = new_page()
+
+        # ====================================================
+        # 市町村見出し
+        # ====================================================
+
+        pdf.setFillColor(
+            colors.HexColor(
+                "#DDEBF2"
+            )
+        )
+
+        pdf.roundRect(
+            left_margin,
+            current_y - city_header_height,
+            content_width,
+            city_header_height,
+            2 * mm,
+            fill=1,
+            stroke=0,
+        )
+
+        pdf.setFillColor(
+            colors.black
+        )
+
+        pdf.setFont(
+            font_gothic,
+            12,
+        )
+
+        pdf.drawString(
+            left_margin + 4 * mm,
+            current_y - 6.8 * mm,
+            (
+                f"【{city_name}】"
+                f"　{len(city_schools)}校"
+            ),
+        )
+
+        current_y -= (
+            city_header_height
+            + 4 * mm
+        )
+
+        # ====================================================
+        # 学校単位
+        # ====================================================
+
+        for school in city_schools:
+
+            classes = list(
+                school.classes.all()
+            )
+
+            class_count = len(
+                classes
+            )
+
+            # ------------------------------------------------
+            # クラス人数合計
+            # ------------------------------------------------
+
+            class_total = sum(
+                cls.total or 0
+                for cls in classes
+            )
+
+            # ------------------------------------------------
+            # 必要高さ
+            # ------------------------------------------------
+
+            if classes:
+
+                school_required_height = (
+                    school_header_height
+                    + table_header_height
+                    + (
+                        class_row_height
+                        * class_count
+                    )
+                    + summary_height
+                    + 6 * mm
+                )
+
+            else:
+
+                school_required_height = (
+                    school_header_height
+                    + 20 * mm
+                )
+
+            # ------------------------------------------------
+            # 1校丸ごと次ページに送れる場合
+            # ------------------------------------------------
+
+            if (
+                current_y
+                - school_required_height
+                < bottom_margin
+            ):
+
+                current_y = new_page()
+
+            # =================================================
+            # 学校名
+            # =================================================
+
+            pdf.setFillColor(
+                colors.HexColor(
+                    "#F3F3F3"
+                )
+            )
+
+            pdf.rect(
+                left_margin,
+                current_y - school_header_height,
+                content_width,
+                school_header_height,
+                fill=1,
+                stroke=0,
+            )
+
+            pdf.setFillColor(
+                colors.black
+            )
+
+            # チェックボックス
+            checkbox_size = (
+                4.5 * mm
+            )
+
+            checkbox_x = (
+                left_margin
+                + 4 * mm
+            )
+
+            checkbox_y = (
+                current_y
+                - school_header_height
+                + (
+                    school_header_height
+                    - checkbox_size
+                ) / 2
+            )
+
+            pdf.rect(
+                checkbox_x,
+                checkbox_y,
+                checkbox_size,
+                checkbox_size,
+                fill=0,
+                stroke=1,
+            )
+
+            pdf.setFont(
+                font_gothic,
+                11,
+            )
+
+            pdf.drawString(
+                left_margin + 13 * mm,
+                current_y - 6.8 * mm,
+                school.name,
+            )
+
+            # ------------------------------------------------
+            # 学校右側に封筒数
+            # ------------------------------------------------
+
+            pdf.setFont(
+                font_gothic,
+                10.5,
+            )
+
+            if classes:
+
+                envelope_label = (
+                    f"封筒 {class_count}枚"
+                )
+
+            else:
+
+                envelope_label = (
+                    "クラス情報未登録"
+                )
+
+            pdf.drawRightString(
+                width - right_margin - 4 * mm,
+                current_y - 6.8 * mm,
+                envelope_label,
+            )
+
+            current_y -= (
+                school_header_height
+            )
+
+            # =================================================
+            # クラス情報なし
+            # =================================================
+
+            if not classes:
+
+                pdf.setFont(
+                    font_min,
+                    10,
+                )
+
+                pdf.setFillColor(
+                    colors.HexColor(
+                        "#AA0000"
+                    )
+                )
+
+                pdf.drawString(
+                    left_margin + 8 * mm,
+                    current_y - 7 * mm,
+                    (
+                        "※ クラス別人数が"
+                        "登録されていません。"
+                    ),
+                )
+
+                pdf.setFillColor(
+                    colors.black
+                )
+
+                pdf.drawRightString(
+                    width - right_margin - 8 * mm,
+                    current_y - 7 * mm,
+                    (
+                        "3年生合計："
+                        f"{school.third_grade_total or 0}名"
+                    ),
+                )
+
+                current_y -= (
+                    14 * mm
+                )
+
+                continue
+
+            # =================================================
+            # クラス表
+            # =================================================
+
+            # 列幅
+            class_name_width = (
+                70 * mm
+            )
+
+            student_width = (
+                42 * mm
+            )
+
+            instruction_width = (
+                content_width
+                - class_name_width
+                - student_width
+            )
+
+            x0 = left_margin
+            x1 = (
+                x0
+                + class_name_width
+            )
+            x2 = (
+                x1
+                + student_width
+            )
+
+            # =================================================
+            # 表見出し
+            # =================================================
+
+            pdf.setFillColor(
+                colors.HexColor(
+                    "#FAFAFA"
+                )
+            )
+
+            pdf.rect(
+                x0,
+                current_y - table_header_height,
+                content_width,
+                table_header_height,
+                fill=1,
+                stroke=1,
+            )
+
+            pdf.setFillColor(
+                colors.black
+            )
+
+            pdf.line(
+                x1,
+                current_y,
+                x1,
+                current_y - table_header_height,
+            )
+
+            pdf.line(
+                x2,
+                current_y,
+                x2,
+                current_y - table_header_height,
+            )
+
+            pdf.setFont(
+                font_gothic,
+                9.5,
+            )
+
+            text_y = (
+                current_y - 5.7 * mm
+            )
+
+            pdf.drawCentredString(
+                x0 + class_name_width / 2,
+                text_y,
+                "クラス",
+            )
+
+            pdf.drawCentredString(
+                x1 + student_width / 2,
+                text_y,
+                "人数",
+            )
+
+            pdf.drawCentredString(
+                x2 + instruction_width / 2,
+                text_y,
+                "封入数",
+            )
+
+            current_y -= (
+                table_header_height
+            )
+
+            # =================================================
+            # 各クラス
+            # =================================================
+
+            for cls in classes:
+
+                # ページ下端対策
+                if (
+                    current_y
+                    - class_row_height
+                    < bottom_margin
+                ):
+
+                    current_y = new_page()
+
+                    pdf.setFont(
+                        font_gothic,
+                        10.5,
+                    )
+
+                    pdf.drawString(
+                        left_margin,
+                        current_y,
+                        (
+                            f"{school.name}"
+                            "（続き）"
+                        ),
+                    )
+
+                    current_y -= (
+                        7 * mm
+                    )
+
+                row_bottom = (
+                    current_y
+                    - class_row_height
+                )
+
+                # 外枠
+                pdf.rect(
+                    x0,
+                    row_bottom,
+                    content_width,
+                    class_row_height,
+                    fill=0,
+                    stroke=1,
+                )
+
+                pdf.line(
+                    x1,
+                    current_y,
+                    x1,
+                    row_bottom,
+                )
+
+                pdf.line(
+                    x2,
+                    current_y,
+                    x2,
+                    row_bottom,
+                )
+
+                # ------------------------------------------------
+                # クラス名
+                # ------------------------------------------------
+
+                pdf.setFont(
+                    font_min,
+                    10.5,
+                )
+
+                pdf.drawCentredString(
+                    x0 + class_name_width / 2,
+                    row_bottom + 2.8 * mm,
+                    cls.class_name,
+                )
+
+                # ------------------------------------------------
+                # 人数
+                # ------------------------------------------------
+
+                total = (
+                    cls.total or 0
+                )
+
+                pdf.drawCentredString(
+                    x1 + student_width / 2,
+                    row_bottom + 2.8 * mm,
+                    f"{total}名",
+                )
+
+                # ------------------------------------------------
+                # 封入数
+                # ------------------------------------------------
+
+                pdf.setFont(
+                    font_gothic,
+                    10.5,
+                )
+
+                pdf.drawCentredString(
+                    x2 + instruction_width / 2,
+                    row_bottom + 2.8 * mm,
+                    f"{total}部",
+                )
+
+                current_y -= (
+                    class_row_height
+                )
+
+            # =================================================
+            # 学校合計
+            # =================================================
+
+            summary_bottom = (
+                current_y
+                - summary_height
+            )
+
+            pdf.setFillColor(
+                colors.HexColor(
+                    "#F7F7F7"
+                )
+            )
+
+            pdf.rect(
+                left_margin,
+                summary_bottom,
+                content_width,
+                summary_height,
+                fill=1,
+                stroke=1,
+            )
+
+            pdf.setFillColor(
+                colors.black
+            )
+
+            pdf.setFont(
+                font_gothic,
+                10.5,
+            )
+
+            pdf.drawString(
+                left_margin + 8 * mm,
+                summary_bottom + 3 * mm,
+                (
+                    f"封筒：{class_count}枚"
+                ),
+            )
+
+            pdf.drawRightString(
+                width - right_margin - 8 * mm,
+                summary_bottom + 3 * mm,
+                (
+                    f"資料合計：{class_total}部"
+                ),
+            )
+
+            current_y -= (
+                summary_height
+                + 6 * mm
+            )
+
+        # ====================================================
+        # 市町村間スペース
+        # ====================================================
+
+        current_y -= (
+            4 * mm
+        )
+
+    # ========================================================
+    # 最終集計
+    # ========================================================
+
+    total_envelopes = 0
+    total_materials = 0
+
+    for school in schools:
+
+        classes = list(
+            school.classes.all()
+        )
+
+        total_envelopes += len(
+            classes
+        )
+
+        total_materials += sum(
+            cls.total or 0
+            for cls in classes
+        )
+
+    # ========================================================
+    # 全体集計を表示
+    # ========================================================
+
+    if (
+        current_y - 24 * mm
+        < bottom_margin
+    ):
+
+        current_y = new_page()
+
+    pdf.setFillColor(
+        colors.HexColor(
+            "#E8F3E8"
+        )
+    )
+
+    pdf.roundRect(
+        left_margin,
+        current_y - 17 * mm,
+        content_width,
+        17 * mm,
+        2 * mm,
+        fill=1,
+        stroke=1,
+    )
+
+    pdf.setFillColor(
+        colors.black
+    )
+
+    pdf.setFont(
+        font_gothic,
+        12,
+    )
+
+    pdf.drawString(
+        left_margin + 7 * mm,
+        current_y - 7 * mm,
+        "全体集計",
+    )
+
+    pdf.setFont(
+        font_gothic,
+        11,
+    )
+
+    pdf.drawString(
+        left_margin + 45 * mm,
+        current_y - 7 * mm,
+        (
+            f"学校：{len(schools)}校"
+        ),
+    )
+
+    pdf.drawString(
+        left_margin + 85 * mm,
+        current_y - 7 * mm,
+        (
+            f"封筒：{total_envelopes}枚"
+        ),
+    )
+
+    pdf.drawString(
+        left_margin + 125 * mm,
+        current_y - 7 * mm,
+        (
+            f"資料：{total_materials}部"
+        ),
+    )
+
+    # ========================================================
+    # PDF保存
+    # ========================================================
+
+    pdf.save()
+
+    buffer.seek(0)
+
+    response = HttpResponse(
+        buffer.getvalue(),
+        content_type="application/pdf",
+    )
+
+    filename = (
+        "宮崎県内_中学校資料持参封入一覧.pdf"
+    )
+
+    response[
+        "Content-Disposition"
+    ] = (
+        f'inline; filename="{quote(filename)}"'
+    )
+
+    return response

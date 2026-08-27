@@ -121,6 +121,16 @@ urlpatterns = [
     path("school/<int:pk>/delete/", views.school_delete, name="school_delete"),
     path("teachers/permissions/",views.teacher_permission_manage,name="teacher_permission_manage",),
     path("labels/select/", views.label_select, name="label_select"),
+    path(
+    "materials/miyazaki/",
+        views.miyazaki_material_distribution,
+        name="miyazaki_material_distribution",
+    ),
+    path(
+        "materials/miyazaki/delivery-list/pdf/",
+        views.miyazaki_material_delivery_list_pdf,
+        name="miyazaki_material_delivery_list_pdf",
+    ),
     path("labels/pdf/", views.label_pdf, name="label_pdf"),
     path("labels/class/pdf/", views.class_label_pdf, name="class_label_pdf"),
     path("class/<int:pk>/edit/",views.class_edit,name="class_edit"),
