@@ -11,357 +11,532 @@
 
     <style>
         * {
-            box-sizing: border-box;
-        }
+        box-sizing: border-box;
+    }
 
-        body {
-            margin: 0;
-            font-family:
-                -apple-system,
-                BlinkMacSystemFont,
-                "Segoe UI",
-                "Yu Gothic",
-                "YuGothic",
-                "Hiragino Kaku Gothic ProN",
-                Meiryo,
-                sans-serif;
+    body {
+        margin: 0;
+        font-family:
+            -apple-system,
+            BlinkMacSystemFont,
+            "Segoe UI",
+            "Yu Gothic",
+            "YuGothic",
+            "Hiragino Kaku Gothic ProN",
+            Meiryo,
+            sans-serif;
 
-            background: #f4f7f9;
-            color: #222;
-        }
+        background: #f4f7f9;
+        color: #222;
+    }
 
-        /* ================================
-           ヘッダー
-        ================================= */
 
-        .page-header {
-            background: #28647a;
-            color: white;
-            padding: 24px 30px;
-        }
+    /* ================================
+    ヘッダー
+    ================================= */
 
-        .page-header-inner {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
+    .page-header {
+        background: #28647a;
+        color: white;
+        padding: 24px 30px;
+    }
 
-        .page-header h1 {
-            margin: 0 0 8px;
-            font-size: 26px;
-        }
+    .page-header-inner {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
 
-        .page-header p {
-            margin: 0;
-            font-size: 14px;
-        }
+    .page-header h1 {
+        margin: 0 0 8px;
+        font-size: 26px;
+    }
 
-        /* ================================
-           全体
-        ================================= */
+    .page-header p {
+        margin: 0;
+        font-size: 14px;
+    }
 
-        .container {
-            max-width: 1200px;
-            margin: 28px auto;
-            padding: 0 20px 50px;
-        }
 
-        .card {
-            background: white;
-            border: 1px solid #d7e0e5;
-            border-radius: 8px;
-            padding: 24px;
-            margin-bottom: 22px;
+    /* ================================
+    全体
+    ================================= */
 
-            box-shadow:
-                0 2px 5px rgba(0, 0, 0, 0.05);
-        }
+    .container {
+        max-width: 1200px;
+        margin: 28px auto;
+        padding: 0 20px 50px;
+    }
 
-        .card h2 {
-            margin-top: 0;
-            margin-bottom: 18px;
-            font-size: 20px;
-            color: #15546d;
-        }
+    .card {
+        background: white;
+        border: 1px solid #d7e0e5;
+        border-radius: 8px;
+        padding: 24px;
+        margin-bottom: 22px;
 
-        /* ================================
-           説明
-        ================================= */
+        box-shadow:
+            0 2px 5px rgba(0, 0, 0, 0.05);
+    }
 
-        .info-box {
-            background: #eef6f9;
-            border-left: 5px solid #28647a;
-            padding: 16px 18px;
-            line-height: 1.8;
-        }
+    .card h2 {
+        margin-top: 0;
+        margin-bottom: 18px;
+        font-size: 20px;
+        color: #15546d;
+    }
 
-        .info-box strong {
-            color: #15546d;
-        }
 
-        /* ================================
-           検索
-        ================================= */
+    /* ================================
+    説明
+    ================================= */
+
+    .info-box {
+        background: #eef6f9;
+        border-left: 5px solid #28647a;
+        padding: 16px 18px;
+        line-height: 1.8;
+    }
+
+    .info-box strong {
+        color: #15546d;
+    }
+
+
+    /* ================================
+    検索
+    ================================= */
+
+    .search-grid {
+        display: grid;
+
+        grid-template-columns:
+            1.7fr
+            1.2fr
+            1.4fr
+            1.7fr;
+
+        gap: 14px;
+
+        align-items: end;
+    }
+
+    .field label {
+        display: block;
+        font-weight: bold;
+        margin-bottom: 7px;
+        font-size: 14px;
+    }
+
+    .field input,
+    .field select {
+        width: 100%;
+        height: 42px;
+
+        padding: 7px 10px;
+
+        border: 1px solid #aebbc2;
+
+        border-radius: 4px;
+
+        background: white;
+
+        font-size: 14px;
+    }
+
+
+    /* ================================
+    ボタン
+    ================================= */
+
+    .button {
+        display: inline-block;
+
+        border: none;
+        border-radius: 5px;
+
+        padding: 11px 20px;
+
+        font-size: 14px;
+        font-weight: bold;
+
+        text-decoration: none;
+
+        cursor: pointer;
+
+        transition: 0.15s;
+    }
+
+    .button:hover {
+        opacity: 0.88;
+    }
+
+    .primary-button {
+        background: #176d91;
+        color: white;
+    }
+
+    .secondary-button {
+        background: white;
+        color: #333;
+        border: 1px solid #999;
+    }
+
+    .select-button {
+        background: #e8f2f6;
+        color: #15546d;
+        border: 1px solid #b6ccd5;
+    }
+
+
+    /* ================================
+    件数表示
+    ================================= */
+
+    .result-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        gap: 15px;
+
+        margin-bottom: 15px;
+    }
+
+    .result-count {
+        font-size: 15px;
+    }
+
+    .result-count strong {
+        color: #176d91;
+        font-size: 20px;
+    }
+
+    .selection-buttons {
+        display: flex;
+        gap: 8px;
+    }
+
+
+    /* ================================
+    テーブル
+    ================================= */
+
+    .table-wrapper {
+        overflow-x: auto;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    th,
+    td {
+        border: 1px solid #cbd6dc;
+        padding: 11px 10px;
+        vertical-align: middle;
+    }
+
+    th {
+        background: #e9f0f3;
+        text-align: left;
+        font-size: 14px;
+        white-space: nowrap;
+    }
+
+    td {
+        font-size: 14px;
+    }
+
+    tbody tr:hover {
+        background: #f7fbfc;
+    }
+
+    .check-column {
+        width: 70px;
+        text-align: center;
+    }
+
+    .number-column {
+        width: 65px;
+        text-align: center;
+    }
+
+    .checkbox {
+        width: 19px;
+        height: 19px;
+        cursor: pointer;
+    }
+
+    .student-name {
+        font-weight: bold;
+    }
+
+    .scholarship-yes {
+        color: #176d91;
+        font-weight: bold;
+    }
+
+    .scholarship-no {
+        color: #777;
+    }
+
+
+    /* ================================
+    選択結果
+    ================================= */
+
+    .selection-summary {
+        margin-top: 22px;
+
+        padding: 18px;
+
+        background: #fff7d8;
+
+        border: 1px solid #e5c963;
+
+        border-radius: 6px;
+    }
+
+    .summary-grid {
+        display: flex;
+        gap: 40px;
+        flex-wrap: wrap;
+    }
+
+    .summary-item {
+        font-size: 15px;
+    }
+
+    .summary-number {
+        font-size: 23px;
+        font-weight: bold;
+        color: #15546d;
+        margin-right: 4px;
+    }
+
+
+    /* ================================
+    最下部
+    ================================= */
+
+    .action-area {
+        display: flex;
+
+        justify-content: space-between;
+
+        align-items: center;
+
+        gap: 15px;
+
+        margin-top: 22px;
+    }
+
+    .action-right {
+        display: flex;
+        gap: 10px;
+    }
+
+    .empty-message {
+        text-align: center;
+        padding: 35px;
+        color: #777;
+    }
+
+
+    /* ================================
+    複数条件フィルタ
+    ================================= */
+
+    .filter-panel {
+        margin-top: 20px;
+        padding: 16px;
+
+        background: #f8fafb;
+
+        border: 1px solid #d4dfe4;
+        border-radius: 6px;
+    }
+
+    .filter-panel-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        gap: 15px;
+
+        margin-bottom: 13px;
+    }
+
+    .filter-help {
+        margin-top: 4px;
+        font-size: 12px;
+        color: #687982;
+    }
+
+    .checkbox-grid {
+        display: grid;
+
+        grid-template-columns:
+            repeat(
+                auto-fill,
+                minmax(170px, 1fr)
+            );
+
+        gap: 8px;
+    }
+
+    .school-checkbox-area {
+        display: grid;
+
+        grid-template-columns:
+            repeat(
+                auto-fill,
+                minmax(300px, 1fr)
+            );
+
+        gap: 8px;
+
+        max-height: 300px;
+
+        overflow-y: auto;
+
+        padding: 5px;
+    }
+
+    .filter-checkbox {
+        display: flex;
+        align-items: center;
+
+        gap: 7px;
+
+        padding: 8px 10px;
+
+        background: white;
+
+        border: 1px solid #d3dde2;
+        border-radius: 5px;
+
+        cursor: pointer;
+
+        font-size: 13px;
+    }
+
+    .filter-checkbox:hover {
+        background: #eef7fa;
+        border-color: #8bb5c4;
+    }
+
+    .filter-checkbox input {
+        width: 17px;
+        height: 17px;
+        cursor: pointer;
+
+        flex-shrink: 0;
+    }
+
+    .count-badge {
+        margin-left: auto;
+
+        padding: 2px 7px;
+
+        border-radius: 12px;
+
+        background: #e4eff3;
+        color: #28647a;
+
+        font-size: 11px;
+
+        white-space: nowrap;
+    }
+
+    .small-button-area {
+        display: flex;
+        gap: 6px;
+    }
+
+    .small-filter-button {
+        border: 1px solid #a7b7bf;
+
+        background: white;
+
+        border-radius: 4px;
+
+        padding: 6px 10px;
+
+        font-size: 12px;
+
+        cursor: pointer;
+    }
+
+    .small-filter-button:hover {
+        background: #eef5f7;
+    }
+
+    .search-action-area {
+        display: flex;
+
+        justify-content: flex-end;
+
+        gap: 10px;
+
+        margin-top: 20px;
+    }
+
+    #outside-prefecture-area {
+        display: none;
+    }
+
+
+    /* ================================
+    スマホ
+    ================================= */
+
+    @media (max-width: 800px) {
 
         .search-grid {
-            display: grid;
-            grid-template-columns:
-                1.7fr 1.2fr 1.4fr 1.7fr 1.3fr auto;
-            gap: 14px;
-            align-items: end;
+            grid-template-columns: 1fr;
         }
-
-        .field label {
-            display: block;
-            font-weight: bold;
-            margin-bottom: 7px;
-            font-size: 14px;
-        }
-
-        .field input,
-        .field select {
-            width: 100%;
-            height: 42px;
-
-            padding: 7px 10px;
-
-            border:
-                1px solid #aebbc2;
-
-            border-radius: 4px;
-
-            background: white;
-
-            font-size: 14px;
-        }
-
-        /* ================================
-           ボタン
-        ================================= */
-
-        .button {
-            display: inline-block;
-
-            border: none;
-            border-radius: 5px;
-
-            padding: 11px 20px;
-
-            font-size: 14px;
-            font-weight: bold;
-
-            text-decoration: none;
-
-            cursor: pointer;
-
-            transition: 0.15s;
-        }
-
-        .button:hover {
-            opacity: 0.88;
-        }
-
-        .primary-button {
-            background: #176d91;
-            color: white;
-        }
-
-        .secondary-button {
-            background: white;
-            color: #333;
-            border: 1px solid #999;
-        }
-
-        .select-button {
-            background: #e8f2f6;
-            color: #15546d;
-            border: 1px solid #b6ccd5;
-        }
-
-        /* ================================
-           件数表示
-        ================================= */
 
         .result-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-
-            gap: 15px;
-
-            margin-bottom: 15px;
-        }
-
-        .result-count {
-            font-size: 15px;
-        }
-
-        .result-count strong {
-            color: #176d91;
-            font-size: 20px;
+            align-items: flex-start;
+            flex-direction: column;
         }
 
         .selection-buttons {
-            display: flex;
-            gap: 8px;
-        }
-
-        /* ================================
-           テーブル
-        ================================= */
-
-        .table-wrapper {
-            overflow-x: auto;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        th,
-        td {
-            border: 1px solid #cbd6dc;
-            padding: 11px 10px;
-            vertical-align: middle;
-        }
-
-        th {
-            background: #e9f0f3;
-            text-align: left;
-            font-size: 14px;
-            white-space: nowrap;
-        }
-
-        td {
-            font-size: 14px;
-        }
-
-        tbody tr:hover {
-            background: #f7fbfc;
-        }
-
-        .check-column {
-            width: 70px;
-            text-align: center;
-        }
-
-        .number-column {
-            width: 65px;
-            text-align: center;
-        }
-
-        .checkbox {
-            width: 19px;
-            height: 19px;
-            cursor: pointer;
-        }
-
-        .student-name {
-            font-weight: bold;
-        }
-
-        .scholarship-yes {
-            color: #176d91;
-            font-weight: bold;
-        }
-
-        .scholarship-no {
-            color: #777;
-        }
-
-        /* ================================
-           選択結果
-        ================================= */
-
-        .selection-summary {
-            margin-top: 22px;
-
-            padding: 18px;
-
-            background: #fff7d8;
-
-            border:
-                1px solid #e5c963;
-
-            border-radius: 6px;
-        }
-
-        .summary-grid {
-            display: flex;
-            gap: 40px;
             flex-wrap: wrap;
         }
 
-        .summary-item {
-            font-size: 15px;
-        }
-
-        .summary-number {
-            font-size: 23px;
-            font-weight: bold;
-            color: #15546d;
-            margin-right: 4px;
-        }
-
-        /* ================================
-           最下部
-        ================================= */
-
         .action-area {
-            display: flex;
-
-            justify-content:
-                space-between;
-
-            align-items: center;
-
-            gap: 15px;
-
-            margin-top: 22px;
+            align-items: stretch;
+            flex-direction: column;
         }
 
         .action-right {
-            display: flex;
-            gap: 10px;
+            flex-direction: column;
         }
 
-        .empty-message {
+        .button {
             text-align: center;
-            padding: 35px;
-            color: #777;
         }
 
-        /* ================================
-           スマホ
-        ================================= */
-
-        @media (
-            max-width: 800px
-        ) {
-
-            .search-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .result-header {
-                align-items: flex-start;
-                flex-direction: column;
-            }
-
-            .action-area {
-                align-items: stretch;
-                flex-direction: column;
-            }
-
-            .action-right {
-                flex-direction: column;
-            }
-
-            .button {
-                text-align: center;
-            }
+        .filter-panel-header {
+            align-items: flex-start;
+            flex-direction: column;
         }
 
+        .school-checkbox-area {
+            grid-template-columns: 1fr;
+        }
+
+        .checkbox-grid {
+            grid-template-columns:
+                repeat(
+                    2,
+                    1fr
+                );
+        }
+    }
     </style>
 </head>
 
@@ -428,13 +603,16 @@
                 2. 生徒検索
             </h2>
 
-
             <form
                 method="GET"
+                id="student-search-form"
             >
 
-                <div class="search-grid">
+                <!-- ==========================================
+                    基本検索
+                =========================================== -->
 
+                <div class="search-grid">
 
                     <!-- キーワード -->
 
@@ -454,9 +632,8 @@
 
                     </div>
 
-                    <!-- ==========================================
-                        地域
-                    ========================================== -->
+
+                    <!-- 地域 -->
 
                     <div class="field">
 
@@ -467,7 +644,7 @@
                         <select
                             id="region"
                             name="region"
-                            onchange="updateAreaField()"
+                            onchange="updateRegionFields()"
                         >
 
                             <option value="">
@@ -497,11 +674,12 @@
                     </div>
 
 
-                    <!-- ==========================================
-                        宮崎県内エリア
-                    ========================================== -->
+                    <!-- 宮崎県内エリア -->
 
-                    <div class="field">
+                    <div
+                        class="field"
+                        id="miyazaki-area-field"
+                    >
 
                         <label for="area">
                             県内エリア
@@ -533,41 +711,6 @@
                             >
                                 上記4市町村以外
                             </option>
-
-                        </select>
-
-                    </div>
-
-
-                    <!-- 中学校 -->
-
-                    <div class="field">
-
-                        <label for="school">
-                            中学校
-                        </label>
-
-                        <select
-                            id="school"
-                            name="school"
-                        >
-
-                            <option value="">
-                                すべての中学校
-                            </option>
-
-                            {% for school in schools %}
-
-                                <option
-                                    value="{{ school.id }}"
-                                    {% if selected_school == school.id|stringformat:"s" %}
-                                        selected
-                                    {% endif %}
-                                >
-                                    {{ school.name }}
-                                </option>
-
-                            {% endfor %}
 
                         </select>
 
@@ -608,17 +751,203 @@
 
                     </div>
 
+                </div>
 
-                    <div>
 
-                        <button
-                            type="submit"
-                            class="button primary-button"
-                        >
-                            検索
-                        </button>
+                <!-- ==========================================
+                    県外 都道府県複数選択
+                =========================================== -->
+
+                <div
+                    id="outside-prefecture-area"
+                    class="filter-panel"
+                >
+
+                    <div class="filter-panel-header">
+
+                        <div>
+                            <strong>
+                                県外の発送対象都道府県
+                            </strong>
+
+                            <div class="filter-help">
+                                複数選択できます。
+                                未選択の場合は県外すべてを表示します。
+                            </div>
+                        </div>
+
+                        <div class="small-button-area">
+
+                            <button
+                                type="button"
+                                class="small-filter-button"
+                                onclick="selectAllPrefectures()"
+                            >
+                                全選択
+                            </button>
+
+                            <button
+                                type="button"
+                                class="small-filter-button"
+                                onclick="clearAllPrefectures()"
+                            >
+                                全解除
+                            </button>
+
+                        </div>
 
                     </div>
+
+
+                    <div class="checkbox-grid">
+
+                        {% for item in outside_prefectures %}
+
+                            <label class="filter-checkbox">
+
+                                <input
+                                    type="checkbox"
+                                    name="prefecture"
+                                    value="{{ item.junior_high_school__prefecture }}"
+                                    class="prefecture-checkbox"
+
+                                    {% if item.junior_high_school__prefecture in selected_prefectures %}
+                                        checked
+                                    {% endif %}
+                                >
+
+                                <span>
+                                    {{ item.junior_high_school__prefecture }}
+                                </span>
+
+                                <span class="count-badge">
+                                    {{ item.student_count }}名
+                                </span>
+
+                            </label>
+
+                        {% empty %}
+
+                            <div class="filter-help">
+                                県外の募集対象生徒は登録されていません。
+                            </div>
+
+                        {% endfor %}
+
+                    </div>
+
+                </div>
+
+
+                <!-- ==========================================
+                    中学校 複数選択
+                =========================================== -->
+
+                <div class="filter-panel">
+
+                    <div class="filter-panel-header">
+
+                        <div>
+
+                            <strong>
+                                対象中学校
+                            </strong>
+
+                            <div class="filter-help">
+                                複数の中学校を同時に選択できます。
+                                未選択の場合は該当する全中学校が対象です。
+                            </div>
+
+                        </div>
+
+                        <div class="small-button-area">
+
+                            <button
+                                type="button"
+                                class="small-filter-button"
+                                onclick="selectAllSchools()"
+                            >
+                                全選択
+                            </button>
+
+                            <button
+                                type="button"
+                                class="small-filter-button"
+                                onclick="clearAllSchools()"
+                            >
+                                全解除
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="school-checkbox-area">
+
+                        {% for school in schools %}
+
+                            <label class="filter-checkbox school-filter-item">
+
+                                <input
+                                    type="checkbox"
+                                    name="school"
+                                    value="{{ school.id }}"
+                                    class="school-filter-checkbox"
+
+                                    {% if school.id|stringformat:"s" in selected_school_ids %}
+                                        checked
+                                    {% endif %}
+                                >
+
+                                <span>
+
+                                    {% if school.prefecture %}
+                                        {{ school.prefecture }}
+                                    {% endif %}
+
+                                    {% if school.city %}
+                                        {{ school.city }}
+                                    {% endif %}
+
+                                    {{ school.name }}
+
+                                </span>
+
+                            </label>
+
+                        {% empty %}
+
+                            <div class="filter-help">
+                                条件に該当する中学校はありません。
+                            </div>
+
+                        {% endfor %}
+
+                    </div>
+
+                </div>
+
+
+                <!-- ==========================================
+                    検索ボタン
+                =========================================== -->
+
+                <div class="search-action-area">
+
+                    <a
+                        href="{% url 'publicity:scholarship_document_student_select' %}"
+                        class="button secondary-button"
+                    >
+                        条件クリア
+                    </a>
+
+                    <button
+                        type="submit"
+                        class="button primary-button"
+                    >
+                        この条件で検索
+                    </button>
 
                 </div>
 
@@ -1027,19 +1356,18 @@
     ================================= -->
 
     <script>
-
         function getStudentCheckboxes() {
 
             return document.querySelectorAll(
                 ".student-checkbox"
             );
-
         }
 
 
-        /*
-         * 全選択
-         */
+        /* ================================
+        生徒 全選択
+        ================================= */
+
         function selectAllStudents() {
 
             const checkboxes =
@@ -1054,12 +1382,13 @@
             );
 
             updateSelectionSummary();
-
         }
 
-        /*
-        * 未発送生徒だけ選択
-        */
+
+        /* ================================
+        未発送のみ選択
+        ================================= */
+
         function selectUnshippedStudents() {
 
             const checkboxes =
@@ -1078,9 +1407,10 @@
         }
 
 
-        /*
-         * 全解除
-         */
+        /* ================================
+        生徒 全解除
+        ================================= */
+
         function clearAllStudents() {
 
             const checkboxes =
@@ -1095,13 +1425,13 @@
             );
 
             updateSelectionSummary();
-
         }
 
 
-        /*
-         * 選択人数・学校数を計算
-         */
+        /* ================================
+        選択人数・学校数
+        ================================= */
+
         function updateSelectionSummary() {
 
             const checkboxes =
@@ -1128,11 +1458,8 @@
                             schoolIds.add(
                                 schoolId
                             );
-
                         }
-
                     }
-
                 }
             );
 
@@ -1157,7 +1484,6 @@
 
                 studentCountElement.textContent =
                     studentCount;
-
             }
 
 
@@ -1165,7 +1491,6 @@
 
                 schoolCountElement.textContent =
                     schoolIds.size;
-
             }
 
 
@@ -1173,58 +1498,214 @@
 
                 nextButton.disabled =
                     studentCount === 0;
-
             }
-
         }
 
-        /*
-        * 地域に応じて県内エリアを制御
-        */
-        function updateAreaField() {
+
+        /* ================================
+        地域による表示切替
+        ================================= */
+
+        function updateRegionFields() {
 
             const region =
                 document.getElementById(
                     "region"
                 );
 
-            const area =
+            const miyazakiArea =
+                document.getElementById(
+                    "miyazaki-area-field"
+                );
+
+            const outsideArea =
+                document.getElementById(
+                    "outside-prefecture-area"
+                );
+
+            const areaSelect =
                 document.getElementById(
                     "area"
                 );
 
-            if (!region || !area) {
+
+            if (!region) {
                 return;
             }
 
+
+            /* 宮崎県内 */
+
             if (region.value === "miyazaki") {
 
-                area.disabled = false;
+                if (miyazakiArea) {
 
-            } else {
+                    miyazakiArea.style.display =
+                        "block";
+                }
 
-                area.disabled = true;
+                if (areaSelect) {
 
-                if (region.value === "outside") {
-                    area.value = "";
+                    areaSelect.disabled = false;
+                }
+
+                if (outsideArea) {
+
+                    outsideArea.style.display =
+                        "none";
+                }
+            }
+
+
+            /* 宮崎県外 */
+
+            else if (
+                region.value === "outside"
+            ) {
+
+                if (miyazakiArea) {
+
+                    miyazakiArea.style.display =
+                        "none";
+                }
+
+                if (areaSelect) {
+
+                    areaSelect.disabled = true;
+                    areaSelect.value = "";
+                }
+
+                if (outsideArea) {
+
+                    outsideArea.style.display =
+                        "block";
+                }
+            }
+
+
+            /* すべて */
+
+            else {
+
+                if (miyazakiArea) {
+
+                    miyazakiArea.style.display =
+                        "none";
+                }
+
+                if (areaSelect) {
+
+                    areaSelect.disabled = true;
+                    areaSelect.value = "";
+                }
+
+                if (outsideArea) {
+
+                    outsideArea.style.display =
+                        "none";
                 }
             }
         }
 
 
-        /*
-         * 初期表示
-         */
+        /* ================================
+        県外都道府県 全選択
+        ================================= */
+
+        function selectAllPrefectures() {
+
+            const checkboxes =
+                document.querySelectorAll(
+                    ".prefecture-checkbox"
+                );
+
+            checkboxes.forEach(
+                function (checkbox) {
+
+                    checkbox.checked = true;
+
+                }
+            );
+        }
+
+
+        /* ================================
+        県外都道府県 全解除
+        ================================= */
+
+        function clearAllPrefectures() {
+
+            const checkboxes =
+                document.querySelectorAll(
+                    ".prefecture-checkbox"
+                );
+
+            checkboxes.forEach(
+                function (checkbox) {
+
+                    checkbox.checked = false;
+
+                }
+            );
+        }
+
+
+        /* ================================
+        中学校 全選択
+        ================================= */
+
+        function selectAllSchools() {
+
+            const checkboxes =
+                document.querySelectorAll(
+                    ".school-filter-checkbox"
+                );
+
+            checkboxes.forEach(
+                function (checkbox) {
+
+                    checkbox.checked = true;
+
+                }
+            );
+        }
+
+
+        /* ================================
+        中学校 全解除
+        ================================= */
+
+        function clearAllSchools() {
+
+            const checkboxes =
+                document.querySelectorAll(
+                    ".school-filter-checkbox"
+                );
+
+            checkboxes.forEach(
+                function (checkbox) {
+
+                    checkbox.checked = false;
+
+                }
+            );
+        }
+
+
+        /* ================================
+        初期表示
+        ================================= */
+
         document.addEventListener(
             "DOMContentLoaded",
             function () {
 
-                updateAreaField();
+                updateRegionFields();
+
                 updateSelectionSummary();
 
             }
         );
-
     </script>
 
 

@@ -12,7 +12,16 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.staticfiles import finders
 from django.core.exceptions import PermissionDenied
 from django.db import transaction
-from django.db.models import Q, Case, When, Value, IntegerField,Count
+from django.db.models import (
+    Q,
+    Case,
+    When,
+    Value,
+    IntegerField,
+    Count,
+    Exists,
+    OuterRef,
+)
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import (
     get_object_or_404,
@@ -1919,32 +1928,11 @@ def document_management_top(request):
 def scholarship_document_student_select(request):
 
     # ========================================================
-    # 基本QuerySet
-    # ========================================================
-
-    students = (
-        ProspectiveStudent.objects
-        .filter(
-            is_active=True
-        )
-        .select_related(
-            "junior_high_school",
-            "club",
-            "assigned_teacher",
-        )
-    )
-
-    # ========================================================
     # GET条件
     # ========================================================
 
     keyword = request.GET.get(
         "q",
-        "",
-    ).strip()
-
-    school_id = request.GET.get(
-        "school",
         "",
     ).strip()
 
@@ -1963,6 +1951,36 @@ def scholarship_document_student_select(request):
         "",
     ).strip()
 
+    # 複数都道府県
+    selected_prefectures = [
+        prefecture
+        for prefecture in request.GET.getlist("prefecture")
+        if prefecture
+    ]
+
+    # 複数中学校
+    selected_school_ids = [
+        school_id
+        for school_id in request.GET.getlist("school")
+        if school_id.isdigit()
+    ]
+
+    # ========================================================
+    # 基本QuerySet
+    # ========================================================
+
+    students = (
+        ProspectiveStudent.objects
+        .filter(
+            is_active=True
+        )
+        .select_related(
+            "junior_high_school",
+            "club",
+            "assigned_teacher",
+        )
+    )
+
     # ========================================================
     # キーワード検索
     # ========================================================
@@ -1970,81 +1988,14 @@ def scholarship_document_student_select(request):
     if keyword:
 
         students = students.filter(
-            Q(
-                name__icontains=keyword
-            )
-            | Q(
-                name_kana__icontains=keyword
-            )
+            Q(name__icontains=keyword)
+            | Q(name_kana__icontains=keyword)
             | Q(
                 junior_high_school__name__icontains=keyword
             )
             | Q(
                 club__name__icontains=keyword
             )
-        )
-
-    # ========================================================
-    # 地域
-    #
-    # miyazaki = 宮崎県内
-    # outside  = 宮崎県外
-    # ========================================================
-
-    if region == "miyazaki":
-
-        students = students.filter(
-            junior_high_school__prefecture="宮崎県"
-        )
-
-    elif region == "outside":
-
-        students = students.exclude(
-            junior_high_school__prefecture="宮崎県"
-        )
-
-    # ========================================================
-    # 宮崎県内エリア
-    #
-    # direct = 校長直接持参地域
-    # other  = それ以外
-    # ========================================================
-
-    direct_cities = [
-        "小林市",
-        "高原町",
-        "えびの市",
-        "都城市",
-    ]
-
-    # areaは宮崎県内選択時のみ有効にする
-    if region == "miyazaki":
-
-        if area == "direct":
-
-            students = students.filter(
-                junior_high_school__city__in=direct_cities
-            )
-
-        elif area == "other":
-
-            students = students.exclude(
-                junior_high_school__city__in=direct_cities
-            )
-
-    else:
-
-        # URLに古いareaが残っていても無効化
-        area = ""
-
-    # ========================================================
-    # 中学校
-    # ========================================================
-
-    if school_id.isdigit():
-
-        students = students.filter(
-            junior_high_school_id=school_id
         )
 
     # ========================================================
@@ -2058,13 +2009,116 @@ def scholarship_document_student_select(request):
         )
 
     # ========================================================
+    # 地域
+    # ========================================================
+
+    direct_cities = [
+        "小林市",
+        "高原町",
+        "えびの市",
+        "都城市",
+    ]
+
+    if region == "miyazaki":
+
+        students = students.filter(
+            junior_high_school__prefecture="宮崎県"
+        )
+
+        # 宮崎県内エリア
+        if area == "direct":
+
+            students = students.filter(
+                junior_high_school__city__in=direct_cities
+            )
+
+        elif area == "other":
+
+            students = students.exclude(
+                junior_high_school__city__in=direct_cities
+            )
+
+        # 県外用選択は無効化
+        selected_prefectures = []
+
+    elif region == "outside":
+
+        students = students.exclude(
+            junior_high_school__prefecture="宮崎県"
+        )
+
+        # 選択された都道府県があれば絞り込む
+        if selected_prefectures:
+
+            students = students.filter(
+                junior_high_school__prefecture__in=selected_prefectures
+            )
+
+        # 県内エリアは無効
+        area = ""
+
+    else:
+
+        # 地域「すべて」
+        area = ""
+        selected_prefectures = []
+
+    # ========================================================
+    # この時点で選択可能な中学校を取得
+    #
+    # 学校フィルタを掛ける「前」に作るのが重要
+    # ========================================================
+
+    school_source_students = students
+
+    schools = (
+        JuniorHighSchool.objects
+        .filter(
+            id__in=school_source_students.values_list(
+                "junior_high_school_id",
+                flat=True,
+            )
+        )
+        .order_by(
+            "prefecture",
+            "city",
+            "name",
+        )
+        .distinct()
+    )
+
+    # ========================================================
+    # 中学校 複数選択
+    # ========================================================
+
+    if selected_school_ids:
+
+        students = students.filter(
+            junior_high_school_id__in=selected_school_ids
+        )
+
+    # ========================================================
+    # 発送済み判定
+    # ========================================================
+
+    shipped_records = (
+        ScholarshipShippingRecord.objects
+        .filter(
+            student_id=OuterRef("pk"),
+            is_shipped=True,
+        )
+    )
+
+    students = students.annotate(
+        has_been_shipped=Exists(
+            shipped_records
+        )
+    )
+
+    # ========================================================
     # 表示順
     #
-    # 県内では
     # 小林 → 高原 → えびの → 都城 → その他
-    #
-    # 県外では
-    # 都道府県 → 市町村 → 学校
     # ========================================================
 
     students = (
@@ -2107,72 +2161,54 @@ def scholarship_document_student_select(request):
     )
 
     # ========================================================
-    # 発送済み判定
+    # 県外の都道府県一覧
     #
-    # 一度でも発送済みの履歴がある生徒は
-    # 初期チェックをOFFにする
+    # 全国47都道府県ではなく、
+    # 実際に募集対象生徒がいる県だけ
     # ========================================================
 
-    shipped_student_ids = set(
-        ScholarshipShippingRecord.objects
+    outside_prefectures = (
+        ProspectiveStudent.objects
         .filter(
-            is_shipped=True,
-            student_id__in=students.values_list(
-                "id",
-                flat=True,
-            ),
+            is_active=True
         )
-        .values_list(
-            "student_id",
-            flat=True,
+        .exclude(
+            junior_high_school__prefecture="宮崎県"
         )
-    )
-
-    student_list = list(students)
-
-    for student in student_list:
-
-        student.has_been_shipped = (
-            student.id in shipped_student_ids
+        .exclude(
+            junior_high_school__prefecture=""
         )
-
-    # ========================================================
-    # 中学校選択肢
-    #
-    # 現在の地域条件に該当する学校だけ表示
-    # ========================================================
-
-    schools = (
-        JuniorHighSchool.objects
-        .filter(
-            id__in=students.values_list(
-                "junior_high_school_id",
-                flat=True,
-            )
+        .exclude(
+            junior_high_school__prefecture__isnull=True
+        )
+        .values(
+            "junior_high_school__prefecture"
+        )
+        .annotate(
+            student_count=Count("id")
         )
         .order_by(
-            "prefecture",
-            "city",
-            "name",
+            "junior_high_school__prefecture"
         )
-        .distinct()
     )
 
     # ========================================================
-    # 部活動選択肢
+    # 部活動一覧
     # ========================================================
 
     clubs = (
         Club.objects
         .filter(
-            id__in=students.values_list(
+            id__in=ProspectiveStudent.objects
+            .filter(
+                is_active=True
+            )
+            .values_list(
                 "club_id",
                 flat=True,
             )
         )
-        .order_by(
-            "name"
-        )
+        .order_by("name")
         .distinct()
     )
 
@@ -2190,11 +2226,15 @@ def scholarship_document_student_select(request):
 
             "keyword": keyword,
 
-            "selected_school": school_id,
             "selected_club": club_id,
 
             "selected_region": region,
             "selected_area": area,
+
+            "outside_prefectures": outside_prefectures,
+            "selected_prefectures": selected_prefectures,
+
+            "selected_school_ids": selected_school_ids,
         },
     )
 
