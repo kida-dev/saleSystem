@@ -2807,7 +2807,7 @@ def draw_scholarship_request_page(
     pdf.drawString(
         address_x + em,
         address_y - 14 * mm,
-        "進学生徒　様",
+        "進学主任　様",
     )
 
     # ============================================================
@@ -2918,7 +2918,7 @@ def draw_scholarship_request_page(
 
     paragraphs = [
         (
-            f"謹啓　{seasonal_greeting}、"
+            f"　{seasonal_greeting}、"
             "貴校におかれましてはますますご清栄のことと"
             "お喜び申し上げます。"
             "また、平素より本校の教育活動につきましては、"
