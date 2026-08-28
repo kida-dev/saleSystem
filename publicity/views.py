@@ -3741,46 +3741,6 @@ def scholarship_document_batch_issue(request):
     )
 
     # ============================================================
-    # 文書番号の既存チェック
-    # ============================================================
-
-    school_ids = [
-        group["school"].id
-        for group in groups
-    ]
-
-    duplicate_documents = (
-        ScholarshipRequestDocument.objects
-        .filter(
-            document_number=document_number,
-            issue_date=issue_date,
-            school_id__in=school_ids,
-        )
-    )
-
-    if duplicate_documents.exists():
-
-        duplicate_school_names = (
-            duplicate_documents
-            .values_list(
-                "school__name",
-                flat=True,
-            )
-        )
-
-        duplicate_text = "、".join(
-            duplicate_school_names
-        )
-
-        return HttpResponse(
-            "同じ文書がすでに発行されています。"
-            f"<br>文書番号：{document_number}"
-            f"<br>発行日：{issue_date}"
-            f"<br>対象校：{duplicate_text}",
-            status=400,
-        )
-
-    # ============================================================
     # PDF準備
     # ============================================================
 
