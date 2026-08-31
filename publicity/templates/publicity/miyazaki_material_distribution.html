@@ -1016,6 +1016,18 @@
             宛名シールPDF
         </button>
 
+        {% if selected_purpose == "open_school" %}
+
+            <button
+                type="button"
+                class="button button-primary"
+                id="class-label-pdf-button"
+            >
+                クラス別仕分けシールPDF
+            </button>
+
+        {% endif %}
+
 
         {% if selected_purpose == "open_school" %}
 
@@ -1080,6 +1092,11 @@ document.addEventListener(
         const showTelCheckbox =
             document.getElementById(
                 "show-tel"
+            );
+
+        const classLabelPdfButton =
+            document.getElementById(
+                "class-label-pdf-button"
             );
 
         const deliveryListButton =
@@ -1283,6 +1300,54 @@ document.addEventListener(
                 }
             );
 
+        }
+
+        // ==========================================
+        // クラス別仕分けシールPDF
+        // ==========================================
+
+        if (classLabelPdfButton) {
+
+            classLabelPdfButton.addEventListener(
+                "click",
+                function () {
+
+                    const schoolIds =
+                        getSelectedSchoolIds();
+
+                    if (schoolIds.length === 0) {
+
+                        alert(
+                            "中学校を1校以上選択してください。"
+                        );
+
+                        return;
+                    }
+
+                    const params =
+                        new URLSearchParams();
+
+                    schoolIds.forEach(
+                        function (schoolId) {
+
+                            params.append(
+                                "school_ids",
+                                schoolId
+                            );
+                        }
+                    );
+
+                    const url =
+                        "{% url 'publicity:class_label_pdf' %}"
+                        + "?"
+                        + params.toString();
+
+                    window.open(
+                        url,
+                        "_blank"
+                    );
+                }
+            );
         }
 
 

@@ -843,36 +843,114 @@ def label_pdf(request):
 
 @publicity_admin_required
 def class_label_pdf(request):
-    school_ids = request.GET.getlist("school_ids")
+    """
+    選択した中学校のクラス別仕分けシールPDFを作成する。
+
+    ・選択された中学校のみ対象
+    ・1クラスにつき1枚
+    ・学校名
+    ・クラス名
+    ・人数
+    ・FJA210A（A4 / 12面 / 2列×6段）
+    """
+
+    # ========================================================
+    # GETパラメータ
+    # ========================================================
+
+    school_ids = request.GET.getlist(
+        "school_ids"
+    )
+
+    # ========================================================
+    # 対象クラス
+    # ========================================================
+
+    classes = (
+        JuniorHighClass.objects
+        .select_related(
+            "school"
+        )
+    )
 
     if school_ids:
-        classes = JuniorHighClass.objects.select_related(
-            "school"
-        ).filter(
+
+        classes = classes.filter(
             school_id__in=school_ids
-        ).order_by("school__number", "school__name", "class_name")
+        )
+
     else:
-        classes = JuniorHighClass.objects.select_related(
-            "school"
-        ).order_by("school__number", "school__name", "class_name")
 
-    response = HttpResponse(content_type="application/pdf")
-    response["Content-Disposition"] = 'inline; filename="class_labels.pdf"'
+        # この画面から使用する場合、
+        # 学校未選択で全校出力される事故を防ぐ。
+        return HttpResponse(
+            "中学校を1校以上選択してください。",
+            status=400,
+        )
 
-    p = canvas.Canvas(response, pagesize=A4)
+    classes = classes.order_by(
+        "school__number",
+        "school__name",
+        "class_name",
+    )
+
+    # ========================================================
+    # クラス登録確認
+    # ========================================================
+
+    if not classes.exists():
+
+        return HttpResponse(
+            "選択した中学校にクラス情報が登録されていません。",
+            status=400,
+        )
+
+    # ========================================================
+    # PDFレスポンス
+    # ========================================================
+
+    response = HttpResponse(
+        content_type="application/pdf"
+    )
+
+    response[
+        "Content-Disposition"
+    ] = (
+        'inline; '
+        'filename="class_labels.pdf"'
+    )
+
+    p = canvas.Canvas(
+        response,
+        pagesize=A4,
+    )
+
+    # ========================================================
+    # フォント
+    # ========================================================
 
     font_path = os.path.join(
         settings.BASE_DIR,
         "static",
         "fonts",
-        "ipaexm.ttf"
+        "ipaexm.ttf",
     )
 
-    pdfmetrics.registerFont(TTFont("IPA", font_path))
+    pdfmetrics.registerFont(
+        TTFont(
+            "IPAClassLabel",
+            font_path,
+        )
+    )
 
-    p.setFont("IPA", 10)
+    # ========================================================
+    # FJA210A
+    #
+    # A4 / 12面 / 2列×6段
+    # 通常の宛名シールと同じ設定
+    # ========================================================
 
-    width, height = A4
+    page_width, page_height = A4
 
     label_width = 83.8 * mm
     label_height = 42.3 * mm
@@ -883,43 +961,147 @@ def class_label_pdf(request):
     cols = 2
     labels_per_page = 12
 
+    # ========================================================
+    # 右列位置補正
+    #
+    # 通常の宛名シールと同じ補正値
+    # ========================================================
+
+    right_column_adjustment = 5 * mm
+
     label_index = 0
 
+    # ========================================================
+    # ラベル生成
+    # ========================================================
+
     for cls in classes:
-        pos = label_index % labels_per_page
+
+        pos = (
+            label_index
+            % labels_per_page
+        )
+
         col = pos % cols
         row = pos // cols
 
-        x = margin_left + col * label_width
-        y = height - margin_top - (row + 1) * label_height
+        # ----------------------------------------------------
+        # ラベル基準位置
+        # ----------------------------------------------------
 
-        p.roundRect(
-            x + 3 * mm,
-            y + 5 * mm,
-            label_width - 6 * mm,
-            label_height - 10 * mm,
-            3 * mm
+        x = (
+            margin_left
+            + (
+                col
+                * label_width
+            )
         )
 
-        p.setFont("IPA", 10)
-        p.drawCentredString(
-            x + label_width / 2,
-            y + 25 * mm,
+        # 通常宛名シールと同じ右列補正
+        if col == 1:
+
+            x += right_column_adjustment
+
+        y = (
+            page_height
+            - margin_top
+            - (
+                (row + 1)
+                * label_height
+            )
+        )
+
+        # ====================================================
+        # 学校名
+        # ====================================================
+
+        school_name = (
             cls.school.name
+            or ""
+        ).strip()
+
+        # 学校名が長い場合は少し小さくする
+        if len(school_name) >= 18:
+
+            school_font_size = 9
+
+        elif len(school_name) >= 14:
+
+            school_font_size = 10
+
+        else:
+
+            school_font_size = 11
+
+        p.setFont(
+            "IPAClassLabel",
+            school_font_size,
         )
 
-        p.setFont("IPA", 10)
         p.drawCentredString(
             x + label_width / 2,
-            y + 15 * mm,
-            f"{cls.class_name}　{cls.total}名"
+            y + 27 * mm,
+            school_name,
         )
+
+        # ====================================================
+        # クラス名
+        # ====================================================
+
+        class_name = (
+            cls.class_name
+            or ""
+        ).strip()
+
+        p.setFont(
+            "IPAClassLabel",
+            15,
+        )
+
+        p.drawCentredString(
+            x + label_width / 2,
+            y + 17 * mm,
+            class_name,
+        )
+
+        # ====================================================
+        # 人数
+        # ====================================================
+
+        total = (
+            cls.total
+            if cls.total is not None
+            else 0
+        )
+
+        p.setFont(
+            "IPAClassLabel",
+            11,
+        )
+
+        p.drawCentredString(
+            x + label_width / 2,
+            y + 9 * mm,
+            f"{total}名",
+        )
+
+        # ====================================================
+        # 次のラベル
+        # ====================================================
 
         label_index += 1
 
-        if label_index % labels_per_page == 0:
+        if (
+            label_index
+            % labels_per_page
+            == 0
+        ):
+
             p.showPage()
-            p.setFont("IPA", 10)
+
+    # ========================================================
+    # PDF終了
+    # ========================================================
 
     p.save()
 
