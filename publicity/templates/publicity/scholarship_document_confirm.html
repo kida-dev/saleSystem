@@ -505,14 +505,110 @@
                 </div>
 
                 <div class="field">
-                    <label for="issue_date">発行日</label>
+
+                    <label>
+                        発行日
+                    </label>
+
+                    <!--
+                        DB内部管理用。
+                        画面には表示せずJavaScriptで更新する。
+                    -->
                     <input
-                        type="date"
+                        type="hidden"
                         id="issue_date"
                         name="issue_date"
                         value="{{ issue_date|date:'Y-m-d' }}"
-                        required
                     >
+
+                    <div
+                        style="
+                            display: grid;
+                            grid-template-columns: 1fr 0.8fr 1fr;
+                            gap: 8px;
+                        "
+                    >
+
+                        <select
+                            id="display_reiwa_year"
+                            name="display_reiwa_year"
+                            required
+                            style="
+                                width: 100%;
+                                padding: 10px;
+                                border: 1px solid #aaa;
+                                border-radius: 5px;
+                                font-size: 15px;
+                                background: white;
+                            "
+                        >
+                        </select>
+
+                        <select
+                            id="display_month"
+                            name="display_month"
+                            required
+                            style="
+                                width: 100%;
+                                padding: 10px;
+                                border: 1px solid #aaa;
+                                border-radius: 5px;
+                                font-size: 15px;
+                                background: white;
+                            "
+                        >
+                            <option value="1">1月</option>
+                            <option value="2">2月</option>
+                            <option value="3">3月</option>
+                            <option value="4">4月</option>
+                            <option value="5">5月</option>
+                            <option value="6">6月</option>
+                            <option value="7">7月</option>
+                            <option value="8">8月</option>
+                            <option value="9">9月</option>
+                            <option value="10">10月</option>
+                            <option value="11">11月</option>
+                            <option value="12">12月</option>
+                        </select>
+
+                        <input
+                            type="text"
+                            id="display_day"
+                            name="display_day"
+                            value="吉日"
+                            placeholder="例：1日、吉日"
+                            required
+                            style="
+                                width: 100%;
+                                padding: 10px;
+                                border: 1px solid #aaa;
+                                border-radius: 5px;
+                                font-size: 15px;
+                            "
+                        >
+
+                    </div>
+
+                    <div
+                        class="help-text"
+                        style="margin-top: 7px;"
+                    >
+                        PDFに表示する日付です。
+                        「1日」「15日」「吉日」など自由に入力できます。
+                    </div>
+
+                    <div
+                        id="display-date-preview"
+                        style="
+                            margin-top: 8px;
+                            padding: 8px 10px;
+                            background: #f4f8fa;
+                            border-radius: 4px;
+                            font-weight: bold;
+                        "
+                    >
+                    </div>
+
                 </div>
 
                 <div class="field">
@@ -589,75 +685,341 @@
 
 </main>
 
-
 <script>
 
-    /*
-     * 発行日から時候の挨拶を変更
-     */
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
 
-    const issueDate =
-        document.getElementById(
-            "issue_date"
-        );
+        // =====================================================
+        // 要素取得
+        // =====================================================
 
-    const seasonalGreeting =
-        document.getElementById(
-            "seasonal_greeting"
-        );
+        const issueDate =
+            document.getElementById(
+                "issue_date"
+            );
 
+        const seasonalGreeting =
+            document.getElementById(
+                "seasonal_greeting"
+            );
 
-    const greetings = {
+        const reiwaYearSelect =
+            document.getElementById(
+                "display_reiwa_year"
+            );
 
-        1: "新春の候",
-        2: "立春の候",
-        3: "早春の候",
-        4: "春暖の候",
-        5: "新緑の候",
-        6: "梅雨の候",
-        7: "盛夏の候",
-        8: "残暑の候",
-        9: "秋分の候",
-        10: "秋冷の候",
-        11: "晩秋の候",
-        12: "師走の候",
+        const monthSelect =
+            document.getElementById(
+                "display_month"
+            );
 
-    };
+        const dayInput =
+            document.getElementById(
+                "display_day"
+            );
 
+        const preview =
+            document.getElementById(
+                "display-date-preview"
+            );
 
-    if (
-        issueDate
-        && seasonalGreeting
-    ) {
+        // =====================================================
+        // 時候の挨拶
+        // =====================================================
 
-        issueDate.addEventListener(
-            "change",
-            function () {
+        const greetings = {
+            1: "新春の候",
+            2: "立春の候",
+            3: "早春の候",
+            4: "春暖の候",
+            5: "新緑の候",
+            6: "梅雨の候",
+            7: "盛夏の候",
+            8: "残暑の候",
+            9: "秋分の候",
+            10: "秋冷の候",
+            11: "晩秋の候",
+            12: "師走の候",
+        };
 
-                if (!issueDate.value) {
-                    return;
-                }
+        // =====================================================
+        // 初期日付
+        // =====================================================
 
-                const date =
-                    new Date(
-                        issueDate.value
-                        + "T00:00:00"
+        let initialDate;
+
+        if (
+            issueDate
+            && issueDate.value
+        ) {
+
+            initialDate = new Date(
+                issueDate.value
+                + "T00:00:00"
+            );
+
+        } else {
+
+            initialDate = new Date();
+        }
+
+        const initialGregorianYear =
+            initialDate.getFullYear();
+
+        const initialReiwaYear =
+            initialGregorianYear - 2018;
+
+        const initialMonth =
+            initialDate.getMonth() + 1;
+
+        // =====================================================
+        // 令和年選択肢
+        //
+        // 現在年の前後を自動生成
+        // =====================================================
+
+        for (
+            let year =
+                Math.max(
+                    1,
+                    initialReiwaYear - 2
+                );
+            year
+                <= initialReiwaYear + 5;
+            year++
+        ) {
+
+            const option =
+                document.createElement(
+                    "option"
+                );
+
+            option.value =
+                String(year);
+
+            option.textContent =
+                "令和"
+                + year
+                + "年";
+
+            if (
+                year
+                === initialReiwaYear
+            ) {
+
+                option.selected = true;
+            }
+
+            reiwaYearSelect.appendChild(
+                option
+            );
+        }
+
+        monthSelect.value =
+            String(initialMonth);
+
+        // =====================================================
+        // PDF表示日付・内部管理日更新
+        // =====================================================
+
+        function updateDocumentDate() {
+
+            const reiwaYear =
+                parseInt(
+                    reiwaYearSelect.value,
+                    10
+                );
+
+            const month =
+                parseInt(
+                    monthSelect.value,
+                    10
+                );
+
+            let dayText =
+                dayInput.value.trim();
+
+            if (!dayText) {
+
+                dayText = "吉日";
+
+                dayInput.value =
+                    dayText;
+            }
+
+            // -----------------------------------------------
+            // 表示プレビュー
+            // -----------------------------------------------
+
+            preview.textContent =
+                "PDF表示：令和"
+                + reiwaYear
+                + "年"
+                + month
+                + "月"
+                + dayText;
+
+            // -----------------------------------------------
+            // DB内部管理日を作る
+            //
+            // 「15日」なら15日を使用。
+            // 「吉日」等なら1日を使用。
+            // -----------------------------------------------
+
+            let internalDay = 1;
+
+            const dayMatch =
+                dayText.match(
+                    /^(\d{1,2})日?$/
+                );
+
+            if (dayMatch) {
+
+                const parsedDay =
+                    parseInt(
+                        dayMatch[1],
+                        10
                     );
 
-                const month =
-                    date.getMonth() + 1;
+                if (
+                    parsedDay >= 1
+                    && parsedDay <= 31
+                ) {
+
+                    internalDay =
+                        parsedDay;
+                }
+            }
+
+            const gregorianYear =
+                reiwaYear + 2018;
+
+            const yearText =
+                String(
+                    gregorianYear
+                );
+
+            const monthText =
+                String(
+                    month
+                ).padStart(
+                    2,
+                    "0"
+                );
+
+            const internalDayText =
+                String(
+                    internalDay
+                ).padStart(
+                    2,
+                    "0"
+                );
+
+            issueDate.value =
+                yearText
+                + "-"
+                + monthText
+                + "-"
+                + internalDayText;
+
+            // -----------------------------------------------
+            // 月変更に合わせて時候の挨拶も変更
+            // -----------------------------------------------
+
+            if (
+                seasonalGreeting
+            ) {
 
                 seasonalGreeting.value =
-                    greetings[month] || "";
+                    greetings[month]
+                    || "";
+            }
+        }
 
+        // =====================================================
+        // イベント
+        // =====================================================
+
+        reiwaYearSelect.addEventListener(
+            "change",
+            updateDocumentDate
+        );
+
+        monthSelect.addEventListener(
+            "change",
+            updateDocumentDate
+        );
+
+        dayInput.addEventListener(
+            "input",
+            updateDocumentDate
+        );
+
+        // 初期表示
+        updateDocumentDate();
+
+
+        // =====================================================
+        // 文書種類
+        // =====================================================
+
+        const documentTypeRadios =
+            document.querySelectorAll(
+                'input[name="document_type"]'
+            );
+
+        const correctionPreview =
+            document.getElementById(
+                "correction-preview"
+            );
+
+        function updateDocumentTypePreview() {
+
+            const selected =
+                document.querySelector(
+                    'input[name="document_type"]:checked'
+                );
+
+            if (
+                selected
+                && selected.value
+                    === "name_correction"
+            ) {
+
+                if (correctionPreview) {
+
+                    correctionPreview.style.display =
+                        "block";
+                }
+
+            } else {
+
+                if (correctionPreview) {
+
+                    correctionPreview.style.display =
+                        "none";
+                }
+            }
+        }
+
+        documentTypeRadios.forEach(
+            function (radio) {
+
+                radio.addEventListener(
+                    "change",
+                    updateDocumentTypePreview
+                );
             }
         );
 
+        updateDocumentTypePreview();
+
     }
+);
 
 </script>
-
-
 </body>
 
 </html>

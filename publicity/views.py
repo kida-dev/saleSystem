@@ -2845,6 +2845,7 @@ def draw_scholarship_request_page(
     seasonal_greeting,
     principal_name,
     document_type="normal",
+    display_date_text="",
 ):
     """
     高千穂学園奨学生募集依頼文書を
@@ -3014,15 +3015,27 @@ def draw_scholarship_request_page(
         document_number,
     )
 
-    reiwa_year = (
-        issue_date.year - 2018
-    )
+    # ------------------------------------------------------------
+    # PDF表示用日付
+    # ------------------------------------------------------------
 
-    japanese_date = (
-        f"令和{reiwa_year}年"
-        f"{issue_date.month}月"
-        f"{issue_date.day}日"
-    )
+    if display_date_text:
+
+        japanese_date = (
+            display_date_text
+        )
+
+    else:
+
+        reiwa_year = (
+            issue_date.year - 2018
+        )
+
+        japanese_date = (
+            f"令和{reiwa_year}年"
+            f"{issue_date.month}月"
+            f"{issue_date.day}日"
+        )
 
     pdf.drawRightString(
         width - 25 * mm,
@@ -3859,22 +3872,18 @@ def scholarship_request_document_pdf(request):
 def scholarship_document_batch_issue(request):
     """
     選択された生徒を中学校ごとにまとめ、
-    1つの共通文書番号を使用して
-    複数ページPDFとして正式発行する。
+    共通文書番号でPDFを正式発行する。
 
-    ・文書番号は今回の発行処理で1つ
-    ・複数校でも同じ文書番号を使用
-    ・文書番号は事務と連携して手入力
-    ・募集年度は画面入力値を使用
-    ・募集年度未入力時は翌年度を自動設定
-    ・文書種類を保存
-    ・氏名訂正・お詫び文書にも対応
-    ・1校あたり最大16名
-    ・すべて検証後にDB保存
+    ・複数校で同一文書番号使用可
+    ・募集年度は画面入力
+    ・文書種類対応
+    ・PDF表示日付を自由指定可能
+    ・DB内部では通常の日付として管理
+    ・1校最大16名
     """
 
     # ============================================================
-    # POST以外は生徒選択画面へ戻す
+    # POST確認
     # ============================================================
 
     if request.method != "POST":
@@ -3884,7 +3893,7 @@ def scholarship_document_batch_issue(request):
         )
 
     # ============================================================
-    # POSTデータ
+    # 基本POST
     # ============================================================
 
     student_ids = request.POST.getlist(
@@ -3933,6 +3942,48 @@ def scholarship_document_batch_issue(request):
         document_type = "normal"
 
     # ============================================================
+    # PDF表示日付
+    # ============================================================
+
+    display_reiwa_year = (
+        request.POST.get(
+            "display_reiwa_year",
+            "",
+        ).strip()
+    )
+
+    display_month = (
+        request.POST.get(
+            "display_month",
+            "",
+        ).strip()
+    )
+
+    display_day = (
+        request.POST.get(
+            "display_day",
+            "",
+        ).strip()
+    )
+
+    if (
+        not display_reiwa_year
+        or not display_month
+        or not display_day
+    ):
+
+        return HttpResponse(
+            "PDF表示用の発行日を入力してください。",
+            status=400,
+        )
+
+    display_date_text = (
+        f"令和{display_reiwa_year}年"
+        f"{display_month}月"
+        f"{display_day}"
+    )
+
+    # ============================================================
     # 必須項目チェック
     # ============================================================
 
@@ -3976,7 +4027,7 @@ def scholarship_document_batch_issue(request):
         )
 
     # ============================================================
-    # 発行日
+    # 内部管理用発行日
     # ============================================================
 
     try:
@@ -3995,9 +4046,6 @@ def scholarship_document_batch_issue(request):
 
     # ============================================================
     # 募集年度
-    #
-    # 未入力の場合は
-    # 発行日の属する年度 + 1
     # ============================================================
 
     if not recruitment_year:
@@ -4021,7 +4069,7 @@ def scholarship_document_batch_issue(request):
         )
 
     # ============================================================
-    # 対象生徒取得
+    # 対象生徒
     # ============================================================
 
     students = list(
@@ -4052,7 +4100,7 @@ def scholarship_document_batch_issue(request):
         )
 
     # ============================================================
-    # 中学校ごとにまとめる
+    # 中学校別
     # ============================================================
 
     school_groups = {}
@@ -4083,7 +4131,7 @@ def scholarship_document_batch_issue(request):
     )
 
     # ============================================================
-    # 1校16名まで
+    # 最大16名
     # ============================================================
 
     for group in groups:
@@ -4106,9 +4154,6 @@ def scholarship_document_batch_issue(request):
 
     # ============================================================
     # 文書管理年度
-    #
-    # 募集年度とは別。
-    # 発行日から年度を算出する。
     # ============================================================
 
     fiscal_year = (
@@ -4129,7 +4174,7 @@ def scholarship_document_batch_issue(request):
     )
 
     # ============================================================
-    # 正式発行
+    # 発行
     # ============================================================
 
     for group in groups:
@@ -4141,7 +4186,7 @@ def scholarship_document_batch_issue(request):
         )
 
         # --------------------------------------------------------
-        # 発行履歴保存
+        # DB履歴
         # --------------------------------------------------------
 
         document = (
@@ -4167,6 +4212,10 @@ def scholarship_document_batch_issue(request):
                     issue_date
                 ),
 
+                display_date_text=(
+                    display_date_text
+                ),
+
                 seasonal_greeting=(
                     seasonal_greeting
                 ),
@@ -4188,7 +4237,7 @@ def scholarship_document_batch_issue(request):
         )
 
         # --------------------------------------------------------
-        # PDF描画
+        # PDF
         # --------------------------------------------------------
 
         draw_scholarship_request_page(
@@ -4225,15 +4274,16 @@ def scholarship_document_batch_issue(request):
             document_type=(
                 document_type
             ),
+
+            display_date_text=(
+                display_date_text
+            ),
         )
 
-        # 1校につき1ページ
         pdf.showPage()
 
     # ============================================================
-    # 文書番号Sequence更新
-    #
-    # 手入力番号が現在値より大きい場合だけ更新
+    # Sequence更新
     # ============================================================
 
     match = re.search(
@@ -4275,37 +4325,36 @@ def scholarship_document_batch_issue(request):
             )
 
     # ============================================================
-    # PDF完了
+    # PDF完成
     # ============================================================
 
     pdf.save()
 
     buffer.seek(0)
 
-    # ============================================================
-    # PDFレスポンス
-    # ============================================================
-
     response = HttpResponse(
         buffer.getvalue(),
         content_type="application/pdf",
     )
 
-    if document_type == "name_correction":
+    if (
+        document_type
+        == "name_correction"
+    ):
 
-        document_type_label = (
+        type_label = (
             "氏名訂正・お詫び"
         )
 
     else:
 
-        document_type_label = (
+        type_label = (
             "通常"
         )
 
     filename = (
         "高千穂学園奨学生募集依頼_"
-        f"{document_type_label}_"
+        f"{type_label}_"
         f"{document_number}_"
         f"{issue_date.strftime('%Y%m%d')}_"
         f"{len(groups)}校.pdf"
@@ -4318,6 +4367,7 @@ def scholarship_document_batch_issue(request):
     )
 
     return response
+
 @system_admin_required
 def scholarship_document_history(request):
 

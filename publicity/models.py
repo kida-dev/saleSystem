@@ -990,6 +990,12 @@ class ScholarshipRequestDocument(models.Model):
         "発行日",
     )
 
+    display_date_text = models.CharField(
+        "文書表示日付",
+        max_length=30,
+        blank=True,
+    )
+
     seasonal_greeting = models.CharField(
         "時候の挨拶",
         max_length=50,
