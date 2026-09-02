@@ -939,6 +939,11 @@ class DocumentNumberSequence(models.Model):
 
 class ScholarshipRequestDocument(models.Model):
 
+    DOCUMENT_TYPE_CHOICES = [
+        ("normal", "通常募集依頼"),
+        ("name_correction", "氏名訂正・お詫び"),
+    ]
+
     STATUS_CHOICES = [
         ("issued", "発行済"),
         ("corrected", "訂正済み"),
@@ -967,6 +972,13 @@ class ScholarshipRequestDocument(models.Model):
         max_length=20,
         blank=True,
         help_text="例：令和9年度",
+    )
+
+    document_type = models.CharField(
+        "文書種類",
+        max_length=30,
+        choices=DOCUMENT_TYPE_CHOICES,
+        default="normal",
     )
 
     document_number = models.CharField(

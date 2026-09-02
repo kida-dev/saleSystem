@@ -414,6 +414,74 @@
             </h2>
 
             <div class="settings">
+                <div
+                    style="
+                        margin-bottom: 22px;
+                        padding: 18px;
+                        background: #f7fafb;
+                        border: 1px solid #cad8de;
+                        border-radius: 7px;
+                    "
+                >
+                    <div
+                        style="
+                            margin-bottom: 12px;
+                            font-weight: bold;
+                            color: #15546d;
+                        "
+                    >
+                        文書種類
+                    </div>
+
+                    <label
+                        style="
+                            display: block;
+                            margin-bottom: 10px;
+                            cursor: pointer;
+                        "
+                    >
+                        <input
+                            type="radio"
+                            name="document_type"
+                            value="normal"
+                            checked
+                        >
+                        通常募集依頼
+                    </label>
+
+                    <label
+                        style="
+                            display: block;
+                            cursor: pointer;
+                        "
+                    >
+                        <input
+                            type="radio"
+                            name="document_type"
+                            value="name_correction"
+                        >
+                        氏名訂正・お詫び
+                    </label>
+
+                    <div
+                        id="correction-preview"
+                        style="
+                            display: none;
+                            margin-top: 15px;
+                            padding: 12px 14px;
+                            background: #fff8e5;
+                            border-left: 4px solid #d19b27;
+                            line-height: 1.7;
+                        "
+                    >
+                        <strong>訂正・お詫び文が追加されます。</strong>
+                        <br>
+                        この度は、生徒様のお名前を誤って記載してしまい、
+                        申し訳ございませんでした。
+                        <br>
+                        ※PDFでは黒文字＋波線で表示します。
+                    </div>
+                </div>
 
                 <div class="field">
 

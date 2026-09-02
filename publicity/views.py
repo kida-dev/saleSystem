@@ -2767,6 +2767,73 @@ def scholarship_document_confirm(request):
         },
     )
 
+def draw_wavy_underline(
+    pdf,
+    x,
+    y,
+    width,
+    amplitude=1.0,
+    wavelength=4.0,
+):
+    """
+    指定した文字列の下に黒い波線を描画する。
+    """
+
+    if width <= 0:
+        return
+
+    pdf.saveState()
+
+    pdf.setStrokeColor(
+        colors.black
+    )
+
+    pdf.setLineWidth(
+        0.7
+    )
+
+    path = pdf.beginPath()
+
+    current_x = x
+
+    path.moveTo(
+        current_x,
+        y,
+    )
+
+    direction = 1
+
+    while current_x < x + width:
+
+        next_x = min(
+            current_x + wavelength / 2,
+            x + width,
+        )
+
+        next_y = (
+            y
+            + (
+                amplitude
+                * direction
+            )
+        )
+
+        path.lineTo(
+            next_x,
+            next_y,
+        )
+
+        current_x = next_x
+        direction *= -1
+
+    pdf.drawPath(
+        path,
+        stroke=1,
+        fill=0,
+    )
+
+    pdf.restoreState()
+
 def draw_scholarship_request_page(
     pdf,
     school,
@@ -2777,6 +2844,7 @@ def draw_scholarship_request_page(
     recruitment_year,
     seasonal_greeting,
     principal_name,
+    document_type="normal",
 ):
     """
     高千穂学園奨学生募集依頼文書を
@@ -3098,7 +3166,7 @@ def draw_scholarship_request_page(
         - body_start_gap
     )
 
-    paragraphs = [
+    paragraphs_before_correction = [
         (
             f"　{seasonal_greeting}、"
             "貴校におかれましてはますますご清栄のことと"
@@ -3118,6 +3186,9 @@ def draw_scholarship_request_page(
             "保護者の皆様へ本件をご案内いただき、"
             "面談の機会を設けていただけますと幸いです。"
         ),
+    ]
+
+    paragraphs_after_correction = [
         (
             "誠に恐縮に存じますが、"
             "よろしくお取り計らいくださいますよう"
@@ -3130,7 +3201,116 @@ def draw_scholarship_request_page(
         ),
     ]
 
-    for text in paragraphs:
+    # ============================================================
+    # 通常本文 前半
+    # ============================================================
+
+    for text in paragraphs_before_correction:
+
+        para = Paragraph(
+            text,
+            body_style,
+        )
+
+        _, para_height = (
+            para.wrap(
+                body_width,
+                100 * mm,
+            )
+        )
+
+        para.drawOn(
+            pdf,
+            body_x,
+            current_y - para_height,
+        )
+
+        current_y -= (
+            para_height
+            + paragraph_gap
+        )
+
+
+    # ============================================================
+    # 氏名訂正・お詫び
+    # ============================================================
+
+    if document_type == "name_correction":
+
+        correction_lines = [
+            "この度は、生徒様のお名前を誤って記載してしまい、申し訳ございませんでした。",
+        ]
+
+        correction_x = (
+            body_x
+            + body_first_indent
+        )
+
+        correction_font_size = (
+            9.7
+            if compact_mode
+            else 10.3
+        )
+
+        correction_leading = (
+            13
+            if compact_mode
+            else 15
+        )
+
+        pdf.setFont(
+            font_min,
+            correction_font_size,
+        )
+
+        current_y -= (
+            1 * mm
+        )
+
+        for line in correction_lines:
+
+            baseline_y = (
+                current_y
+                - correction_leading
+            )
+
+            pdf.drawString(
+                correction_x,
+                baseline_y,
+                line,
+            )
+
+            text_width = (
+                pdf.stringWidth(
+                    line,
+                    font_min,
+                    correction_font_size,
+                )
+            )
+
+            draw_wavy_underline(
+                pdf=pdf,
+                x=correction_x,
+                y=baseline_y - 2.0,
+                width=text_width,
+                amplitude=0.8,
+                wavelength=4.0,
+            )
+
+            current_y -= (
+                correction_leading
+            )
+
+        current_y -= (
+            paragraph_gap
+        )
+
+
+    # ============================================================
+    # 通常本文 後半
+    # ============================================================
+
+    for text in paragraphs_after_correction:
 
         para = Paragraph(
             text,
@@ -3687,9 +3867,15 @@ def scholarship_document_batch_issue(request):
     ・文書番号は事務と連携して手入力
     ・募集年度は画面入力値を使用
     ・募集年度未入力時は翌年度を自動設定
-    ・1校あたり最大10名
+    ・文書種類を保存
+    ・氏名訂正・お詫び文書にも対応
+    ・1校あたり最大16名
     ・すべて検証後にDB保存
     """
+
+    # ============================================================
+    # POST以外は生徒選択画面へ戻す
+    # ============================================================
 
     if request.method != "POST":
 
@@ -3725,44 +3911,26 @@ def scholarship_document_batch_issue(request):
         "",
     ).strip()
 
-    # ============================================================
-    # 募集年度
-    #
-    # 画面から入力された
-    # 「令和9年度」等を受け取る
-    # ============================================================
-
     recruitment_year = request.POST.get(
         "recruitment_year",
         "",
     ).strip()
 
-    # ------------------------------------------------------------
-    # 募集年度未入力時の保険
-    # 現在年度 + 1
-    # ------------------------------------------------------------
+    # ============================================================
+    # 文書種類
+    # ============================================================
 
-    if not recruitment_year:
+    document_type = request.POST.get(
+        "document_type",
+        "normal",
+    ).strip()
 
-        today = timezone.localdate()
+    if document_type not in {
+        "normal",
+        "name_correction",
+    }:
 
-        current_fiscal_year = (
-            get_fiscal_year_from_date(
-                today
-            )
-        )
-
-        next_fiscal_year = (
-            current_fiscal_year + 1
-        )
-
-        next_reiwa_year = (
-            next_fiscal_year - 2018
-        )
-
-        recruitment_year = (
-            f"令和{next_reiwa_year}年度"
-        )
+        document_type = "normal"
 
     # ============================================================
     # 必須項目チェック
@@ -3826,6 +3994,33 @@ def scholarship_document_batch_issue(request):
         )
 
     # ============================================================
+    # 募集年度
+    #
+    # 未入力の場合は
+    # 発行日の属する年度 + 1
+    # ============================================================
+
+    if not recruitment_year:
+
+        current_fiscal_year = (
+            get_fiscal_year_from_date(
+                issue_date
+            )
+        )
+
+        next_fiscal_year = (
+            current_fiscal_year + 1
+        )
+
+        next_reiwa_year = (
+            next_fiscal_year - 2018
+        )
+
+        recruitment_year = (
+            f"令和{next_reiwa_year}年度"
+        )
+
+    # ============================================================
     # 対象生徒取得
     # ============================================================
 
@@ -3857,7 +4052,7 @@ def scholarship_document_batch_issue(request):
         )
 
     # ============================================================
-    # 中学校別にまとめる
+    # 中学校ごとにまとめる
     # ============================================================
 
     school_groups = {}
@@ -3888,7 +4083,7 @@ def scholarship_document_batch_issue(request):
     )
 
     # ============================================================
-    # 1校10名まで
+    # 1校16名まで
     # ============================================================
 
     for group in groups:
@@ -3912,8 +4107,8 @@ def scholarship_document_batch_issue(request):
     # ============================================================
     # 文書管理年度
     #
-    # これは「募集年度」ではない。
-    # 文書番号・履歴管理用。
+    # 募集年度とは別。
+    # 発行日から年度を算出する。
     # ============================================================
 
     fiscal_year = (
@@ -3954,15 +4149,23 @@ def scholarship_document_batch_issue(request):
             .create(
                 school=school,
 
-                # 文書管理年度
                 fiscal_year=fiscal_year,
 
-                # 募集年度
-                recruitment_year=recruitment_year,
+                recruitment_year=(
+                    recruitment_year
+                ),
 
-                document_number=document_number,
+                document_type=(
+                    document_type
+                ),
 
-                issue_date=issue_date,
+                document_number=(
+                    document_number
+                ),
+
+                issue_date=(
+                    issue_date
+                ),
 
                 seasonal_greeting=(
                     seasonal_greeting
@@ -3972,7 +4175,9 @@ def scholarship_document_batch_issue(request):
                     principal_name
                 ),
 
-                created_by=request.teacher,
+                created_by=(
+                    request.teacher
+                ),
 
                 status="issued",
             )
@@ -3997,12 +4202,14 @@ def scholarship_document_batch_issue(request):
                 document_number
             ),
 
-            issue_date=issue_date,
+            issue_date=(
+                issue_date
+            ),
 
-            # 文書管理年度
-            fiscal_year=fiscal_year,
+            fiscal_year=(
+                fiscal_year
+            ),
 
-            # ★募集年度
             recruitment_year=(
                 recruitment_year
             ),
@@ -4014,13 +4221,19 @@ def scholarship_document_batch_issue(request):
             principal_name=(
                 principal_name
             ),
+
+            document_type=(
+                document_type
+            ),
         )
 
         # 1校につき1ページ
         pdf.showPage()
 
     # ============================================================
-    # Sequence更新
+    # 文書番号Sequence更新
+    #
+    # 手入力番号が現在値より大きい場合だけ更新
     # ============================================================
 
     match = re.search(
@@ -4069,13 +4282,30 @@ def scholarship_document_batch_issue(request):
 
     buffer.seek(0)
 
+    # ============================================================
+    # PDFレスポンス
+    # ============================================================
+
     response = HttpResponse(
         buffer.getvalue(),
         content_type="application/pdf",
     )
 
+    if document_type == "name_correction":
+
+        document_type_label = (
+            "氏名訂正・お詫び"
+        )
+
+    else:
+
+        document_type_label = (
+            "通常"
+        )
+
     filename = (
         "高千穂学園奨学生募集依頼_"
+        f"{document_type_label}_"
         f"{document_number}_"
         f"{issue_date.strftime('%Y%m%d')}_"
         f"{len(groups)}校.pdf"
@@ -4088,7 +4318,6 @@ def scholarship_document_batch_issue(request):
     )
 
     return response
-
 @system_admin_required
 def scholarship_document_history(request):
 
