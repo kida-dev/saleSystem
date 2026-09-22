@@ -5034,23 +5034,24 @@ def scholarship_document_correct(
 
 @club_advisor_required
 def scholarship_management_list(request):
-
     """
-    部顧問用
-
     奨学生候補・面談管理一覧
 
-    原則として、
-    ログイン中の教員が担当している募集対象生徒のみ表示する。
+    権限による表示範囲
+    ------------------
+    system_admin / publicity_admin
+        → 全募集対象生徒を表示
 
-    また、
+    club_advisor
+        → 自分が担当している募集対象生徒のみ表示
+
     担当部活動ごとの奨学生枠・寮費待遇枠について、
     現在人員 / 上限人数を表示する。
     """
 
-    # --------------------------------------------------------
+    # ========================================================
     # 検索条件
-    # --------------------------------------------------------
+    # ========================================================
 
     keyword = (
         request.GET
@@ -5070,30 +5071,26 @@ def scholarship_management_list(request):
         .strip()
     )
 
-    # --------------------------------------------------------
+    # ========================================================
     # 対象年度
     #
     # 現在は「来年度募集」を基準とする
     # 例：
     # 2026年中の募集 → 2027年度
-    # --------------------------------------------------------
+    # ========================================================
 
     today = timezone.localdate()
 
     fiscal_year = today.year + 1
 
-    # --------------------------------------------------------
-    # ログイン教員が担当している全生徒
-    #
-    # 枠使用数の集計はこちらを使用する。
-    # 検索条件によって枠使用数が変わらないようにするため。
-    # --------------------------------------------------------
+    # ========================================================
+    # 基本QuerySet
+    # ========================================================
 
-    all_students = (
+    base_students = (
         ProspectiveStudent.objects
         .filter(
             is_active=True,
-            assigned_teacher=request.teacher,
         )
         .select_related(
             "junior_high_school",
@@ -5112,9 +5109,48 @@ def scholarship_management_list(request):
         )
     )
 
-    # --------------------------------------------------------
+    # ========================================================
+    # 権限制御
+    #
+    # 管理者
+    #   → 全生徒
+    #
+    # 部顧問
+    #   → 自分の担当生徒のみ
+    # ========================================================
+
+    teacher_role = getattr(
+        request.teacher,
+        "role",
+        "",
+    )
+
+    is_management_user = (
+        teacher_role
+        in {
+            "system_admin",
+            "publicity_admin",
+        }
+    )
+
+    if is_management_user:
+
+        all_students = (
+            base_students
+        )
+
+    else:
+
+        all_students = (
+            base_students
+            .filter(
+                assigned_teacher=request.teacher,
+            )
+        )
+
+    # ========================================================
     # 一覧表示用QuerySet
-    # --------------------------------------------------------
+    # ========================================================
 
     students = (
         all_students
@@ -5126,9 +5162,9 @@ def scholarship_management_list(request):
         )
     )
 
-    # --------------------------------------------------------
+    # ========================================================
     # キーワード検索
-    # --------------------------------------------------------
+    # ========================================================
 
     if keyword:
 
@@ -5147,9 +5183,9 @@ def scholarship_management_list(request):
             )
         )
 
-    # --------------------------------------------------------
+    # ========================================================
     # 部活動絞り込み
-    # --------------------------------------------------------
+    # ========================================================
 
     if club_id.isdigit():
 
@@ -5157,9 +5193,9 @@ def scholarship_management_list(request):
             club_id=club_id
         )
 
-    # --------------------------------------------------------
+    # ========================================================
     # 進行状況絞り込み
-    # --------------------------------------------------------
+    # ========================================================
 
     if status:
 
@@ -5180,30 +5216,54 @@ def scholarship_management_list(request):
                 scholarship_assignment__status=status
             )
 
-    # --------------------------------------------------------
+    # ========================================================
     # 部活動選択肢
-    # --------------------------------------------------------
+    #
+    # 管理者
+    #   → 全対象生徒の部活動
+    #
+    # 部顧問
+    #   → 自分の担当生徒の部活動
+    # ========================================================
 
-    clubs = (
-        Club.objects
-        .filter(
-            prospective_students__assigned_teacher=request.teacher,
-            prospective_students__is_active=True,
+    if is_management_user:
+
+        clubs = (
+            Club.objects
+            .filter(
+                prospective_students__is_active=True,
+            )
+            .distinct()
+            .order_by(
+                "name"
+            )
         )
-        .distinct()
-        .order_by(
-            "name"
+
+    else:
+
+        clubs = (
+            Club.objects
+            .filter(
+                prospective_students__assigned_teacher=request.teacher,
+                prospective_students__is_active=True,
+            )
+            .distinct()
+            .order_by(
+                "name"
+            )
         )
+
+    # ========================================================
+    # 一覧側 件数集計
+    # ========================================================
+
+    total_count = (
+        students.count()
     )
 
-    # --------------------------------------------------------
-    # 一覧側 件数集計
-    # --------------------------------------------------------
-
-    total_count = students.count()
-
     not_started_count = (
-        students.filter(
+        students
+        .filter(
             Q(
                 scholarship_assignment__isnull=True
             )
@@ -5215,7 +5275,8 @@ def scholarship_management_list(request):
     )
 
     interview_count = (
-        students.filter(
+        students
+        .filter(
             scholarship_assignment__status__in=[
                 "interview_scheduled",
                 "interviewed",
@@ -5226,14 +5287,16 @@ def scholarship_management_list(request):
     )
 
     adjusting_count = (
-        students.filter(
+        students
+        .filter(
             scholarship_assignment__status="adjusting"
         )
         .count()
     )
 
     finalized_count = (
-        students.filter(
+        students
+        .filter(
             scholarship_assignment__status__in=[
                 "conference_confirmed",
                 "finalized",
@@ -5276,11 +5339,9 @@ def scholarship_management_list(request):
         )
     )
 
-    # --------------------------------------------------------
+    # ========================================================
     # 寮費枠対象
-    #
-    # 実際のマスタ名称に合わせること
-    # --------------------------------------------------------
+    # ========================================================
 
     dormitory_quota_benefit = (
         DormitoryBenefitCategory.objects
@@ -5291,20 +5352,23 @@ def scholarship_management_list(request):
         .first()
     )
 
-    # --------------------------------------------------------
+    # ========================================================
     # 部活動別 枠利用状況
-    # --------------------------------------------------------
+    # ========================================================
 
     quota_summary_rows = []
 
     for club in clubs:
 
         # ----------------------------------------------------
-        # この部活動の担当生徒全体
+        # この部活動の対象生徒
         # ----------------------------------------------------
 
-        club_students = all_students.filter(
-            club=club
+        club_students = (
+            all_students
+            .filter(
+                club=club
+            )
         )
 
         # ----------------------------------------------------
@@ -5316,7 +5380,8 @@ def scholarship_management_list(request):
         for category in categories:
 
             current_count = (
-                club_students.filter(
+                club_students
+                .filter(
                     scholarship_assignment__current_rank=category
                 )
                 .count()
@@ -5339,22 +5404,34 @@ def scholarship_management_list(request):
             )
 
             remaining = (
-                quota_count - current_count
+                quota_count
+                - current_count
             )
 
             rank_summaries.append(
                 {
-                    "category": category,
-                    "current_count": current_count,
-                    "quota_count": quota_count,
-                    "remaining": remaining,
+                    "category":
+                        category,
+
+                    "current_count":
+                        current_count,
+
+                    "quota_count":
+                        quota_count,
+
+                    "remaining":
+                        remaining,
+
                     "is_full": (
                         quota_count > 0
-                        and current_count == quota_count
+                        and current_count
+                        == quota_count
                     ),
+
                     "is_over": (
                         quota_count >= 0
-                        and current_count > quota_count
+                        and current_count
+                        > quota_count
                     ),
                 }
             )
@@ -5364,12 +5441,17 @@ def scholarship_management_list(request):
         # ----------------------------------------------------
 
         dormitory_current_count = 0
+
         dormitory_quota_count = 0
 
-        if dormitory_quota_benefit is not None:
+        if (
+            dormitory_quota_benefit
+            is not None
+        ):
 
             dormitory_current_count = (
-                club_students.filter(
+                club_students
+                .filter(
                     scholarship_assignment__current_dormitory_benefit=(
                         dormitory_quota_benefit
                     )
@@ -5404,8 +5486,11 @@ def scholarship_management_list(request):
 
         quota_summary_rows.append(
             {
-                "club": club,
-                "rank_summaries": rank_summaries,
+                "club":
+                    club,
+
+                "rank_summaries":
+                    rank_summaries,
 
                 "dormitory_current_count":
                     dormitory_current_count,
@@ -5430,9 +5515,9 @@ def scholarship_management_list(request):
             }
         )
 
-    # --------------------------------------------------------
+    # ========================================================
     # ステータス選択肢
-    # --------------------------------------------------------
+    # ========================================================
 
     status_choices = [
         (
@@ -5481,26 +5566,33 @@ def scholarship_management_list(request):
         ),
     ]
 
-    # --------------------------------------------------------
+    # ========================================================
     # Template
-    # --------------------------------------------------------
+    # ========================================================
 
     context = {
 
-        "students": students,
+        "students":
+            students,
 
-        "clubs": clubs,
+        "clubs":
+            clubs,
 
-        "keyword": keyword,
+        "keyword":
+            keyword,
 
-        "selected_club": club_id,
+        "selected_club":
+            club_id,
 
-        "selected_status": status,
+        "selected_status":
+            status,
 
-        "status_choices": status_choices,
+        "status_choices":
+            status_choices,
 
         # 一覧件数
-        "total_count": total_count,
+        "total_count":
+            total_count,
 
         "not_started_count":
             not_started_count,
@@ -5523,6 +5615,10 @@ def scholarship_management_list(request):
 
         "dormitory_quota_benefit":
             dormitory_quota_benefit,
+
+        # Template側で必要になった場合に使用
+        "is_management_user":
+            is_management_user,
     }
 
     return render(
