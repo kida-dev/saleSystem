@@ -177,6 +177,39 @@
         .excel-button:hover {
             background: #185c37;
         }
+
+        .excel-export-area {
+            margin: 0 0 20px;
+        }
+
+        .excel-export-form {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .excel-export-form label {
+            font-weight: bold;
+            color: #28556b;
+        }
+
+        .new-date-input {
+            padding: 9px 11px;
+            border: 1px solid #aaa;
+            border-radius: 5px;
+            font-size: 14px;
+            background: #fff;
+        }
+
+        .new-date-help {
+            color: #666;
+            font-size: 13px;
+        }
+
+        .excel-export-form .excel-button {
+            cursor: pointer;
+        }
     </style>
 </head>
 
@@ -285,12 +318,49 @@
         </form>
 
     </section>
-    <a
-        href="{% url 'publicity:prospective_student_excel' %}?{{ request.GET.urlencode }}"
-        class="button excel-button"
-    >
-        Excel出力
-    </a>
+    <section class="excel-export-area">
+        <form
+            method="get"
+            action="{% url 'publicity:prospective_student_excel' %}"
+            class="excel-export-form"
+        >
+            {# 現在の検索条件もExcelへ引き継ぐ #}
+            {% if keyword %}
+                <input type="hidden" name="q" value="{{ keyword }}">
+            {% endif %}
+
+            {% if selected_school %}
+                <input type="hidden" name="school" value="{{ selected_school }}">
+            {% endif %}
+
+            {% if selected_club %}
+                <input type="hidden" name="club" value="{{ selected_club }}">
+            {% endif %}
+
+            <label for="new_from">
+                NEW判定基準日
+            </label>
+
+            <input
+                type="date"
+                id="new_from"
+                name="new_from"
+                class="new-date-input"
+                required
+            >
+
+            <span class="new-date-help">
+                この日以降に登録された生徒をNEW表示します
+            </span>
+
+            <button
+                type="submit"
+                class="button excel-button"
+            >
+                Excel出力
+            </button>
+        </form>
+    </section>
     <section class="card">
         <div class="table-wrapper">
             <table>

@@ -1277,6 +1277,27 @@ def prospective_student_excel(request):
     teacher = request.teacher
 
     # ============================================================
+    # NEW判定基準日
+    # ============================================================
+
+    new_from_text = request.GET.get(
+        "new_from",
+        "",
+    ).strip()
+
+    new_from = None
+
+    if new_from_text:
+        try:
+            new_from = datetime.strptime(
+                new_from_text,
+                "%Y-%m-%d",
+            ).date()
+
+        except ValueError:
+            new_from = None
+
+    # ============================================================
     # 基本QuerySet
     # ============================================================
 
@@ -1366,7 +1387,7 @@ def prospective_student_excel(request):
     # 地域順
     #
     # 小林 → えびの → 高原 → 都城 → 三股 → 宮崎
-    # その他は後ろ
+    # その他宮崎県内 → 県外
     # ============================================================
 
     students = (
@@ -1439,6 +1460,12 @@ def prospective_student_excel(request):
     )
 
     # ============================================================
+    # 出力日
+    # ============================================================
+
+    today = timezone.localdate()
+
+    # ============================================================
     # タイトル
     # ============================================================
 
@@ -1450,6 +1477,9 @@ def prospective_student_excel(request):
 
     title_cell.value = (
         "募集対象生徒 管理職確認・連絡メモ"
+        f"　{today.year}年"
+        f"{today.month}月"
+        f"{today.day}日出力"
     )
 
     title_cell.font = Font(
@@ -1471,7 +1501,7 @@ def prospective_student_excel(request):
     worksheet.row_dimensions[1].height = 30
 
     # ============================================================
-    # 説明
+    # 説明・NEW基準日
     # ============================================================
 
     worksheet.merge_cells(
@@ -1482,11 +1512,24 @@ def prospective_student_excel(request):
         worksheet["A2"]
     )
 
-    description_cell.value = (
-        "中学校からの連絡内容、"
-        "部顧問への確認結果、面談予定等を"
-        "自由に記録してください。"
-    )
+    if new_from:
+
+        description_cell.value = (
+            "中学校からの連絡内容、"
+            "部顧問への確認結果、面談予定等を"
+            "自由に記録してください。"
+            f"　【NEW：{new_from.year}年"
+            f"{new_from.month}月"
+            f"{new_from.day}日以降登録】"
+        )
+
+    else:
+
+        description_cell.value = (
+            "中学校からの連絡内容、"
+            "部顧問への確認結果、面談予定等を"
+            "自由に記録してください。"
+        )
 
     description_cell.alignment = Alignment(
         vertical="center",
@@ -1551,6 +1594,9 @@ def prospective_student_excel(request):
     # 生徒データ
     # ============================================================
 
+    # NEWになったExcel行を記録する
+    new_rows = []
+
     for index, student in enumerate(
         students,
         start=1,
@@ -1570,9 +1616,37 @@ def prospective_student_excel(request):
                 or ""
             )
 
+        # --------------------------------------------------------
+        # NEW判定
+        #
+        # 指定した日付を含め、それ以降に登録された生徒
+        # --------------------------------------------------------
+
+        is_new = False
+
+        if (
+            new_from is not None
+            and student.created_at is not None
+        ):
+
+            student_created_date = (
+                timezone.localtime(
+                    student.created_at
+                ).date()
+            )
+
+            if student_created_date >= new_from:
+                is_new = True
+
+        # No.表示
+        if is_new:
+            no_value = f"{index} NEW"
+        else:
+            no_value = index
+
         worksheet.append(
             [
-                index,
+                no_value,
 
                 area_name,
 
@@ -1615,13 +1689,19 @@ def prospective_student_excel(request):
             ]
         )
 
+        if is_new:
+            new_rows.append(
+                worksheet.max_row
+            )
+
     # ============================================================
     # 列幅
     # ============================================================
 
     column_widths = {
 
-        "A": 6,   # No.
+        # NEW表示分だけ少し広げる
+        "A": 9,   # No.
 
         "B": 13,  # 地域
 
@@ -1686,7 +1766,7 @@ def prospective_student_excel(request):
 
             cell.border = thin_border
 
-            # 文字サイズを約1.5ptアップ
+            # 文字サイズ
             cell.font = Font(
                 size=12.5,
             )
@@ -1697,6 +1777,31 @@ def prospective_student_excel(request):
                 vertical="center",
                 wrap_text=True,
             )
+
+    # ============================================================
+    # NEW表示
+    #
+    # 通常フォント設定の「後」で赤字にすることで、
+    # 赤色が上書きされないようにする
+    # ============================================================
+
+    for row_number in new_rows:
+
+        new_cell = worksheet[
+            f"A{row_number}"
+        ]
+
+        new_cell.font = Font(
+            size=12.5,
+            bold=True,
+            color="FF0000",
+        )
+
+        new_cell.alignment = Alignment(
+            horizontal="center",
+            vertical="center",
+            wrap_text=True,
+        )
 
     # ============================================================
     # 管理職メモ欄だけ左寄せ
@@ -1860,8 +1965,10 @@ def prospective_student_excel(request):
 
     output.seek(0)
 
+    # ファイル名にも出力日を付ける
     filename = (
-        "募集対象生徒_管理職確認メモ.xlsx"
+        "募集対象生徒_管理職確認メモ_"
+        f"{today.strftime('%Y%m%d')}.xlsx"
     )
 
     response = HttpResponse(
