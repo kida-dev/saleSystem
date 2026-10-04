@@ -103,6 +103,9 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django.contrib.sites",
 
+    # Storage
+    "storages",
+
     # saleSystem
     "top",
     "publicity",
@@ -332,35 +335,73 @@ STATICFILES_DIRS = [
 
 
 # =========================================
-# MEDIA FILES
-# 開発環境でアップロードされたファイルの保存先
+# MEDIA FILES / STORAGE
 # =========================================
 
 MEDIA_URL = "/media/"
-
 MEDIA_ROOT = BASE_DIR / "media"
+
+GS_BUCKET_NAME = os.getenv(
+    "GS_BUCKET_NAME",
+    "kobanishi-sale-system-media-497606",
+)
 
 
 # =========================================
 # STORAGE / WHITENOISE
 # =========================================
 
-STORAGES = {
-    "default": {
-        "BACKEND": (
-            "django.core.files.storage."
-            "FileSystemStorage"
-        ),
-    },
+if DEBUG:
+    # -------------------------------------
+    # ローカル開発環境
+    # -------------------------------------
 
-    "staticfiles": {
-        "BACKEND": (
-            "whitenoise.storage."
-            "CompressedManifestStaticFilesStorage"
-        ),
-    },
-}
+    STORAGES = {
+        "default": {
+            "BACKEND": (
+                "django.core.files.storage."
+                "FileSystemStorage"
+            ),
+        },
 
+        "staticfiles": {
+            "BACKEND": (
+                "whitenoise.storage."
+                "CompressedManifestStaticFilesStorage"
+            ),
+        },
+    }
+
+else:
+    # -------------------------------------
+    # Cloud Run 本番環境
+    # -------------------------------------
+
+    STORAGES = {
+        "default": {
+            "BACKEND": (
+                "storages.backends.gcloud."
+                "GoogleCloudStorage"
+            ),
+
+            "OPTIONS": {
+                "bucket_name": GS_BUCKET_NAME,
+
+                # GCS側でファイルを公開しない
+                "default_acl": None,
+
+                # 同名ファイルを上書きしない
+                "file_overwrite": False,
+            },
+        },
+
+        "staticfiles": {
+            "BACKEND": (
+                "whitenoise.storage."
+                "CompressedManifestStaticFilesStorage"
+            ),
+        },
+    }
 
 # =========================================
 # DEFAULT PRIMARY KEY
