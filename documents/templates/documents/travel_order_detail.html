@@ -1478,7 +1478,7 @@
                                         <div class="table-action">
 
                                             <a
-                                                href="{{ attachment.file.url }}"
+                                                href="{% url 'documents:travel_attachment_open' travel_order.pk attachment.pk %}"
                                                 target="_blank"
                                                 rel="noopener"
                                             >

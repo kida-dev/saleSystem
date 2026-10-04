@@ -61,6 +61,12 @@ urlpatterns = [
     ),
 
     path(
+        "travel/<int:pk>/attachment/<int:attachment_id>/open/",
+        views.travel_attachment_open,
+        name="travel_attachment_open",
+    ),
+
+    path(
         "travel/<int:pk>/attachment/<int:attachment_id>/delete/",
         views.travel_attachment_delete,
         name="travel_attachment_delete",

@@ -1,5 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
+from django.http import FileResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 
@@ -436,6 +437,90 @@ def travel_attachment_create(request, pk):
         },
     )
 
+@login_required
+def travel_attachment_open(
+    request,
+    pk,
+    attachment_id,
+):
+    travel_order = get_object_or_404(
+        TravelOrder.objects.select_related(
+            "responsible_teacher",
+            "created_by",
+        ),
+        pk=pk,
+    )
+
+    attachment = get_object_or_404(
+        TravelAttachment,
+        pk=attachment_id,
+        travel_order=travel_order,
+    )
+
+    # -----------------------------------------
+    # 閲覧権限
+    # -----------------------------------------
+
+    is_responsible = (
+        travel_order.responsible_teacher.user_id
+        == request.user.id
+    )
+
+    is_creator = (
+        travel_order.created_by_id
+        == request.user.id
+    )
+
+    # 回覧者として登録されているか
+    is_approver = (
+        travel_order.approval_steps
+        .filter(approver__user=request.user)
+        .exists()
+    )
+
+    # システム管理者か
+    try:
+        teacher = request.user.publicity_teacher
+
+        is_system_admin = (
+            teacher.is_active
+            and teacher.role == "system_admin"
+        )
+
+    except Teacher.DoesNotExist:
+        is_system_admin = False
+
+    if not (
+        is_responsible
+        or is_creator
+        or is_approver
+        or is_system_admin
+        or request.user.is_superuser
+    ):
+        return redirect(
+            "documents:travel_order_list"
+        )
+
+    # -----------------------------------------
+    # 非公開ストレージからファイルを取得
+    # -----------------------------------------
+
+    file_handle = attachment.file.open("rb")
+
+    response = FileResponse(
+        file_handle,
+        content_type=(
+            "application/octet-stream"
+        ),
+    )
+
+    response[
+        "Content-Disposition"
+    ] = (
+        f'inline; filename="{attachment.original_name}"'
+    )
+
+    return response
 
 @login_required
 def travel_attachment_delete(
