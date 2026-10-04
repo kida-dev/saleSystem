@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        授業の処置 追加 | 教務支援システム
+    </title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+
+            font-family:
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                "Yu Gothic",
+                "YuGothic",
+                "Hiragino Kaku Gothic ProN",
+                Meiryo,
+                sans-serif;
+
+            background: #f4f7f9;
+            color: #263238;
+        }
+
+        .header {
+            background: #14777b;
+            color: white;
+            padding: 26px 24px;
+        }
+
+        .header-inner {
+            max-width: 850px;
+            margin: 0 auto;
+        }
+
+        .school-name {
+            margin: 0 0 6px;
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 27px;
+        }
+
+        .container {
+            max-width: 850px;
+            margin: 0 auto;
+            padding: 28px 24px 60px;
+        }
+
+        .breadcrumb {
+            margin-bottom: 24px;
+            color: #607d8b;
+            font-size: 14px;
+        }
+
+        .breadcrumb a {
+            color: #14777b;
+            text-decoration: none;
+        }
+
+        .page-title {
+            margin: 0 0 8px;
+            color: #174f67;
+            font-size: 27px;
+        }
+
+        .page-description {
+            margin: 0 0 25px;
+            color: #607d8b;
+            line-height: 1.7;
+        }
+
+        .travel-summary {
+            margin-bottom: 20px;
+            padding: 16px 18px;
+
+            background: #f5fafb;
+
+            border: 1px solid #d4e5e8;
+            border-radius: 7px;
+        }
+
+        .summary-title {
+            margin-bottom: 5px;
+            color: #607d8b;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .summary-main {
+            color: #174f67;
+            font-size: 16px;
+            font-weight: 700;
+            line-height: 1.7;
+        }
+
+        .form-section {
+            background: white;
+
+            border: 1px solid #d8e2e7;
+            border-radius: 9px;
+
+            overflow: hidden;
+
+            box-shadow:
+                0 2px 7px
+                rgba(0, 0, 0, 0.04);
+        }
+
+        .section-header {
+            padding: 16px 22px;
+
+            background: #edf5f6;
+
+            border-bottom: 1px solid #d8e2e7;
+        }
+
+        .section-header h2 {
+            margin: 0;
+            color: #174f67;
+            font-size: 18px;
+        }
+
+        .section-body {
+            padding: 22px;
+        }
+
+        .form-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, minmax(0, 1fr));
+
+            gap: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 0;
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 7px;
+
+            color: #37474f;
+
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .required {
+            margin-left: 5px;
+            color: #c62828;
+            font-size: 12px;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+
+            padding: 10px 12px;
+
+            border: 1px solid #b8c8cf;
+            border-radius: 6px;
+
+            background: white;
+
+            font-family: inherit;
+            font-size: 15px;
+
+            outline: none;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            border-color: #14777b;
+
+            box-shadow:
+                0 0 0 2px
+                rgba(20, 119, 123, 0.10);
+        }
+
+        .help-text {
+            margin-top: 6px;
+
+            color: #78909c;
+
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        .field-error {
+            margin-top: 6px;
+
+            color: #c62828;
+
+            font-size: 13px;
+        }
+
+        .error-box {
+            margin-bottom: 20px;
+            padding: 16px 18px;
+
+            background: #fff2f2;
+
+            border: 1px solid #efb7b7;
+            border-radius: 7px;
+
+            color: #a12626;
+            font-size: 14px;
+        }
+
+        .form-actions {
+            display: flex;
+
+            justify-content: space-between;
+            align-items: center;
+
+            gap: 15px;
+
+            margin-top: 28px;
+        }
+
+        .button {
+            display: inline-block;
+
+            padding: 11px 20px;
+
+            border-radius: 6px;
+            border: none;
+
+            text-decoration: none;
+
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 700;
+
+            cursor: pointer;
+        }
+
+        .button-secondary {
+            background: white;
+
+            color: #546e7a;
+
+            border: 1px solid #b0bec5;
+        }
+
+        .button-primary {
+            background: #14777b;
+            color: white;
+        }
+
+        .button-primary:hover {
+            background: #105f62;
+        }
+
+        @media (max-width: 700px) {
+
+            .container {
+                padding: 22px 14px 45px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .full-width {
+                grid-column: auto;
+            }
+
+            .form-actions {
+                flex-direction: column-reverse;
+                align-items: stretch;
+            }
+
+            .button {
+                text-align: center;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<header class="header">
+
+    <div class="header-inner">
+
+        <p class="school-name">
+            小林西高等学校
+        </p>
+
+        <h1>
+            旅行命令
+        </h1>
+
+    </div>
+
+</header>
+
+
+<main class="container">
+
+
+    <div class="breadcrumb">
+
+        <a href="{% url 'top:top' %}">
+            教務支援システムTOP
+        </a>
+
+        ＞
+
+        <a href="{% url 'documents:top' %}">
+            校内文書・回覧
+        </a>
+
+        ＞
+
+        <a href="{% url 'documents:travel_order_list' %}">
+            旅行命令
+        </a>
+
+        ＞
+
+        <a href="{% url 'documents:travel_order_detail' travel_order.pk %}">
+            詳細
+        </a>
+
+        ＞ 授業の処置 追加
+
+    </div>
+
+
+    <h2 class="page-title">
+        {% if is_edit %}
+            授業の処置を編集
+        {% else %}
+            授業の処置を追加
+        {% endif %}
+    </h2>
+
+    <p class="page-description">
+        {% if is_edit %}
+            登録済みの授業処置を修正してください。
+        {% else %}
+            出張によって変更が必要となる授業を登録してください。
+            該当する授業ごとに1件ずつ登録します。
+        {% endif %}
+    </p>
+
+
+    <div class="travel-summary">
+
+        <div class="summary-title">
+            対象の旅行命令
+        </div>
+
+        <div class="summary-main">
+
+            {{ travel_order.start_datetime|date:"Y年n月j日" }}
+
+            ／
+
+            {{ travel_order.destination_area }}
+
+            ／
+
+            {{ travel_order.purpose }}
+
+        </div>
+
+    </div>
+
+
+    {% if form.non_field_errors %}
+
+        <div class="error-box">
+
+            {% for error in form.non_field_errors %}
+                {{ error }}
+            {% endfor %}
+
+        </div>
+
+    {% endif %}
+
+
+    <form method="post">
+
+        {% csrf_token %}
+
+
+        <section class="form-section">
+
+            <div class="section-header">
+
+                <h2>
+                    授業情報
+                </h2>
+
+            </div>
+
+
+            <div class="section-body">
+
+                <div class="form-grid">
+
+
+                    <div class="form-group">
+
+                        <label for="{{ form.date.id_for_label }}">
+                            月日
+                            <span class="required">
+                                必須
+                            </span>
+                        </label>
+
+                        {{ form.date }}
+
+                        {% for error in form.date.errors %}
+                            <div class="field-error">
+                                {{ error }}
+                            </div>
+                        {% endfor %}
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="{{ form.period.id_for_label }}">
+                            校時
+                            <span class="required">
+                                必須
+                            </span>
+                        </label>
+
+                        {{ form.period }}
+
+                        <div class="help-text">
+                            1～7校時を入力してください。
+                        </div>
+
+                        {% for error in form.period.errors %}
+                            <div class="field-error">
+                                {{ error }}
+                            </div>
+                        {% endfor %}
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="{{ form.department.id_for_label }}">
+                            科
+                        </label>
+
+                        {{ form.department }}
+
+                        {% for error in form.department.errors %}
+                            <div class="field-error">
+                                {{ error }}
+                            </div>
+                        {% endfor %}
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="{{ form.grade.id_for_label }}">
+                            学年
+                        </label>
+
+                        {{ form.grade }}
+
+                        {% for error in form.grade.errors %}
+                            <div class="field-error">
+                                {{ error }}
+                            </div>
+                        {% endfor %}
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="{{ form.class_name.id_for_label }}">
+                            組
+                        </label>
+
+                        {{ form.class_name }}
+
+                        {% for error in form.class_name.errors %}
+                            <div class="field-error">
+                                {{ error }}
+                            </div>
+                        {% endfor %}
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="{{ form.subject.id_for_label }}">
+                            科目
+                        </label>
+
+                        {{ form.subject }}
+
+                        {% for error in form.subject.errors %}
+                            <div class="field-error">
+                                {{ error }}
+                            </div>
+                        {% endfor %}
+
+                    </div>
+
+
+                    <div class="form-group full-width">
+
+                        <label for="{{ form.substitute_teacher.id_for_label }}">
+                            代行
+                        </label>
+
+                        {{ form.substitute_teacher }}
+
+                        <div class="help-text">
+                            代行をお願いする教員名を入力してください。
+                        </div>
+
+                        {% for error in form.substitute_teacher.errors %}
+                            <div class="field-error">
+                                {{ error }}
+                            </div>
+                        {% endfor %}
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <div class="form-actions">
+
+            <a
+                href="{% url 'documents:travel_order_detail' travel_order.pk %}"
+                class="button button-secondary"
+            >
+                キャンセル
+            </a>
+
+            <button
+                type="submit"
+                class="button button-primary"
+            >
+                {% if is_edit %}
+                    変更を保存
+                {% else %}
+                    授業の処置を登録
+                {% endif %}
+            </button>
+
+        </div>
+
+
+    </form>
+
+
+</main>
+
+
+</body>
+
+</html>

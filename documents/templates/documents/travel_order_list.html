@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>旅行命令 | 教務支援システム</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family:
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                "Noto Sans JP",
+                sans-serif;
+            background: #f4f7f8;
+            color: #263238;
+        }
+
+        .header {
+            background: #0f6b70;
+            color: white;
+            padding: 22px 30px;
+        }
+
+        .header-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .school-name {
+            font-size: 14px;
+            opacity: 0.85;
+            margin-bottom: 4px;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .breadcrumb {
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .breadcrumb a {
+            color: #0f6b70;
+            text-decoration: none;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .page-header h2 {
+            margin: 0 0 6px;
+            font-size: 26px;
+        }
+
+        .page-description {
+            margin: 0;
+            color: #607d8b;
+        }
+
+        .new-button {
+            display: inline-block;
+            background: #0f6b70;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 7px;
+            text-decoration: none;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        .new-button:hover {
+            opacity: 0.9;
+        }
+
+        .panel {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.07);
+            overflow: hidden;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #edf5f5;
+            padding: 13px 15px;
+            text-align: left;
+            font-size: 14px;
+            color: #455a64;
+        }
+
+        td {
+            padding: 15px;
+            border-top: 1px solid #eceff1;
+            vertical-align: middle;
+        }
+
+        tbody tr:hover {
+            background: #fafcfc;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .status-draft {
+            background: #eceff1;
+            color: #546e7a;
+        }
+
+        .status-circulating {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-approved {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-returned {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .status-cancelled {
+            background: #e0e0e0;
+            color: #616161;
+        }
+
+        .detail-link {
+            color: #0f6b70;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .empty {
+            padding: 50px 20px;
+            text-align: center;
+            color: #78909c;
+        }
+
+        .empty p {
+            margin: 0 0 20px;
+        }
+
+        @media (max-width: 700px) {
+            .page-header {
+                display: block;
+            }
+
+            .new-button {
+                margin-top: 15px;
+            }
+
+            .panel {
+                overflow-x: auto;
+            }
+
+            table {
+                min-width: 700px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="header">
+    <div class="header-inner">
+
+        <div class="school-name">
+            小林西高等学校
+        </div>
+
+        <h1>
+            校内文書・回覧
+        </h1>
+
+    </div>
+</header>
+
+
+<main class="container">
+
+    <div class="breadcrumb">
+
+        <a href="{% url 'top:top' %}">
+            教務支援システムTOP
+        </a>
+
+        ＞
+
+        <a href="{% url 'documents:top' %}">
+            校内文書・回覧
+        </a>
+
+        ＞ 旅行命令
+
+    </div>
+
+
+    <div class="page-header">
+
+        <div>
+            <h2>旅行命令</h2>
+
+            <p class="page-description">
+                出張の申請・回覧状況を確認できます。
+            </p>
+        </div>
+
+        <a
+            href="{% url 'documents:travel_order_create' %}"
+            class="new-button"
+        >
+            ＋ 新しい旅行命令を作成
+        </a>
+
+    </div>
+
+
+    <div class="panel">
+
+        {% if travel_orders %}
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>出張日</th>
+                        <th>用務地</th>
+                        <th>用務</th>
+                        <th>同行者</th>
+                        <th>状態</th>
+                        <th></th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for order in travel_orders %}
+
+                        <tr>
+
+                            <td>
+                                {{ order.start_datetime|date:"Y/m/d" }}
+                            </td>
+
+                            <td>
+                                {{ order.destination_area }}
+
+                                {% if order.destination_name %}
+                                    <br>
+                                    <small>
+                                        {{ order.destination_name }}
+                                    </small>
+                                {% endif %}
+                            </td>
+
+                            <td>
+                                {{ order.purpose|truncatechars:35 }}
+                            </td>
+
+                            <td>
+                                {% for companion in order.companions.all %}
+
+                                    {{ companion.teacher.name }}
+
+                                    {% if not forloop.last %}
+                                        、
+                                    {% endif %}
+
+                                {% empty %}
+                                    －
+                                {% endfor %}
+                            </td>
+
+                            <td>
+                                <span
+                                    class="status status-{{ order.status }}"
+                                >
+                                    {{ order.get_status_display }}
+                                </span>
+                            </td>
+
+                            <td>
+                                <a
+                                    class="detail-link"
+                                    href="{% url 'documents:travel_order_detail' order.pk %}"
+                                >
+                                    詳細
+                                </a>
+                            </td>
+
+                        </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        {% else %}
+
+            <div class="empty">
+
+                <p>
+                    まだ旅行命令は登録されていません。
+                </p>
+
+                <a
+                    href="{% url 'documents:travel_order_create' %}"
+                    class="new-button"
+                >
+                    最初の旅行命令を作成
+                </a>
+
+            </div>
+
+        {% endif %}
+
+    </div>
+
+</main>
+
+</body>
+</html>

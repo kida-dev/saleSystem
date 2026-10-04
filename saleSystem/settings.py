@@ -103,14 +103,16 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django.contrib.sites",
 
+    # saleSystem
+    "top",
+    "publicity",
+    "documents",
+
     # django-allauth
     "allauth",
     "allauth.account",
     "allauth.socialaccount",
     "allauth.socialaccount.providers.google",
-
-    # saleSystem
-    "publicity",
 ]
 
 
@@ -204,7 +206,7 @@ TEMPLATES = [
             "DjangoTemplates"
         ),
 
-        "DIRS": [],
+        "DIRS": [BASE_DIR / "templates"],
 
         "APP_DIRS": True,
 
@@ -327,6 +329,16 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
+
+
+# =========================================
+# MEDIA FILES
+# 開発環境でアップロードされたファイルの保存先
+# =========================================
+
+MEDIA_URL = "/media/"
+
+MEDIA_ROOT = BASE_DIR / "media"
 
 
 # =========================================

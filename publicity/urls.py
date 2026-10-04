@@ -4,7 +4,7 @@ from . import views
 app_name = "publicity"
 
 urlpatterns = [
-    path("", views.top, name="top"),
+    path("", views.publicity_top, name="top"),
     path(
         "documents/manage/",
         views.document_management_top,

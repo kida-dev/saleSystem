@@ -1,33 +1,44 @@
+from django.conf import settings
+from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
 
-from publicity import views
-
 
 urlpatterns = [
-    # Django管理画面
     path(
         "admin/",
         admin.site.urls,
     ),
 
-    # django-allauth
-    # Googleログイン・ログアウト・コールバック
     path(
         "accounts/",
         include("allauth.urls"),
     ),
 
-    # saleSystemトップ
     path(
         "",
-        views.top,
-        name="top",
+        include("top.urls"),
     ),
 
-    # 広報支援機能
     path(
         "publicity/",
         include("publicity.urls"),
     ),
+
+    path(
+        "documents/",
+        include("documents.urls"),
+    ),
 ]
+
+
+# =========================================
+# MEDIA FILES
+# ローカル開発時のみアップロードファイルを配信
+# =========================================
+
+if settings.DEBUG:
+    urlpatterns += static(
+        settings.MEDIA_URL,
+        document_root=settings.MEDIA_ROOT,
+    )

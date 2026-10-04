@@ -1,0 +1,750 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        小林西高等学校 教務支援システム
+    </title>
+
+    <style>
+
+        /* =========================================================
+           基本設定
+        ========================================================= */
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family:
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                "Yu Gothic",
+                "YuGothic",
+                "Hiragino Kaku Gothic ProN",
+                Meiryo,
+                sans-serif;
+
+            background: #f4f7f9;
+            color: #263238;
+        }
+
+        a {
+            color: inherit;
+        }
+
+
+        /* =========================================================
+           ヘッダー
+        ========================================================= */
+
+        .header {
+            background: #285f73;
+            color: white;
+            padding: 30px 24px;
+        }
+
+        .header-inner {
+            max-width: 1180px;
+            margin: 0 auto;
+        }
+
+        .school-name {
+            margin: 0 0 6px 0;
+            font-size: 14px;
+            font-weight: 500;
+            opacity: 0.9;
+        }
+
+        .system-title {
+            margin: 0;
+            font-size: 30px;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+        }
+
+        .system-description {
+            margin: 10px 0 0 0;
+            font-size: 14px;
+            line-height: 1.7;
+            opacity: 0.95;
+        }
+
+
+        /* =========================================================
+           メイン
+        ========================================================= */
+
+        .container {
+            max-width: 1180px;
+            margin: 0 auto;
+            padding: 28px 24px 60px;
+        }
+
+
+        /* =========================================================
+           ログイン情報
+        ========================================================= */
+
+        .user-panel {
+            background: white;
+            border: 1px solid #d8e2e7;
+            border-radius: 8px;
+            padding: 20px 24px;
+            margin-bottom: 24px;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+        }
+
+        .user-info {
+            min-width: 0;
+        }
+
+        .user-label {
+            font-size: 12px;
+            color: #607d8b;
+            margin-bottom: 5px;
+        }
+
+        .user-name {
+            font-size: 19px;
+            font-weight: 700;
+            color: #174f67;
+        }
+
+        .user-role {
+            display: inline-block;
+            margin-top: 7px;
+
+            background: #edf5f8;
+            color: #28647a;
+
+            border-radius: 20px;
+            padding: 5px 11px;
+
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .logout-button {
+            display: inline-block;
+
+            border: 1px solid #90a4ae;
+            border-radius: 6px;
+
+            padding: 9px 18px;
+
+            background: white;
+            color: #455a64;
+
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+
+            white-space: nowrap;
+        }
+
+        .logout-button:hover {
+            background: #f2f5f6;
+        }
+
+
+        /* =========================================================
+           説明
+        ========================================================= */
+
+        .intro-card {
+            background: white;
+            border: 1px solid #d8e2e7;
+            border-radius: 8px;
+            padding: 22px 24px;
+            margin-bottom: 24px;
+
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+        }
+
+        .intro-title {
+            margin: 0 0 8px 0;
+            color: #174f67;
+            font-size: 19px;
+        }
+
+        .intro-text {
+            margin: 0;
+            color: #546e7a;
+            line-height: 1.8;
+            font-size: 14px;
+        }
+
+
+        /* =========================================================
+           メニュー
+        ========================================================= */
+
+        .menu-section {
+            background: white;
+            border: 1px solid #d8e2e7;
+            border-radius: 8px;
+            padding: 24px;
+
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+        }
+
+        .section-title {
+            margin: 0 0 20px 0;
+            color: #174f67;
+            font-size: 20px;
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns:
+                repeat(2, minmax(0, 1fr));
+            gap: 20px;
+        }
+
+
+        /* =========================================================
+           メニューカード
+        ========================================================= */
+
+        .menu-card {
+            position: relative;
+
+            min-height: 205px;
+            padding: 26px;
+
+            border: 1px solid #cad9df;
+            border-radius: 8px;
+
+            background: #ffffff;
+
+            display: flex;
+            flex-direction: column;
+
+            transition:
+                transform 0.15s ease,
+                box-shadow 0.15s ease,
+                border-color 0.15s ease;
+        }
+
+        .menu-card.active {
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .menu-card.active:hover {
+            transform: translateY(-2px);
+
+            border-color: #3782a0;
+
+            box-shadow:
+                0 7px 18px
+                rgba(31, 92, 116, 0.13);
+        }
+
+        .menu-number {
+            font-size: 13px;
+            font-weight: 700;
+            color: #3782a0;
+            margin-bottom: 12px;
+        }
+
+        .menu-title {
+            margin: 0 0 12px 0;
+
+            color: #13556f;
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        .menu-description {
+            margin: 0;
+
+            color: #546e7a;
+            font-size: 14px;
+            line-height: 1.8;
+
+            flex: 1;
+        }
+
+        .menu-footer {
+            margin-top: 20px;
+            font-size: 14px;
+            font-weight: 700;
+            color: #147ba3;
+        }
+
+
+        /* =========================================================
+           準備中
+        ========================================================= */
+
+        .menu-card.disabled {
+            background: #f7f9fa;
+            border-color: #d7e0e4;
+        }
+
+        .menu-card.disabled .menu-title {
+            color: #546e7a;
+        }
+
+        .menu-card.disabled .menu-number {
+            color: #78909c;
+        }
+
+        .status-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+
+            display: inline-block;
+
+            background: #eceff1;
+            color: #607d8b;
+
+            padding: 5px 11px;
+            border-radius: 20px;
+
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+
+        /* =========================================================
+           利用不可
+        ========================================================= */
+
+        .not-available {
+            background: #fff8e1;
+            border: 1px solid #ffe082;
+            border-radius: 8px;
+
+            padding: 22px 24px;
+
+            color: #795548;
+            line-height: 1.8;
+        }
+
+        .not-available h2 {
+            margin-top: 0;
+            font-size: 19px;
+        }
+
+
+        /* =========================================================
+           未ログイン
+        ========================================================= */
+
+        .login-card {
+            max-width: 600px;
+            margin: 50px auto;
+
+            background: white;
+            border: 1px solid #d8e2e7;
+            border-radius: 8px;
+
+            padding: 35px;
+
+            text-align: center;
+
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06);
+        }
+
+        .login-card h2 {
+            margin-top: 0;
+            color: #174f67;
+        }
+
+        .login-card p {
+            color: #607d8b;
+            line-height: 1.8;
+        }
+
+        .login-button {
+            display: inline-block;
+
+            margin-top: 15px;
+
+            background: #197da5;
+            color: white;
+
+            padding: 11px 24px;
+
+            border-radius: 6px;
+
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        .login-button:hover {
+            background: #146987;
+        }
+
+
+        /* =========================================================
+           フッター
+        ========================================================= */
+
+        .footer {
+            text-align: center;
+
+            color: #78909c;
+
+            font-size: 12px;
+
+            padding: 25px 20px 35px;
+        }
+
+
+        /* =========================================================
+           スマートフォン
+        ========================================================= */
+
+        @media (max-width: 800px) {
+
+            .header {
+                padding: 24px 18px;
+            }
+
+            .system-title {
+                font-size: 24px;
+            }
+
+            .container {
+                padding:
+                    20px 14px
+                    40px;
+            }
+
+            .user-panel {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .menu-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .menu-card {
+                min-height: 180px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- =========================================================
+         ヘッダー
+    ========================================================== -->
+
+    <header class="header">
+
+        <div class="header-inner">
+
+            <p class="school-name">
+                小林西高等学校
+            </p>
+
+            <h1 class="system-title">
+                教務支援システム
+            </h1>
+
+            <p class="system-description">
+                校内業務を支援する各システムを
+                ここから利用できます。
+            </p>
+
+        </div>
+
+    </header>
+
+
+    <!-- =========================================================
+         メイン
+    ========================================================== -->
+
+    <main class="container">
+
+
+        {% if request.user.is_authenticated %}
+
+
+            {% if can_use_system %}
+
+
+                <!-- =================================================
+                     ログイン情報
+                ================================================== -->
+
+                <section class="user-panel">
+
+                    <div class="user-info">
+
+                        <div class="user-label">
+                            ログインユーザー
+                        </div>
+
+                        <div class="user-name">
+
+                            {% if teacher %}
+                                {{ teacher.name }}
+                            {% else %}
+                                {{ request.user.username }}
+                            {% endif %}
+
+                        </div>
+
+
+                        {% if request.user.is_superuser %}
+
+                            <div class="user-role">
+                                システム管理者
+                            </div>
+
+                        {% elif teacher %}
+
+                            <div class="user-role">
+
+                                {% if teacher.role == "system_admin" %}
+
+                                    システム管理者
+
+                                {% elif teacher.role == "publicity_admin" %}
+
+                                    広報管理者
+
+                                {% elif teacher.role == "club_advisor" %}
+
+                                    部活動顧問
+
+                                {% else %}
+
+                                    教職員
+
+                                {% endif %}
+
+                            </div>
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <a
+                        href="{% url 'account_logout' %}"
+                        class="logout-button"
+                    >
+                        ログアウト
+                    </a>
+
+                </section>
+
+
+                <!-- =================================================
+                     説明
+                ================================================== -->
+
+                <section class="intro-card">
+
+                    <h2 class="intro-title">
+                        業務メニュー
+                    </h2>
+
+                    <p class="intro-text">
+                        利用する業務を選択してください。
+                        各システムでは、ログインしている教職員の
+                        権限に応じた機能が表示されます。
+                    </p>
+
+                </section>
+
+
+                <!-- =================================================
+                     メニュー
+                ================================================== -->
+
+                <section class="menu-section">
+
+                    <h2 class="section-title">
+                        教務支援メニュー
+                    </h2>
+
+
+                    <div class="menu-grid">
+
+
+                        <!-- =========================================
+                             広報・募集支援
+                        ========================================== -->
+
+                        <a
+                            href="{% url 'publicity:top' %}"
+                            class="menu-card active"
+                        >
+
+                            <div class="menu-number">
+                                SYSTEM 01
+                            </div>
+
+                            <h3 class="menu-title">
+                                広報・募集支援
+                            </h3>
+
+                            <p class="menu-description">
+                                中学校情報、募集対象生徒、
+                                中学校への連絡、部活動顧問への確認、
+                                面談、奨学生、文書発行、
+                                宛名・資料印刷などを管理します。
+                            </p>
+
+                            <div class="menu-footer">
+                                広報・募集支援を開く →
+                            </div>
+
+                        </a>
+
+
+                        <!-- =========================================
+                            校内文書・回覧
+                        ========================================== -->
+
+                        <a
+                            href="{% url 'documents:top' %}"
+                            class="menu-card active"
+                        >
+
+                            <div class="menu-number">
+                                SYSTEM 02
+                            </div>
+
+                            <h3 class="menu-title">
+                                校内文書・回覧
+                            </h3>
+
+                            <p class="menu-description">
+                                校内で使用する文書の作成・確認・
+                                回覧・承認などを管理します。
+                                旅行命令の作成・回覧・承認を
+                                こちらから行います。
+                            </p>
+
+                            <div class="menu-footer">
+                                校内文書・回覧を開く →
+                            </div>
+
+                        </a>
+
+
+                    </div>
+
+                </section>
+
+
+            {% else %}
+
+
+                <!-- =================================================
+                     利用権限なし
+                ================================================== -->
+
+                <section class="not-available">
+
+                    <h2>
+                        システムを利用できません
+                    </h2>
+
+                    <p>
+                        ログイン情報に対応する有効な教職員情報が
+                        登録されていないか、
+                        現在このシステムを利用できない状態です。
+                    </p>
+
+                    <p>
+                        システム管理者へ確認してください。
+                    </p>
+
+                    <a
+                        href="{% url 'account_logout' %}"
+                        class="logout-button"
+                    >
+                        ログアウト
+                    </a>
+
+                </section>
+
+
+            {% endif %}
+
+
+        {% else %}
+
+
+            <!-- =====================================================
+                 未ログイン
+            ====================================================== -->
+
+            <section class="login-card">
+
+                <h2>
+                    教務支援システム
+                </h2>
+
+                <p>
+                    このシステムを利用するには
+                    ログインしてください。
+                </p>
+
+                <a
+                    href="{% url 'account_login' %}"
+                    class="login-button"
+                >
+                    ログイン
+                </a>
+
+            </section>
+
+
+        {% endif %}
+
+
+    </main>
+
+
+    <!-- =========================================================
+         フッター
+    ========================================================== -->
+
+    <footer class="footer">
+
+        小林西高等学校 教務支援システム
+
+    </footer>
+
+
+</body>
+
+</html>

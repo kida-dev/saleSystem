@@ -1,0 +1,1303 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        旅行命令 新規作成 | 教務支援システム
+    </title>
+
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+
+            font-family:
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                "Yu Gothic",
+                "YuGothic",
+                "Hiragino Kaku Gothic ProN",
+                Meiryo,
+                sans-serif;
+
+            background: #f4f7f9;
+            color: #263238;
+        }
+
+
+        /* =========================================================
+           ヘッダー
+        ========================================================= */
+
+        .header {
+            background: #14777b;
+            color: white;
+            padding: 26px 24px;
+        }
+
+        .header-inner {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .school-name {
+            margin: 0 0 6px;
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 27px;
+        }
+
+
+        /* =========================================================
+           メイン
+        ========================================================= */
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 28px 24px 60px;
+        }
+
+        .breadcrumb {
+            margin-bottom: 24px;
+            color: #607d8b;
+            font-size: 14px;
+        }
+
+        .breadcrumb a {
+            color: #14777b;
+            text-decoration: none;
+        }
+
+        .page-title {
+            margin: 0 0 8px;
+            color: #174f67;
+            font-size: 27px;
+        }
+
+        .page-description {
+            margin: 0 0 25px;
+            color: #607d8b;
+            line-height: 1.7;
+        }
+
+
+        /* =========================================================
+           セクション
+        ========================================================= */
+
+        .form-section {
+            background: white;
+
+            border: 1px solid #d8e2e7;
+            border-radius: 9px;
+
+            margin-bottom: 20px;
+
+            overflow: hidden;
+
+            box-shadow:
+                0 2px 7px
+                rgba(0, 0, 0, 0.04);
+        }
+
+        .section-header {
+            padding: 16px 22px;
+            background: #edf5f6;
+            border-bottom: 1px solid #d8e2e7;
+        }
+
+        .section-header h2 {
+            margin: 0;
+            color: #174f67;
+            font-size: 18px;
+        }
+
+        .section-body {
+            padding: 22px;
+        }
+
+
+        /* =========================================================
+           フォーム
+        ========================================================= */
+
+        .form-grid {
+            display: grid;
+            grid-template-columns:
+                repeat(2, minmax(0, 1fr));
+            gap: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-grid .form-group {
+            margin-bottom: 0;
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 7px;
+
+            color: #37474f;
+
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .required {
+            color: #c62828;
+            margin-left: 5px;
+            font-size: 12px;
+        }
+
+        input[type="text"],
+        input[type="date"],
+        input[type="datetime-local"],
+        select,
+        textarea {
+
+            width: 100%;
+
+            padding: 10px 12px;
+
+            border: 1px solid #b8c8cf;
+            border-radius: 6px;
+
+            background: white;
+
+            font-family: inherit;
+            font-size: 15px;
+
+            outline: none;
+        }
+
+        textarea {
+            resize: vertical;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            border-color: #14777b;
+            box-shadow:
+                0 0 0 2px
+                rgba(20, 119, 123, 0.10);
+        }
+
+        .help-text {
+            margin-top: 6px;
+            color: #78909c;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+
+        /* =========================================================
+           責任者
+        ========================================================= */
+
+        .responsible-box {
+            padding: 16px 18px;
+
+            background: #f5fafb;
+            border: 1px solid #d4e5e8;
+            border-radius: 7px;
+        }
+
+        .responsible-label {
+            margin-bottom: 5px;
+
+            color: #607d8b;
+
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .responsible-name {
+            color: #174f67;
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+
+        /* =========================================================
+           同行者
+        ========================================================= */
+
+        .companion-area {
+            margin-top: 20px;
+        }
+
+        .companion-title {
+            margin-bottom: 10px;
+            color: #37474f;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .companion-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .companion-select-wrap {
+            flex: 1;
+        }
+
+        .companion-remove {
+            flex: 0 0 auto;
+            padding: 10px 14px;
+            border: 1px solid #b0bec5;
+            border-radius: 6px;
+            background: white;
+            color: #546e7a;
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .companion-remove:hover {
+            background: #f4f7f9;
+        }
+
+        .companion-add {
+            margin-top: 4px;
+            padding: 9px 14px;
+            border: 1px solid #14777b;
+            border-radius: 6px;
+            background: white;
+            color: #14777b;
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .companion-add:hover {
+            background: #edf5f6;
+        }
+
+        /* =========================================================
+           チェックボックス
+        ========================================================= */
+
+        .check-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px 24px;
+        }
+
+        .check-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+
+            font-size: 14px;
+        }
+
+        .check-item input {
+            width: 18px;
+            height: 18px;
+        }
+
+        .check-item label {
+            margin: 0;
+            cursor: pointer;
+        }
+
+
+        /* =========================================================
+           条件表示
+        ========================================================= */
+
+        .conditional-box {
+            margin-top: 18px;
+            padding: 18px;
+
+            background: #f8fafb;
+
+            border: 1px solid #dce5e8;
+            border-radius: 7px;
+        }
+
+
+        /* =========================================================
+           エラー
+        ========================================================= */
+
+        .error-box {
+            margin-bottom: 22px;
+            padding: 16px 18px;
+
+            background: #fff2f2;
+            border: 1px solid #efb7b7;
+            border-radius: 7px;
+
+            color: #a12626;
+            font-size: 14px;
+        }
+
+        .field-error {
+            margin-top: 6px;
+            color: #c62828;
+            font-size: 13px;
+        }
+
+
+        /* =========================================================
+           ボタン
+        ========================================================= */
+
+        .form-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            gap: 15px;
+
+            margin-top: 28px;
+        }
+
+        .button {
+            display: inline-block;
+
+            padding: 11px 20px;
+
+            border-radius: 6px;
+            border: none;
+
+            text-decoration: none;
+
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 700;
+
+            cursor: pointer;
+        }
+
+        .button-secondary {
+            background: white;
+            color: #546e7a;
+            border: 1px solid #b0bec5;
+        }
+
+        .button-primary {
+            background: #14777b;
+            color: white;
+        }
+
+        .button-primary:hover {
+            background: #105f62;
+        }
+
+
+        /* =========================================================
+           スマートフォン
+        ========================================================= */
+
+        @media (max-width: 700px) {
+
+            .container {
+                padding: 22px 14px 45px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .full-width {
+                grid-column: auto;
+            }
+
+            .form-actions {
+                flex-direction: column-reverse;
+                align-items: stretch;
+            }
+
+            .button {
+                text-align: center;
+            }
+
+            .companion-row {
+                flex-direction: column;
+            }
+
+            .companion-select-wrap,
+            .companion-remove {
+                width: 100%;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<header class="header">
+
+    <div class="header-inner">
+
+        <p class="school-name">
+            小林西高等学校
+        </p>
+
+        <h1>
+            旅行命令
+        </h1>
+
+    </div>
+
+</header>
+
+
+<main class="container">
+
+
+    <!-- =========================================================
+         パンくず
+    ========================================================== -->
+
+    <div class="breadcrumb">
+
+        <a href="{% url 'top:top' %}">
+            教務支援システムTOP
+        </a>
+
+        ＞
+
+        <a href="{% url 'documents:top' %}">
+            校内文書・回覧
+        </a>
+
+        ＞
+
+        <a href="{% url 'documents:travel_order_list' %}">
+            旅行命令
+        </a>
+
+        ＞ 新規作成
+
+    </div>
+
+
+    <h2 class="page-title">
+        旅行命令 新規作成
+    </h2>
+
+    <p class="page-description">
+        出張に必要な情報を入力してください。
+        入力内容は一度「下書き」として保存されます。
+    </p>
+
+
+    {% if form.non_field_errors %}
+
+        <div class="error-box">
+
+            {% for error in form.non_field_errors %}
+                {{ error }}
+            {% endfor %}
+
+        </div>
+
+    {% endif %}
+
+
+    <form method="post">
+
+        {% csrf_token %}
+
+
+        <!-- =====================================================
+             1. 出張者
+        ====================================================== -->
+
+        <section class="form-section">
+
+            <div class="section-header">
+                <h2>
+                    1. 出張者
+                </h2>
+            </div>
+
+            <div class="section-body">
+
+                <div class="responsible-box">
+
+                    <div class="responsible-label">
+                        責任者
+                    </div>
+
+                    <div class="responsible-name">
+                        {% if teacher %}
+                            {{ teacher.name }}
+                        {% else %}
+                            {{ request.user.get_full_name|default:request.user.username }}
+                        {% endif %}
+                    </div>
+
+                </div>
+
+                <div class="help-text">
+                    現在ログインしている教職員を出張責任者として登録します。
+                    同行者がいる場合は、下から追加してください。
+                </div>
+
+                <div class="companion-area">
+
+                    <div class="companion-title">
+                        同行者
+                    </div>
+
+                    <div id="companion-container">
+
+                        {% for field in form %}
+                            {% if field.name == "companion_1" or field.name == "companion_2" or field.name == "companion_3" or field.name == "companion_4" or field.name == "companion_5" %}
+
+                                <div
+                                    class="companion-row"
+                                    data-companion-row="{{ forloop.counter }}"
+                                    {% if field.name != "companion_1" and not field.value %}style="display:none;"{% endif %}
+                                >
+                                    <div class="companion-select-wrap">
+                                        {{ field }}
+
+                                        {% for error in field.errors %}
+                                            <div class="field-error">
+                                                {{ error }}
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+
+                                    <button
+                                        type="button"
+                                        class="companion-remove"
+                                        {% if field.name == "companion_1" and not field.value %}style="display:none;"{% endif %}
+                                    >
+                                        削除
+                                    </button>
+                                </div>
+
+                            {% endif %}
+                        {% endfor %}
+
+                    </div>
+
+                    <button
+                        type="button"
+                        id="add-companion-button"
+                        class="companion-add"
+                    >
+                        ＋ 同行者を追加
+                    </button>
+
+                    <div class="help-text">
+                        同行者は画面上で最大5名まで登録できます。
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+             2. 日時・用務
+        ====================================================== -->
+
+        <section class="form-section">
+
+            <div class="section-header">
+                <h2>
+                    2. 出張日時・用務
+                </h2>
+            </div>
+
+            <div class="section-body">
+
+                <div class="form-grid">
+
+
+                    <div class="form-group">
+
+                        <label for="{{ form.start_datetime.id_for_label }}">
+                            出張開始日時
+                            <span class="required">必須</span>
+                        </label>
+
+                        {{ form.start_datetime }}
+
+                        {% for error in form.start_datetime.errors %}
+                            <div class="field-error">
+                                {{ error }}
+                            </div>
+                        {% endfor %}
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="{{ form.end_datetime.id_for_label }}">
+                            出張終了日時
+                            <span class="required">必須</span>
+                        </label>
+
+                        {{ form.end_datetime }}
+
+                        {% for error in form.end_datetime.errors %}
+                            <div class="field-error">
+                                {{ error }}
+                            </div>
+                        {% endfor %}
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="{{ form.destination_area.id_for_label }}">
+                            用務地
+                            <span class="required">必須</span>
+                        </label>
+
+                        {{ form.destination_area }}
+
+                        <div class="help-text">
+                            例：宮崎市、小林市、福岡市
+                        </div>
+
+                        {% for error in form.destination_area.errors %}
+                            <div class="field-error">
+                                {{ error }}
+                            </div>
+                        {% endfor %}
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="{{ form.destination_name.id_for_label }}">
+                            施設・会場名
+                        </label>
+
+                        {{ form.destination_name }}
+
+                        {% for error in form.destination_name.errors %}
+                            <div class="field-error">
+                                {{ error }}
+                            </div>
+                        {% endfor %}
+
+                    </div>
+
+
+                    <div class="form-group full-width">
+
+                        <label for="{{ form.purpose.id_for_label }}">
+                            用務
+                            <span class="required">必須</span>
+                        </label>
+
+                        {{ form.purpose }}
+
+                        {% for error in form.purpose.errors %}
+                            <div class="field-error">
+                                {{ error }}
+                            </div>
+                        {% endfor %}
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+             3. 移動方法
+        ====================================================== -->
+
+        <section class="form-section">
+
+            <div class="section-header">
+                <h2>
+                    3. 移動方法
+                </h2>
+            </div>
+
+            <div class="section-body">
+
+                <div class="form-grid">
+
+
+                    <div class="form-group">
+
+                        <label for="{{ form.departure_place.id_for_label }}">
+                            出発地
+                            <span class="required">必須</span>
+                        </label>
+
+                        {{ form.departure_place }}
+
+                    </div>
+
+
+                    <div
+                        class="form-group"
+                        id="departure-other-box"
+                    >
+
+                        <label for="{{ form.departure_place_other.id_for_label }}">
+                            その他の出発地
+                        </label>
+
+                        {{ form.departure_place_other }}
+
+                        {% for error in form.departure_place_other.errors %}
+                            <div class="field-error">
+                                {{ error }}
+                            </div>
+                        {% endfor %}
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="{{ form.transportation.id_for_label }}">
+                            交通手段
+                            <span class="required">必須</span>
+                        </label>
+
+                        {{ form.transportation }}
+
+                    </div>
+
+
+                    <div
+                        class="form-group"
+                        id="transport-other-box"
+                    >
+
+                        <label for="{{ form.transportation_other.id_for_label }}">
+                            その他の交通手段
+                        </label>
+
+                        {{ form.transportation_other }}
+
+                        {% for error in form.transportation_other.errors %}
+                            <div class="field-error">
+                                {{ error }}
+                            </div>
+                        {% endfor %}
+
+                    </div>
+
+
+                </div>
+
+
+                <div
+                    class="check-list"
+                    style="margin-top:24px;"
+                >
+
+                    <div class="check-item">
+                        {{ form.separate_travel_expense }}
+                        <label for="{{ form.separate_travel_expense.id_for_label }}">
+                            旅費別途支給
+                        </label>
+                    </div>
+
+                    <div class="check-item">
+                        {{ form.use_toll_road }}
+                        <label for="{{ form.use_toll_road.id_for_label }}">
+                            有料道路使用希望
+                        </label>
+                    </div>
+
+                    <div class="check-item">
+                        {{ form.use_etc }}
+                        <label for="{{ form.use_etc.id_for_label }}">
+                            ETC使用希望
+                        </label>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+             4. 休日・振替
+        ====================================================== -->
+
+        <section class="form-section">
+
+            <div class="section-header">
+                <h2>
+                    4. 休日・振替
+                </h2>
+            </div>
+
+            <div class="section-body">
+
+                <div class="check-list">
+
+                    <div class="check-item">
+                        {{ form.is_holiday_trip }}
+
+                        <label for="{{ form.is_holiday_trip.id_for_label }}">
+                            休業日の出張である
+                        </label>
+                    </div>
+
+                </div>
+
+
+                <div
+                    id="holiday-options"
+                    class="conditional-box"
+                >
+
+                    <div class="check-item">
+
+                        {{ form.take_substitute_holiday }}
+
+                        <label for="{{ form.take_substitute_holiday.id_for_label }}">
+                            振替休日を取得する
+                        </label>
+
+                    </div>
+
+
+                    <div
+                        id="substitute-date-box"
+                        class="form-group"
+                        style="margin-top:18px;"
+                    >
+
+                        <label for="{{ form.substitute_holiday_date.id_for_label }}">
+                            振替休日取得予定日
+                        </label>
+
+                        {{ form.substitute_holiday_date }}
+
+                        {% for error in form.substitute_holiday_date.errors %}
+                            <div class="field-error">
+                                {{ error }}
+                            </div>
+                        {% endfor %}
+
+                    </div>
+
+
+                    <div
+                        id="no-substitute-reason-box"
+                        class="form-group"
+                        style="margin-top:18px;"
+                    >
+
+                        <label for="{{ form.no_substitute_holiday_reason.id_for_label }}">
+                            振替休日を取得しない理由
+                        </label>
+
+                        {{ form.no_substitute_holiday_reason }}
+
+                        {% for error in form.no_substitute_holiday_reason.errors %}
+                            <div class="field-error">
+                                {{ error }}
+                            </div>
+                        {% endfor %}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+             5. 備考
+        ====================================================== -->
+
+        <section class="form-section">
+
+            <div class="section-header">
+                <h2>
+                    5. 備考
+                </h2>
+            </div>
+
+            <div class="section-body">
+
+                <div class="form-group">
+
+                    <label for="{{ form.notes.id_for_label }}">
+                        備考
+                    </label>
+
+                    {{ form.notes }}
+
+                    {% for error in form.notes.errors %}
+                        <div class="field-error">
+                            {{ error }}
+                        </div>
+                    {% endfor %}
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+             保存
+        ====================================================== -->
+
+        <div class="form-actions">
+
+            <a
+                href="{% url 'documents:travel_order_list' %}"
+                class="button button-secondary"
+            >
+                キャンセル
+            </a>
+
+            <button
+                type="submit"
+                class="button button-primary"
+            >
+                下書き保存
+            </button>
+
+        </div>
+
+
+    </form>
+
+
+</main>
+
+
+<script>
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        function () {
+
+            const departureSelect =
+                document.getElementById(
+                    "{{ form.departure_place.id_for_label }}"
+                );
+
+            const departureOtherBox =
+                document.getElementById(
+                    "departure-other-box"
+                );
+
+
+            const transportSelect =
+                document.getElementById(
+                    "{{ form.transportation.id_for_label }}"
+                );
+
+            const transportOtherBox =
+                document.getElementById(
+                    "transport-other-box"
+                );
+
+
+            const holidayCheckbox =
+                document.getElementById(
+                    "{{ form.is_holiday_trip.id_for_label }}"
+                );
+
+            const holidayOptions =
+                document.getElementById(
+                    "holiday-options"
+                );
+
+
+            const substituteCheckbox =
+                document.getElementById(
+                    "{{ form.take_substitute_holiday.id_for_label }}"
+                );
+
+            const substituteDateBox =
+                document.getElementById(
+                    "substitute-date-box"
+                );
+
+            const noSubstituteReasonBox =
+                document.getElementById(
+                    "no-substitute-reason-box"
+                );
+
+
+            function updateDeparture() {
+
+                if (
+                    departureSelect.value === "other"
+                ) {
+                    departureOtherBox.style.display =
+                        "block";
+                } else {
+                    departureOtherBox.style.display =
+                        "none";
+                }
+
+            }
+
+
+            function updateTransport() {
+
+                if (
+                    transportSelect.value === "other"
+                ) {
+                    transportOtherBox.style.display =
+                        "block";
+                } else {
+                    transportOtherBox.style.display =
+                        "none";
+                }
+
+            }
+
+
+            function updateHoliday() {
+
+                if (holidayCheckbox.checked) {
+
+                    holidayOptions.style.display =
+                        "block";
+
+                    updateSubstitute();
+
+                } else {
+
+                    holidayOptions.style.display =
+                        "none";
+
+                }
+
+            }
+
+
+            function updateSubstitute() {
+
+                if (substituteCheckbox.checked) {
+
+                    substituteDateBox.style.display =
+                        "block";
+
+                    noSubstituteReasonBox.style.display =
+                        "none";
+
+                } else {
+
+                    substituteDateBox.style.display =
+                        "none";
+
+                    noSubstituteReasonBox.style.display =
+                        "block";
+
+                }
+
+            }
+
+
+            departureSelect.addEventListener(
+                "change",
+                updateDeparture
+            );
+
+            transportSelect.addEventListener(
+                "change",
+                updateTransport
+            );
+
+            holidayCheckbox.addEventListener(
+                "change",
+                updateHoliday
+            );
+
+            substituteCheckbox.addEventListener(
+                "change",
+                updateSubstitute
+            );
+
+
+            /* =====================================================
+               同行者
+            ====================================================== */
+
+            const companionRows = Array.from(
+                document.querySelectorAll(
+                    ".companion-row"
+                )
+            );
+
+            const addCompanionButton =
+                document.getElementById(
+                    "add-companion-button"
+                );
+
+            function visibleCompanionRows() {
+                return companionRows.filter(
+                    function (row) {
+                        return row.style.display !== "none";
+                    }
+                );
+            }
+
+            function updateCompanionButtons() {
+
+                const visibleRows =
+                    visibleCompanionRows();
+
+                companionRows.forEach(
+                    function (row) {
+
+                        const select =
+                            row.querySelector("select");
+
+                        const removeButton =
+                            row.querySelector(
+                                ".companion-remove"
+                            );
+
+                        if (
+                            row.style.display !== "none"
+                            && (
+                                visibleRows.length > 1
+                                || select.value
+                            )
+                        ) {
+                            removeButton.style.display =
+                                "inline-block";
+                        } else {
+                            removeButton.style.display =
+                                "none";
+                        }
+                    }
+                );
+
+                if (visibleRows.length >= 5) {
+                    addCompanionButton.style.display =
+                        "none";
+                } else {
+                    addCompanionButton.style.display =
+                        "inline-block";
+                }
+            }
+
+            addCompanionButton.addEventListener(
+                "click",
+                function () {
+
+                    const hiddenRow =
+                        companionRows.find(
+                            function (row) {
+                                return (
+                                    row.style.display ===
+                                    "none"
+                                );
+                            }
+                        );
+
+                    if (hiddenRow) {
+                        hiddenRow.style.display =
+                            "flex";
+                    }
+
+                    updateCompanionButtons();
+                }
+            );
+
+            companionRows.forEach(
+                function (row) {
+
+                    const select =
+                        row.querySelector("select");
+
+                    const removeButton =
+                        row.querySelector(
+                            ".companion-remove"
+                        );
+
+                    removeButton.addEventListener(
+                        "click",
+                        function () {
+                            select.value = "";
+                            row.style.display = "none";
+                            updateCompanionButtons();
+                        }
+                    );
+
+                    select.addEventListener(
+                        "change",
+                        updateCompanionButtons
+                    );
+                }
+            );
+
+            updateCompanionButtons();
+
+
+            updateDeparture();
+            updateTransport();
+            updateHoliday();
+
+        }
+    );
+
+</script>
+
+
+</body>
+
+</html>

@@ -88,7 +88,12 @@ from .models import (
     Teacher,
 )
 
-def top(request):
+def _get_top_context(request):
+    """
+    教務支援トップ・広報支援トップで共通して使用する
+    ログイン教員情報と権限情報を作成する。
+    """
+
     teacher = None
 
     if request.user.is_authenticated:
@@ -158,22 +163,41 @@ def top(request):
         )
     )
 
-    # --------------------------------------------------------
-    # TOP表示
-    # --------------------------------------------------------
+    return {
+        "teacher": teacher,
+        "can_use_system": can_use_system,
+        "can_manage_publicity": can_manage_publicity,
+        "can_manage_permissions": can_manage_permissions,
+        "can_manage_scholarship": can_manage_scholarship,
+    }
+
+
+def top(request):
+    """
+    saleSystem全体のトップ
+    ＝ 教務支援システムトップ
+    """
+
+    context = _get_top_context(request)
+
+    return render(
+        request,
+        "publicity/system_top.html",
+        context,
+    )
+
+
+def publicity_top(request):
+    """
+    広報・募集支援システムのトップ
+    """
+
+    context = _get_top_context(request)
 
     return render(
         request,
         "publicity/top.html",
-        {
-            "teacher": teacher,
-            "can_use_system": can_use_system,
-            "can_manage_publicity": can_manage_publicity,
-            "can_manage_permissions": can_manage_permissions,
-
-            # ★これが必要
-            "can_manage_scholarship": can_manage_scholarship,
-        },
+        context,
     )
 
 @active_teacher_required
