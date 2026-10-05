@@ -28,6 +28,83 @@ def documents_top(request):
         "documents/documents_top.html",
     )
 
+@login_required
+def travel_approval_list(request):
+    # -----------------------------------------
+    # ログイン中の教員を取得
+    # -----------------------------------------
+    try:
+        teacher = request.user.publicity_teacher
+
+    except Teacher.DoesNotExist:
+        teacher = None
+
+    if teacher is None:
+        return render(
+            request,
+            "documents/travel_approval_list.html",
+            {
+                "teacher_error": (
+                    "ログインユーザーに教員情報が"
+                    "登録されていません。"
+                ),
+                "pending_steps": [],
+                "completed_steps": [],
+            },
+        )
+
+    # -----------------------------------------
+    # 自分が現在確認しなければならない文書
+    # -----------------------------------------
+    pending_steps = (
+        TravelApprovalStep.objects
+        .filter(
+            approver=teacher,
+            status="pending",
+        )
+        .select_related(
+            "travel_order",
+            "travel_order__responsible_teacher",
+            "travel_order__created_by",
+        )
+        .order_by(
+            "travel_order__start_datetime"
+        )
+    )
+
+    # -----------------------------------------
+    # 自分が既に処理した文書
+    #
+    # approved / returned の両方を残す
+    # -----------------------------------------
+    completed_steps = (
+        TravelApprovalStep.objects
+        .filter(
+            approver=teacher,
+            status__in=[
+                "approved",
+                "returned",
+            ],
+        )
+        .select_related(
+            "travel_order",
+            "travel_order__responsible_teacher",
+            "travel_order__created_by",
+        )
+        .order_by(
+            "-updated_at"
+        )
+    )
+
+    return render(
+        request,
+        "documents/travel_approval_list.html",
+        {
+            "teacher": teacher,
+            "pending_steps": pending_steps,
+            "completed_steps": completed_steps,
+        },
+    )
 
 @login_required
 def travel_order_list(request):

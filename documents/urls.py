@@ -16,6 +16,12 @@ urlpatterns = [
         name="top",
     ),
 
+    path(
+        "travel/approval/",
+        views.travel_approval_list,
+        name="travel_approval_list",
+    ),
+
     # ---------------------------------
     # 旅行命令
     # ---------------------------------

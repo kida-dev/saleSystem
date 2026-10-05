@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        確認・承認 | 旅行命令
+    </title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+
+            font-family:
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                "Yu Gothic",
+                "YuGothic",
+                Meiryo,
+                sans-serif;
+
+            background: #f4f7f9;
+            color: #263238;
+        }
+
+        .header {
+            background: #14777b;
+            color: white;
+            padding: 26px 24px;
+        }
+
+        .header-inner {
+            max-width: 1180px;
+            margin: 0 auto;
+        }
+
+        .header p {
+            margin: 0 0 6px;
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 27px;
+        }
+
+        .container {
+            max-width: 1180px;
+            margin: 0 auto;
+            padding: 28px 24px 60px;
+        }
+
+        .breadcrumb {
+            margin-bottom: 24px;
+            font-size: 14px;
+            color: #607d8b;
+        }
+
+        .breadcrumb a {
+            color: #14777b;
+            text-decoration: none;
+        }
+
+        .section {
+            background: white;
+            border: 1px solid #d8e2e7;
+            border-radius: 9px;
+            margin-bottom: 26px;
+            overflow: hidden;
+
+            box-shadow:
+                0 2px 7px
+                rgba(0, 0, 0, 0.04);
+        }
+
+        .section-header {
+            padding: 18px 22px;
+            background: #eef6f7;
+            border-bottom: 1px solid #d8e2e7;
+        }
+
+        .section-header h2 {
+            margin: 0;
+            color: #174f67;
+            font-size: 20px;
+        }
+
+        .section-description {
+            margin: 6px 0 0;
+            color: #607d8b;
+            font-size: 13px;
+        }
+
+        .section-body {
+            padding: 20px 22px;
+        }
+
+        .table-wrap {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            padding: 12px 10px;
+            background: #f5f8f9;
+            color: #546e7a;
+            font-size: 13px;
+            text-align: left;
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 14px 10px;
+            border-top: 1px solid #e2e8eb;
+            font-size: 14px;
+            vertical-align: middle;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-approved {
+            background: #e6f4ea;
+            color: #256c3a;
+        }
+
+        .status-returned {
+            background: #fdeaea;
+            color: #a33a3a;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 7px 13px;
+
+            border: 1px solid #14777b;
+            border-radius: 6px;
+
+            color: #14777b;
+            background: white;
+
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 700;
+
+            white-space: nowrap;
+        }
+
+        .button:hover {
+            background: #edf7f7;
+        }
+
+        .empty {
+            padding: 20px;
+            border: 1px dashed #cad9df;
+            border-radius: 7px;
+            color: #78909c;
+            font-size: 14px;
+        }
+
+        .error {
+            padding: 16px 18px;
+            background: #fdeaea;
+            border: 1px solid #efb7b7;
+            border-radius: 7px;
+            color: #9b2c2c;
+        }
+
+        @media (max-width: 800px) {
+
+            .container {
+                padding: 22px 14px 45px;
+            }
+
+            .header {
+                padding: 23px 18px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<header class="header">
+
+    <div class="header-inner">
+
+        <p>
+            小林西高等学校
+        </p>
+
+        <h1>
+            旅行命令　確認・承認
+        </h1>
+
+    </div>
+
+</header>
+
+
+<main class="container">
+
+    <div class="breadcrumb">
+
+        <a href="{% url 'top:top' %}">
+            教務支援システムTOP
+        </a>
+
+        ＞
+
+        <a href="{% url 'documents:top' %}">
+            校内文書・回覧
+        </a>
+
+        ＞ 確認・承認
+
+    </div>
+
+
+    {% if teacher_error %}
+
+        <div class="error">
+            {{ teacher_error }}
+        </div>
+
+    {% else %}
+
+
+        <!-- =========================================
+             確認待ち
+        ========================================== -->
+
+        <section class="section">
+
+            <div class="section-header">
+
+                <h2>
+                    確認待ち
+                </h2>
+
+                <p class="section-description">
+                    現在、あなたの確認・承認を待っている
+                    旅行命令です。
+                </p>
+
+            </div>
+
+
+            <div class="section-body">
+
+                {% if pending_steps %}
+
+                    <div class="table-wrap">
+
+                        <table>
+
+                            <thead>
+
+                                <tr>
+                                    <th>申請者</th>
+                                    <th>出張日</th>
+                                    <th>用務地</th>
+                                    <th>用務</th>
+                                    <th>申請日時</th>
+                                    <th>状態</th>
+                                    <th>操作</th>
+                                </tr>
+
+                            </thead>
+
+                            <tbody>
+
+                                {% for step in pending_steps %}
+
+                                    <tr>
+
+                                        <td>
+                                            {{ step.travel_order.responsible_teacher.name }}
+                                        </td>
+
+                                        <td>
+                                            {{ step.travel_order.start_datetime|date:"Y/m/d" }}
+                                        </td>
+
+                                        <td>
+                                            {{ step.travel_order.destination_area }}
+                                        </td>
+
+                                        <td>
+                                            {{ step.travel_order.purpose }}
+                                        </td>
+
+                                        <td>
+                                            {% if step.travel_order.submitted_at %}
+                                                {{ step.travel_order.submitted_at|date:"Y/m/d H:i" }}
+                                            {% else %}
+                                                -
+                                            {% endif %}
+                                        </td>
+
+                                        <td>
+                                            <span class="status status-pending">
+                                                ● 確認待ち
+                                            </span>
+                                        </td>
+
+                                        <td>
+
+                                            <a
+                                                href="{% url 'documents:travel_order_detail' step.travel_order.pk %}"
+                                                class="button"
+                                            >
+                                                確認する
+                                            </a>
+
+                                        </td>
+
+                                    </tr>
+
+                                {% endfor %}
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                {% else %}
+
+                    <div class="empty">
+                        現在、確認待ちの旅行命令はありません。
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================================
+             確認済み
+        ========================================== -->
+
+        <section class="section">
+
+            <div class="section-header">
+
+                <h2>
+                    確認済み・履歴
+                </h2>
+
+                <p class="section-description">
+                    あなたが過去に承認または差戻しを行った
+                    旅行命令です。
+                </p>
+
+            </div>
+
+
+            <div class="section-body">
+
+                {% if completed_steps %}
+
+                    <div class="table-wrap">
+
+                        <table>
+
+                            <thead>
+
+                                <tr>
+                                    <th>申請者</th>
+                                    <th>出張日</th>
+                                    <th>用務地</th>
+                                    <th>用務</th>
+                                    <th>処理状態</th>
+                                    <th>処理日時</th>
+                                    <th>操作</th>
+                                </tr>
+
+                            </thead>
+
+                            <tbody>
+
+                                {% for step in completed_steps %}
+
+                                    <tr>
+
+                                        <td>
+                                            {{ step.travel_order.responsible_teacher.name }}
+                                        </td>
+
+                                        <td>
+                                            {{ step.travel_order.start_datetime|date:"Y/m/d" }}
+                                        </td>
+
+                                        <td>
+                                            {{ step.travel_order.destination_area }}
+                                        </td>
+
+                                        <td>
+                                            {{ step.travel_order.purpose }}
+                                        </td>
+
+                                        <td>
+
+                                            {% if step.status == "approved" %}
+
+                                                <span class="status status-approved">
+                                                    ✓ 承認済
+                                                </span>
+
+                                            {% elif step.status == "returned" %}
+
+                                                <span class="status status-returned">
+                                                    差戻し
+                                                </span>
+
+                                            {% endif %}
+
+                                        </td>
+
+                                        <td>
+
+                                            {% if step.status == "approved" %}
+
+                                                {% if step.approved_at %}
+                                                    {{ step.approved_at|date:"Y/m/d H:i" }}
+                                                {% else %}
+                                                    -
+                                                {% endif %}
+
+                                            {% elif step.status == "returned" %}
+
+                                                {% if step.returned_at %}
+                                                    {{ step.returned_at|date:"Y/m/d H:i" }}
+                                                {% else %}
+                                                    -
+                                                {% endif %}
+
+                                            {% endif %}
+
+                                        </td>
+
+                                        <td>
+
+                                            <a
+                                                href="{% url 'documents:travel_order_detail' step.travel_order.pk %}"
+                                                class="button"
+                                            >
+                                                詳細を見る
+                                            </a>
+
+                                        </td>
+
+                                    </tr>
+
+                                {% endfor %}
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                {% else %}
+
+                    <div class="empty">
+                        確認済みの旅行命令はまだありません。
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+        </section>
+
+
+    {% endif %}
+
+</main>
+
+</body>
+
+</html>
