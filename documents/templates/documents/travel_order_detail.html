@@ -712,6 +712,14 @@
 
         }
 
+        .review-panel { margin-top:22px; padding:18px; background:#eef8f6; border:1px solid #a7d7d1; border-radius:7px; }
+        .review-panel h3 { margin:0 0 14px; color:#174f67; font-size:17px; }
+        .review-panel label { display:block; margin-bottom:7px; font-weight:bold; font-size:13px; }
+        .review-panel textarea { width:100%; padding:12px; border:1px solid #b0bec5; border-radius:6px; font:inherit; }
+        .review-buttons { display:flex; gap:12px; flex-wrap:wrap; margin-top:14px; }
+        .review-return { background:#fff; border:1px solid #c62828; color:#c62828; }
+        .history-row { padding:12px 0; border-bottom:1px solid #e4eaed; display:flex; flex-wrap:wrap; gap:10px 18px; font-size:14px; }
+        .history-comment { flex-basis:100%; padding:10px; background:#fff5f5; border-radius:5px; white-space:normal; }
     </style>
 
 </head>
@@ -1701,6 +1709,21 @@
                     </div>
 
 
+                {% if can_approve %}
+                    <div class="review-panel">
+                        <h3>あなたの確認・承認が必要です</h3>
+                        <form method="post" action="{% url 'documents:travel_order_review' travel_order.pk %}">
+                            {% csrf_token %}
+                            <label for="review-comment">コメント（差戻しの場合は必須）</label>
+                            <textarea id="review-comment" name="comment" rows="3" maxlength="2000" placeholder="差戻しの場合は修正してほしい内容を入力してください。"></textarea>
+                            <div class="review-buttons">
+                                <button class="button button-primary" type="submit" name="action" value="approved" onclick="return confirm('この旅行命令を承認しますか？');">承認する</button>
+                                <button class="button review-return" type="submit" name="action" value="returned" onclick="if(!document.getElementById('review-comment').value.trim()){alert('差戻し理由を入力してください。');return false;}return confirm('申請者へ差戻しますか？');">差戻す</button>
+                            </div>
+                        </form>
+                    </div>
+                {% endif %}
+
                 {% elif travel_order.status == "cancelled" %}
 
                     <p class="circulation-text">
@@ -1713,6 +1736,22 @@
 
         </div>
 
+    </section>
+
+    <section class="detail-section">
+        <div class="section-header"><h2>9. 回覧・承認履歴</h2></div>
+        <div class="section-body">
+            {% for history in approval_histories %}
+                <div class="history-row">
+                    <strong>{{ history.created_at|date:"Y/m/d H:i" }}</strong>
+                    <span>{{ history.actor_teacher.name|default:history.actor.username }}</span>
+                    <span>{{ history.get_action_display }}</span>
+                    {% if history.comment %}<div class="history-comment">{{ history.comment|linebreaksbr }}</div>{% endif %}
+                </div>
+            {% empty %}
+                <div class="empty-box">まだ回覧履歴はありません。</div>
+            {% endfor %}
+        </div>
     </section>
 
     <!-- =========================================================
@@ -1797,8 +1836,7 @@
 
     <div class="system-note">
 
-        ※ 編集・回覧申請・承認・差戻し機能は、
-        授業処置および添付資料の登録機能を実装した後に接続します。
+        ※ 回覧中は申請内容を変更できません。差戻し後は修正・再申請ができます。
 
     </div>
 

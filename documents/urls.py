@@ -79,6 +79,12 @@ urlpatterns = [
     ),
 
     path(
+        "travel/<int:pk>/review/",
+        views.travel_order_review,
+        name="travel_order_review",
+    ),
+
+    path(
         "travel/<int:pk>/submit/",
         views.travel_order_submit,
         name="travel_order_submit",

@@ -1,6 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
-from django.http import FileResponse
+from django.http import FileResponse, HttpResponseForbidden
+from django.views.decorators.http import require_POST
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 
@@ -224,11 +225,35 @@ def travel_order_detail(request, pk):
         pk=pk,
     )
 
+    try:
+        teacher = request.user.publicity_teacher
+    except Teacher.DoesNotExist:
+        teacher = None
+
+    is_owner = (
+        travel_order.created_by_id == request.user.id
+        or travel_order.responsible_teacher.user_id == request.user.id
+    )
+    is_reviewer = bool(teacher and travel_order.approval_steps.filter(approver=teacher).exists())
+    is_admin = request.user.is_superuser or bool(
+        teacher and teacher.is_active and teacher.role == "system_admin"
+    )
+    if not (is_owner or is_reviewer or is_admin):
+        return HttpResponseForbidden("この旅行命令を閲覧する権限がありません。")
+
+    pending_step = None
+    if teacher and teacher.is_active and travel_order.status == "circulating":
+        pending_step = travel_order.approval_steps.filter(
+            approver=teacher, status="pending"
+        ).first()
+
     return render(
         request,
         "documents/travel_order_detail.html",
         {
             "travel_order": travel_order,
+            "can_approve": pending_step is not None,
+            "approval_histories": travel_order.approval_histories.all(),
         },
     )
 
@@ -805,3 +830,67 @@ def travel_order_submit(request, pk):
         "documents:travel_order_detail",
         pk=travel_order.pk,
     )
+
+@login_required
+@require_POST
+def travel_order_review(request, pk):
+    action = request.POST.get("action")
+    comment = request.POST.get("comment", "").strip()
+    if action not in ("approved", "returned"):
+        return HttpResponseForbidden("操作が不正です。")
+    if action == "returned" and not comment:
+        return HttpResponseForbidden("差戻し理由を入力してください。")
+    if len(comment) > 2000:
+        return HttpResponseForbidden("コメントは2000文字以内にしてください。")
+
+    try:
+        teacher = request.user.publicity_teacher
+    except Teacher.DoesNotExist:
+        return HttpResponseForbidden("教員情報がありません。")
+    if not teacher.is_active:
+        return HttpResponseForbidden("在籍中の教員のみ操作できます。")
+
+    with transaction.atomic():
+        order = get_object_or_404(
+            TravelOrder.objects.select_for_update(), pk=pk
+        )
+        if order.status != "circulating":
+            return HttpResponseForbidden("現在は承認できない状態です。")
+        step = order.approval_steps.select_for_update().filter(
+            approver=teacher, status="pending"
+        ).first()
+        if step is None:
+            return HttpResponseForbidden("現在の承認担当者ではありません。")
+        now = timezone.now()
+        if action == "approved":
+            step.status = "approved"
+            step.approved_at = now
+            step.save(update_fields=["status", "approved_at", "updated_at"])
+            next_step = order.approval_steps.filter(
+                step_order__gt=step.step_order
+            ).order_by("step_order").first()
+            if next_step:
+                if next_step.status != "waiting":
+                    return HttpResponseForbidden("回覧状態が不正です。")
+                next_step.status = "pending"
+                next_step.save(update_fields=["status", "updated_at"])
+            else:
+                order.status = "approved"
+                order.approved_at = now
+                order.save(update_fields=["status", "approved_at", "updated_at"])
+        else:
+            step.status = "returned"
+            step.returned_at = now
+            step.save(update_fields=["status", "returned_at", "updated_at"])
+            order.status = "returned"
+            order.save(update_fields=["status", "updated_at"])
+
+        TravelApprovalHistory.objects.create(
+            travel_order=order,
+            actor=request.user,
+            actor_teacher=teacher,
+            action=action,
+            step_order=step.step_order,
+            comment=comment,
+        )
+    return redirect("documents:travel_order_detail", pk=pk)
