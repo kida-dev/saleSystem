@@ -4,6 +4,7 @@ from django.http import FileResponse, HttpResponseForbidden
 from django.views.decorators.http import require_POST
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
+from .services.travel_notifications import queue_travel_notification
 
 from .forms import (
     TravelAttachmentForm,
@@ -31,105 +32,170 @@ def documents_top(request):
 
 @login_required
 def travel_approval_list(request):
-    # -----------------------------------------
-    # ログイン中の教員を取得
-    # -----------------------------------------
-    try:
-        teacher = request.user.publicity_teacher
-
-    except Teacher.DoesNotExist:
-        teacher = None
-
-    if teacher is None:
-        return render(
-            request,
-            "documents/travel_approval_list.html",
-            {
-                "teacher_error": (
-                    "ログインユーザーに教員情報が"
-                    "登録されていません。"
-                ),
-                "pending_steps": [],
-                "completed_steps": [],
-            },
-        )
-
-    # -----------------------------------------
-    # 自分が現在確認しなければならない文書
-    # -----------------------------------------
-    pending_steps = (
-        TravelApprovalStep.objects
-        .filter(
-            approver=teacher,
-            status="pending",
-        )
-        .select_related(
-            "travel_order",
-            "travel_order__responsible_teacher",
-            "travel_order__created_by",
-        )
-        .order_by(
-            "travel_order__start_datetime"
-        )
-    )
-
-    # -----------------------------------------
-    # 自分が既に処理した文書
-    #
-    # approved / returned の両方を残す
-    # -----------------------------------------
-    completed_steps = (
-        TravelApprovalStep.objects
-        .filter(
-            approver=teacher,
-            status__in=[
-                "approved",
-                "returned",
-            ],
-        )
-        .select_related(
-            "travel_order",
-            "travel_order__responsible_teacher",
-            "travel_order__created_by",
-        )
-        .order_by(
-            "-updated_at"
-        )
-    )
-
-    return render(
-        request,
-        "documents/travel_approval_list.html",
-        {
-            "teacher": teacher,
-            "pending_steps": pending_steps,
-            "completed_steps": completed_steps,
-        },
+    """
+    旧承認一覧から統合画面へ転送
+    """
+    return redirect(
+        "documents:travel_order_list"
     )
 
 @login_required
 def travel_order_list(request):
-    travel_orders = (
+    """
+    旅行命令の統合一覧
+
+    ・自分の確認待ち
+    ・自分の申請一覧
+    ・申請の進捗状況
+    ・管理者向け全教員の提出済み申請
+    """
+    from django.db.models import Q
+
+    # ---------------------------------
+    # ログイン教員
+    # ---------------------------------
+    try:
+        teacher = request.user.publicity_teacher
+        if not teacher.is_active:
+            teacher = None
+    except Teacher.DoesNotExist:
+        teacher = None
+
+    # ---------------------------------
+    # 自分の確認待ち
+    # ---------------------------------
+    if teacher:
+        pending_steps = list(
+            TravelApprovalStep.objects
+            .filter(
+                approver=teacher,
+                status="pending",
+                travel_order__status="circulating",
+            )
+            .select_related(
+                "travel_order",
+                "travel_order__responsible_teacher",
+            )
+            .order_by(
+                "travel_order__start_datetime",
+                "step_order",
+            )
+        )
+    else:
+        pending_steps = []
+
+    # ---------------------------------
+    # 自分の申請一覧
+    # ---------------------------------
+    travel_orders = list(
         TravelOrder.objects
-        .filter(responsible_teacher__user=request.user)
+        .filter(
+            Q(responsible_teacher__user=request.user)
+            | Q(created_by=request.user)
+        )
+        .distinct()
         .select_related(
             "responsible_teacher",
             "created_by",
         )
         .prefetch_related(
             "companions__teacher",
+            "approval_steps__approver",
         )
-        .order_by("-start_datetime")
+        .order_by("-start_datetime", "-pk")
     )
+
+    status_counts = {
+        "draft": 0,
+        "circulating": 0,
+        "returned": 0,
+        "approved": 0,
+        "cancelled": 0,
+    }
+
+    for order in travel_orders:
+
+        status_counts[order.status] = (
+            status_counts.get(order.status, 0) + 1
+        )
+
+        if order.status == "circulating":
+
+            pending_step = next(
+                (
+                    step
+                    for step in order.approval_steps.all()
+                    if step.status == "pending"
+                ),
+                None,
+            )
+
+            if pending_step:
+                order.progress_text = (
+                    f"{pending_step.approver.name}の確認待ち"
+                )
+            else:
+                order.progress_text = (
+                    "回覧状況を確認してください"
+                )
+
+        elif order.status == "approved":
+            order.progress_text = "全員承認完了"
+
+        elif order.status == "returned":
+            order.progress_text = (
+                "差戻し：修正・再申請待ち"
+            )
+
+        elif order.status == "draft":
+            order.progress_text = "未申請"
+
+        else:
+            order.progress_text = "取消済み"
+
+    # 管理者は提出済みの全教員の旅行命令を確認可能
+    is_admin = request.user.is_superuser or bool(
+        teacher and teacher.role == "system_admin"
+    )
+    all_travel_orders = []
+    if is_admin:
+        all_travel_orders = list(
+            TravelOrder.objects
+            .exclude(status="draft")
+            .select_related("responsible_teacher", "created_by")
+            .prefetch_related("approval_steps__approver")
+            .order_by("-start_datetime", "-pk")
+        )
+        for order in all_travel_orders:
+            if order.status == "circulating":
+                pending_step = next(
+                    (step for step in order.approval_steps.all()
+                     if step.status == "pending"),
+                    None,
+                )
+                order.progress_text = (
+                    f"{pending_step.approver.name}の確認待ち"
+                    if pending_step else "回覧状況を確認してください"
+                )
+            elif order.status == "approved":
+                order.progress_text = "全員承認完了"
+            elif order.status == "returned":
+                order.progress_text = "差戻し：修正・再申請待ち"
+            else:
+                order.progress_text = "取消済み"
 
     return render(
         request,
         "documents/travel_order_list.html",
         {
+            "teacher": teacher,
+            "pending_steps": pending_steps,
             "travel_orders": travel_orders,
+            "status_counts": status_counts,
+            "is_admin": is_admin,
+            "all_travel_orders": all_travel_orders,
         },
     )
-
 
 @login_required
 def travel_order_create(request):
@@ -827,6 +893,16 @@ def travel_order_submit(request, pk):
             comment="",
         )
 
+        # DB確定後に最初の承認者へ通知（失敗しても申請は維持）。
+        queue_travel_notification(
+            travel_order=travel_order,
+            notification_type="review_request",
+            recipient_teacher=approvers[approval_route[0]],
+            detail_url=request.build_absolute_uri(
+                redirect("documents:travel_order_detail", pk=travel_order.pk).url
+            ),
+        )
+
     return redirect(
         "documents:travel_order_detail",
         pk=travel_order.pk,
@@ -893,5 +969,26 @@ def travel_order_review(request, pk):
             action=action,
             step_order=step.step_order,
             comment=comment,
+        )
+
+        # 送信処理はコミット後。承認処理とは独立させる。
+        if action == "returned":
+            recipient = order.responsible_teacher
+            notification_type = "returned"
+        elif next_step:
+            recipient = next_step.approver
+            notification_type = "review_request"
+        else:
+            recipient = order.responsible_teacher
+            notification_type = "completed"
+
+        queue_travel_notification(
+            travel_order=order,
+            notification_type=notification_type,
+            recipient_teacher=recipient,
+            detail_url=request.build_absolute_uri(
+                redirect("documents:travel_order_detail", pk=order.pk).url
+            ),
+            comment=comment if action == "returned" else "",
         )
     return redirect("documents:travel_order_detail", pk=pk)

@@ -408,3 +408,32 @@ else:
 # =========================================
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# =========================================
+# TRAVEL ORDER EMAIL NOTIFICATIONS
+# =========================================
+
+# console : メールをコンソールに出力（開発用）
+# gmail_api : Gmail APIで実際に送信（本番用）
+TRAVEL_NOTIFICATION_MODE = os.getenv(
+    "TRAVEL_NOTIFICATION_MODE",
+    "console",
+)
+
+# Gmail APIで使用するサービスアカウント
+TRAVEL_GMAIL_SERVICE_ACCOUNT = os.getenv(
+    "TRAVEL_GMAIL_SERVICE_ACCOUNT",
+    "sale-system-mail@sale-system-497606.iam.gserviceaccount.com",
+)
+
+# メール送信元（学校の管理用アカウント）
+TRAVEL_GMAIL_SENDER = os.getenv(
+    "TRAVEL_GMAIL_SENDER",
+    "kobanishi@kobayashi-nishi.net",
+)
+
+# コンソール確認時の差出人
+DEFAULT_FROM_EMAIL = os.getenv(
+    "DEFAULT_FROM_EMAIL",
+    "kobanishi@kobayashi-nishi.net",
+)

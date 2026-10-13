@@ -94,6 +94,14 @@
             opacity: 0.9;
         }
 
+        .summary-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 0 0 22px; }
+        .summary-card { background: white; border: 1px solid #d9e5e8; border-radius: 9px; padding: 16px; }
+        .summary-label { font-size: 13px; color: #607d8b; }
+        .summary-number { font-size: 25px; font-weight: 700; color: #0f6b70; margin-top: 5px; }
+        .progress { color: #455a64; font-size: 13px; line-height: 1.6; }
+        .approved-date { color: #607d8b; font-size: 12px; margin-top: 4px; }
+        @media (max-width: 700px) { .summary-grid { grid-template-columns: repeat(2, 1fr); } }
+
         .panel {
             background: white;
             border-radius: 10px;
@@ -187,7 +195,7 @@
             }
 
             table {
-                min-width: 700px;
+                min-width: 900px;
             }
         }
     </style>
@@ -232,10 +240,10 @@
     <div class="page-header">
 
         <div>
-            <h2>旅行命令</h2>
+            <h2>旅行命令｜申請・確認</h2>
 
             <p class="page-description">
-                出張の申請・回覧状況を確認できます。
+                自分の申請と、承認が必要な旅行命令をここから確認できます。
             </p>
         </div>
 
@@ -248,6 +256,38 @@
 
     </div>
 
+
+
+    {% if pending_steps %}
+    <section class="panel" style="margin-bottom:24px; overflow-x:auto;">
+        <div style="padding:18px 20px; background:#eaf5f5; border-bottom:1px solid #d1e4e6;">
+            <h3 style="margin:0 0 5px; color:#115b65;">自分の確認待ち（{{ pending_steps|length }}件）</h3>
+            <p style="margin:0; font-size:13px; color:#52727c;">承認の順番が来た旅行命令です。詳細から承認・差戻しを行えます。</p>
+        </div>
+        <table>
+            <thead><tr><th>申請者</th><th>出張日</th><th>用務地</th><th>用務</th><th>操作</th></tr></thead>
+            <tbody>
+            {% for step in pending_steps %}
+                <tr>
+                    <td>{{ step.travel_order.responsible_teacher.name }}</td>
+                    <td>{{ step.travel_order.start_datetime|date:"Y/m/d" }}</td>
+                    <td>{{ step.travel_order.destination_area }}</td>
+                    <td>{{ step.travel_order.purpose|truncatechars:35 }}</td>
+                    <td><a class="detail-link" href="{% url 'documents:travel_order_detail' step.travel_order.pk %}">確認・承認へ</a></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </section>
+    {% endif %}
+
+    <h3 style="margin:20px 0 12px; color:#184c62;">自分の申請一覧</h3>
+    <div class="summary-grid">
+        <div class="summary-card"><div class="summary-label">下書き</div><div class="summary-number">{{ status_counts.draft }}件</div></div>
+        <div class="summary-card"><div class="summary-label">回覧中</div><div class="summary-number">{{ status_counts.circulating }}件</div></div>
+        <div class="summary-card"><div class="summary-label">差戻し</div><div class="summary-number">{{ status_counts.returned }}件</div></div>
+        <div class="summary-card"><div class="summary-label">校長承認済み</div><div class="summary-number">{{ status_counts.approved }}件</div></div>
+    </div>
 
     <div class="panel">
 
@@ -262,6 +302,7 @@
                         <th>用務</th>
                         <th>同行者</th>
                         <th>状態</th>
+                        <th>現在の確認状況</th>
                         <th></th>
                     </tr>
                 </thead>
@@ -313,6 +354,13 @@
                                 </span>
                             </td>
 
+                            <td class="progress">
+                                {{ order.progress_text }}
+                                {% if order.status == "approved" and order.approved_at %}
+                                    <div class="approved-date">{{ order.approved_at|date:"Y/m/d H:i" }} 承認</div>
+                                {% endif %}
+                            </td>
+
                             <td>
                                 <a
                                     class="detail-link"
@@ -350,6 +398,49 @@
         {% endif %}
 
     </div>
+
+
+    {% if is_admin %}
+    <section style="margin-top:32px;">
+        <h3 style="margin:20px 0 12px; color:#184c62;">全教員の申請一覧（管理者用）</h3>
+        <p class="page-description" style="margin-bottom:14px;">
+            提出済みの旅行命令を確認できます。未提出の下書きは表示されません。
+            承認操作は、現在の確認担当者のみ行えます。
+        </p>
+        <div class="panel" style="overflow-x:auto;">
+            {% if all_travel_orders %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>申請者</th><th>出張日</th><th>用務地</th>
+                        <th>用務</th><th>状態</th><th>現在の確認状況</th><th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in all_travel_orders %}
+                    <tr>
+                        <td>{{ order.responsible_teacher.name }}</td>
+                        <td>{{ order.start_datetime|date:"Y/m/d" }}</td>
+                        <td>{{ order.destination_area }}</td>
+                        <td>{{ order.purpose|truncatechars:35 }}</td>
+                        <td><span class="status status-{{ order.status }}">{{ order.get_status_display }}</span></td>
+                        <td class="progress">
+                            {{ order.progress_text }}
+                            {% if order.status == "approved" and order.approved_at %}
+                                <div class="approved-date">{{ order.approved_at|date:"Y/m/d H:i" }} 承認</div>
+                            {% endif %}
+                        </td>
+                        <td><a class="detail-link" href="{% url 'documents:travel_order_detail' order.pk %}">詳細</a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+                <div class="empty">提出済みの旅行命令はありません。</div>
+            {% endif %}
+        </div>
+    </section>
+    {% endif %}
 
 </main>
 

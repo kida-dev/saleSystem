@@ -500,3 +500,36 @@ class TravelApprovalHistory(models.Model):
             f"{self.get_action_display()} / "
             f"{self.created_at:%Y/%m/%d %H:%M}"
         )
+
+class TravelNotification(models.Model):
+    """旅行命令メール通知の送信履歴。"""
+
+    TYPE_CHOICES = [
+        ("review_request", "確認依頼"),
+        ("returned", "差戻し通知"),
+        ("completed", "承認完了通知"),
+    ]
+    STATUS_CHOICES = [
+        ("queued", "送信待ち"),
+        ("sent", "送信完了"),
+        ("preview", "コンソール出力済（未送信）"),
+        ("failed", "送信失敗"),
+        ("skipped", "送信対象なし"),
+    ]
+
+    travel_order = models.ForeignKey(
+        TravelOrder, on_delete=models.CASCADE, related_name="notifications"
+    )
+    notification_type = models.CharField(max_length=30, choices=TYPE_CHOICES)
+    recipient_email = models.EmailField(blank=True)
+    recipient_name = models.CharField(max_length=200, blank=True)
+    subject = models.CharField(max_length=255)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="queued")
+    error_message = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    sent_at = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        verbose_name = "旅行命令メール通知"
+        verbose_name_plural = "旅行命令メール通知"
+        ordering = ["-created_at"]
