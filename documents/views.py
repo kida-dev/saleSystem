@@ -669,26 +669,38 @@ def travel_attachment_open(
             "documents:travel_order_list"
         )
 
-    # -----------------------------------------
-    # 非公開ストレージからファイルを取得
-    # -----------------------------------------
+        # -----------------------------------------
+        # 非公開ストレージからファイルを取得
+        # -----------------------------------------
 
-    file_handle = attachment.file.open("rb")
+        import mimetypes
+        import os
 
-    response = FileResponse(
-        file_handle,
-        content_type=(
-            "application/octet-stream"
-        ),
-    )
+        # アップロード時の元ファイル名を取得
+        filename = attachment.original_name
 
-    response[
-        "Content-Disposition"
-    ] = (
-        f'inline; filename="{attachment.original_name}"'
-    )
+        # ファイル名が取得できない場合は保存名を使用
+        if not filename:
+            filename = os.path.basename(attachment.file.name)
 
-    return response
+        # ファイルの種類を判定
+        content_type, _ = mimetypes.guess_type(filename)
+
+        if not content_type:
+            content_type = "application/octet-stream"
+
+        # ファイルを開く
+        file_handle = attachment.file.open("rb")
+
+        # 元のファイル名でダウンロード
+        response = FileResponse(
+            file_handle,
+            as_attachment=True,
+            filename=filename,
+            content_type=content_type,
+        )
+
+        return response
 
 @login_required
 def travel_attachment_delete(
