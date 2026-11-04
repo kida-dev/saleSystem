@@ -704,3 +704,23 @@ class TravelPostReportOfficeCheck(models.Model):
             models.UniqueConstraint(fields=["report", "step_order"], name="unique_post_report_office_order"),
             models.UniqueConstraint(fields=["report", "checker"], name="unique_post_report_office_checker"),
         ]
+
+
+class TravelPostReportNotification(models.Model):
+    """復命書のメール通知履歴（旅行命令とは独立）。"""
+    TYPE_CHOICES = [("review_request", "確認依頼"), ("returned", "差戻し通知"), ("completed", "承認完了通知")]
+    STATUS_CHOICES = [("queued", "送信待ち"), ("sent", "送信完了"), ("preview", "コンソール出力済"), ("failed", "送信失敗"), ("skipped", "宛先なし")]
+    report = models.ForeignKey(TravelPostReport, on_delete=models.CASCADE, related_name="notifications")
+    notification_type = models.CharField(max_length=30, choices=TYPE_CHOICES)
+    recipient_email = models.EmailField(blank=True)
+    recipient_name = models.CharField(max_length=200, blank=True)
+    subject = models.CharField(max_length=255)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="queued")
+    error_message = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    sent_at = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        verbose_name = "復命書メール通知"
+        verbose_name_plural = "復命書メール通知"
+        ordering = ["-created_at"]

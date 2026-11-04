@@ -5,6 +5,7 @@ from django.views.decorators.http import require_POST
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 from .services.travel_notifications import queue_travel_notification
+from .services.post_report_notifications import queue_post_report_notification
 
 from .forms import (
     TravelAttachmentForm,
@@ -1169,6 +1170,10 @@ def travel_post_report_submit(request, pk):
             report=report, actor=request.user,
             action="submitted", comment="本人確認・同意のうえ5段階回覧を開始",
         )
+        queue_post_report_notification(
+            report=report, notification_type="review_request",
+            recipient_teacher=by_number[5],
+        )
     return redirect("documents:travel_order_detail", pk=pk)
 
 
@@ -1267,6 +1272,25 @@ def travel_post_report_review_action(request, pk):
                 report.status = "approved"
                 report.approved_at = now
                 report.save(update_fields=["status", "approved_at", "updated_at"])
+        # DBの確定後にメール送信。差戻し・承認操作はメール失敗の影響を受けない。
+        if action == "return":
+            recipient_teacher = report.travel_order.responsible_teacher
+            notification_type = "returned"
+        elif index + 1 < len(all_steps):
+            next_kind = all_steps[index + 1][1]
+            next_step = all_steps[index + 1][2]
+            recipient_teacher = (
+                next_step.checker if next_kind == "office" else next_step.approver
+            )
+            notification_type = "review_request"
+        else:
+            recipient_teacher = report.travel_order.responsible_teacher
+            notification_type = "completed"
+        queue_post_report_notification(
+            report=report, notification_type=notification_type,
+            recipient_teacher=recipient_teacher,
+            comment=comment if action == "return" else "",
+        )
     return redirect("documents:travel_post_report_review", pk=pk)
 
 
