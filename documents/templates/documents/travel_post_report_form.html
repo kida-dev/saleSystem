@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>出張後報告（行程・旅費／復命）</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #f3f6fa; color: #253247; font-family: -apple-system, BlinkMacSystemFont, "Yu Gothic", Meiryo, sans-serif; line-height: 1.6; }
+    .wrap { max-width: 920px; margin: 28px auto 60px; padding: 0 16px; }
+    .card { background: #fff; border: 1px solid #dce4ee; border-radius: 12px; padding: 24px; margin: 18px 0; box-shadow: 0 2px 10px rgba(20,40,70,.04); }
+    h1 { font-size: 1.65rem; margin: 0 0 8px; } h2 { font-size: 1.18rem; border-left: 5px solid #2874c8; padding-left: 12px; margin: 0 0 20px; }
+    .muted { color: #5d6c7e; font-size: .93rem; } .summary { display: grid; grid-template-columns: 150px 1fr; gap: 9px 16px; }
+    .summary dt { color: #5d6c7e; } .summary dd { margin: 0; overflow-wrap: anywhere; }
+    .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px 22px; }
+    .field { margin-bottom: 16px; } .field label { display: block; font-weight: 600; margin-bottom: 6px; }
+    input[type=text], input[type=number], input[type=date], input[type=file], select, textarea { width: 100%; border: 1px solid #bcc9d8; border-radius: 6px; padding: 10px; font: inherit; background: #fff; }
+    textarea { resize: vertical; } .check { display: flex; align-items: center; gap: 9px; margin: 8px 0; } .check label { margin: 0; font-weight: normal; }
+    .errors { color: #b02020; margin: 4px 0 12px; } .errors ul { margin: 0; padding-left: 20px; }
+    .actions { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; } .btn { display: inline-block; border-radius: 7px; padding: 11px 20px; text-decoration: none; font: inherit; cursor: pointer; }
+    .primary { background: #1769b5; border: 1px solid #1769b5; color: #fff; font-weight: 700; } .secondary { background: #fff; border: 1px solid #aebccc; color: #253247; }
+    .route-panel { border-left: 3px solid #b7d4ed; padding: 12px 16px; background: #f7fbff; border-radius: 5px; }
+    .route-grid { margin-top: 10px; }
+    .destination-panel { background: #eaf4ff; border: 1px solid #c3dcef; padding: 14px 16px; border-radius: 7px; }
+    .total-panel { background: #f2f8f4; padding: 14px 16px; border-radius: 7px; }
+    @media (max-width: 640px) { .grid { grid-template-columns: 1fr; } .summary { grid-template-columns: 1fr; gap: 0; } .summary dd { margin-bottom: 10px; } .card { padding: 18px; } }
+  </style>
+</head>
+<body>
+<main class="wrap">
+  <h1>出張後の報告書</h1>
+  <p class="muted">行程・旅費報告と復命事項をまとめて入力します。現在は下書き保存のみ対応しています。</p>
+  <section class="card" aria-label="旅行命令情報">
+    <h2>承認済み旅行命令の情報</h2>
+    <dl class="summary">
+      <dt>出張者</dt><dd>{{ travel_order.responsible_teacher.name }}</dd>
+      <dt>出張期間</dt><dd>{{ travel_order.start_datetime|date:"Y年n月j日 H:i" }} ～ {{ travel_order.end_datetime|date:"Y年n月j日 H:i" }}</dd>
+      <dt>用務地</dt><dd>{{ travel_order.destination_area }}{% if travel_order.destination_name %}／{{ travel_order.destination_name }}{% endif %}</dd>
+      <dt>用務</dt><dd>{{ travel_order.purpose|linebreaksbr }}</dd>
+      <dt>報告書の状態</dt><dd>{{ report.get_status_display }}</dd>
+    </dl>
+  </section>
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {% if form.non_field_errors %}<div class="card errors">{{ form.non_field_errors }}</div>{% endif %}
+    <section class="card">
+      <h2>1. 行程・旅費報告</h2>
+      <!-- 行程順：出発地 → 往路 → 目的地 → 復路 → 帰着地 -->
+      <div class="field">
+        <label for="{{ form.departure_place.id_for_label }}">出発地</label>
+        <div class="grid">
+          <div>{{ form.departure_place }}<div class="errors">{{ form.departure_place.errors }}</div></div>
+          <div id="departure-other-wrap">{{ form.departure_place_other }}<div class="errors">{{ form.departure_place_other.errors }}</div></div>
+        </div>
+      </div>
+      <div class="field route-panel">
+        <strong>↓ 往路</strong>
+        <div class="grid route-grid">
+          <div>
+            <div class="check">{{ form.outbound_toll_road }}<label for="{{ form.outbound_toll_road.id_for_label }}">高速道路</label></div>
+            <div class="check">{{ form.outbound_general_road }}<label for="{{ form.outbound_general_road.id_for_label }}">一般道路</label></div>
+          </div>
+          <div><label for="{{ form.outbound_distance_km.id_for_label }}">往路の距離（km）</label>{{ form.outbound_distance_km }}<div class="errors">{{ form.outbound_distance_km.errors }}</div></div>
+        </div>
+      </div>
+      <div class="field destination-panel">
+        <strong>目的地</strong>
+        <div>{{ travel_order.destination_area }}{% if travel_order.destination_name %} ／ {{ travel_order.destination_name }}{% endif %}</div>
+        <div class="muted">旅行命令書に登録されている用務地を表示しています。</div>
+      </div>
+      <div class="field route-panel">
+        <strong>↓ 復路</strong>
+        <div class="grid route-grid">
+          <div>
+            <div class="check">{{ form.inbound_toll_road }}<label for="{{ form.inbound_toll_road.id_for_label }}">高速道路</label></div>
+            <div class="check">{{ form.inbound_general_road }}<label for="{{ form.inbound_general_road.id_for_label }}">一般道路</label></div>
+          </div>
+          <div><label for="{{ form.inbound_distance_km.id_for_label }}">復路の距離（km）</label>{{ form.inbound_distance_km }}<div class="errors">{{ form.inbound_distance_km.errors }}</div></div>
+        </div>
+      </div>
+      <div class="field">
+        <label for="{{ form.return_place.id_for_label }}">帰着地</label>
+        <div class="grid">
+          <div>{{ form.return_place }}<div class="errors">{{ form.return_place.errors }}</div></div>
+          <div id="return-other-wrap">{{ form.return_place_other }}<div class="errors">{{ form.return_place_other.errors }}</div></div>
+        </div>
+      </div>
+      <div class="field total-panel">
+        <label for="{{ form.travel_distance_km.id_for_label }}">総移動距離（km）</label>
+        {{ form.travel_distance_km }}
+        <div class="muted">往路と復路の距離を入力すると自動計算されます。片道のみ入力した場合は手動入力できます。</div>
+        <div class="errors">{{ form.travel_distance_km.errors }}</div>
+      </div>
+      <div class="field destination-panel" style="margin-top:16px">
+        <label for="{{ form.student_ride.id_for_label }}">生徒の同乗（旅費算定用）</label>
+        {{ form.student_ride }}
+        <div class="errors">{{ form.student_ride.errors }}</div>
+        <p class="muted">同乗なし・往路のみ・復路のみ・往復から選択してください。旅費の単価や支給額は自動計算せず、事務室が確認します。</p>
+      </div>
+      <div class="grid">
+        <div class="field"><label for="{{ form.school_account_amount.id_for_label }}">{{ form.school_account_amount.label }}</label>{{ form.school_account_amount }}<div class="errors">{{ form.school_account_amount.errors }}</div></div>
+        <div class="field"><label for="{{ form.extracurricular_amount.id_for_label }}">{{ form.extracurricular_amount.label }}</label>{{ form.extracurricular_amount }}<div class="errors">{{ form.extracurricular_amount.errors }}</div></div>
+        <div class="field"><label for="{{ form.athletics_support_amount.id_for_label }}">{{ form.athletics_support_amount.label }}</label>{{ form.athletics_support_amount }}<div class="errors">{{ form.athletics_support_amount.errors }}</div></div>
+
+      </div>
+      <div class="field destination-panel" style="margin-top:12px">
+        <strong>出張先の団体から受領した旅費</strong>
+        <p class="muted">支給がなければ0円のままで構いません。領収書や支給明細は下の添付資料欄から登録できます。</p>
+        <div class="grid">
+          <div><label for="{{ form.external_travel_amount.id_for_label }}">{{ form.external_travel_amount.label }}</label>{{ form.external_travel_amount }}<div class="errors">{{ form.external_travel_amount.errors }}</div></div>
+          <div><label for="{{ form.external_travel_source.id_for_label }}">{{ form.external_travel_source.label }}</label>{{ form.external_travel_source }}<div class="errors">{{ form.external_travel_source.errors }}</div></div>
+          <div><label for="{{ form.external_travel_received_date.id_for_label }}">{{ form.external_travel_received_date.label }}</label>{{ form.external_travel_received_date }}<div class="errors">{{ form.external_travel_received_date.errors }}</div></div>
+        </div>
+      </div>
+      <div class="field"><label for="{{ form.travel_expense_notes.id_for_label }}">{{ form.travel_expense_notes.label }}</label>{{ form.travel_expense_notes }}<div class="errors">{{ form.travel_expense_notes.errors }}</div></div>
+    </section>
+    <section class="card">
+      <h2>2. 領収書・旅費支給証明などの添付資料</h2>
+      <p class="muted">出張先からの支給明細、領収書、学校会計・課外活動費などの証明書類を添付できます。PDF・JPG・JPEG・PNG、1ファイル10MB以下、1回10件まで。</p>
+      <div class="field"><label for="post-report-attachments">添付ファイルを選択（複数選択可）</label><input id="post-report-attachments" type="file" name="attachments" accept=".pdf,.jpg,.jpeg,.png" multiple></div>
+      {% if upload_errors %}<div class="errors"><ul>{% for error in upload_errors %}<li>{{ error }}</li>{% endfor %}</ul></div>{% endif %}
+      {% if attachments %}
+      <strong>登録済みの添付資料</strong>
+      <ul>
+        {% for attachment in attachments %}
+        <li style="margin:10px 0">
+          <a href="{% url 'documents:travel_post_report_attachment_open' travel_order.pk attachment.pk %}">{{ attachment.original_name|default:attachment.file.name }}</a>
+          <span class="muted">（{{ attachment.uploaded_at|date:"Y/m/d H:i" }}）</span>
+          <button type="submit" form="delete-attachment-{{ attachment.pk }}" class="btn secondary" onclick="return confirm('この添付資料を削除しますか？');">削除</button>
+        </li>
+        {% endfor %}
+      </ul>
+      {% endif %}
+    </section>
+    <section class="card">
+      <h2>3. 復命報告書</h2>
+      <div class="field"><label for="{{ form.report_content.id_for_label }}">{{ form.report_content.label }}</label>{{ form.report_content }}<div class="errors">{{ form.report_content.errors }}</div></div>
+    </section>
+    <div class="actions">
+      <button type="submit" class="btn primary">下書きを保存</button>
+      <a class="btn secondary" href="{% url 'documents:travel_order_detail' pk=travel_order.pk %}">旅行命令の詳細へ戻る</a>
+    </div>
+
+  </form>
+  <section class="card">
+    <h2>4. 提出・回覧申請</h2>
+    <p><a href="{% url 'documents:travel_post_report_review' travel_order.pk %}">回覧状況・提出内容を確認する</a></p>
+    <p>下書きを保存した後、内容を確認して提出してください。提出後は編集できません。</p>
+    <p class="muted">回覧順：二原事務次長 → 宮地事務長 → 落合教頭 → 川崎教頭 → 竹元校長</p>
+    <form method="post" action="{% url 'documents:travel_post_report_submit' travel_order.pk %}" onsubmit="return confirm('出張後報告を提出し、回覧を開始しますか？');">
+      {% csrf_token %}
+      <label class="check"><input type="checkbox" name="submission_agreement" value="yes" required> 入力内容と添付資料を確認し、提出に同意します。</label>
+      <button type="submit" class="btn primary">報告書を提出する</button>
+    </form>
+  </section>
+  {% for attachment in attachments %}
+  <form id="delete-attachment-{{ attachment.pk }}" method="post" action="{% url 'documents:travel_post_report_attachment_delete' travel_order.pk attachment.pk %}">{% csrf_token %}</form>
+  {% endfor %}
+  <script>
+    (function () {
+      for (const [selectId, wrapId] of [["id_departure_place", "departure-other-wrap"], ["id_return_place", "return-other-wrap"]]) {
+        const select = document.getElementById(selectId);
+        const wrap = document.getElementById(wrapId);
+        if (!select || !wrap) continue;
+        const update = () => { wrap.hidden = select.value !== "other"; const input = wrap.querySelector("input"); if (input) input.disabled = select.value !== "other"; };
+        select.addEventListener("change", update);
+        update();
+      }
+      const outbound = document.getElementById("id_outbound_distance_km");
+      const inbound = document.getElementById("id_inbound_distance_km");
+      const total = document.getElementById("id_travel_distance_km");
+      if (!outbound || !inbound || !total) return;
+      function updateTotal() {
+        if (outbound.value === "" || inbound.value === "") return;
+        const a = Number(outbound.value);
+        const b = Number(inbound.value);
+        if (!Number.isFinite(a) || !Number.isFinite(b)) return;
+        total.value = (Math.round((a + b) * 10) / 10).toFixed(1);
+      }
+      outbound.addEventListener("input", updateTotal);
+      inbound.addEventListener("input", updateTotal);
+    })();
+  </script>
+</main>
+</body>
+</html>

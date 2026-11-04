@@ -84,6 +84,48 @@ urlpatterns = [
         name="travel_order_review",
     ),
 
+    # 復命書の統合一覧
+    path(
+        "post-reports/",
+        views.travel_post_report_list,
+        name="travel_post_report_list",
+    ),
+
+    # 出張後報告（復命書・行程旅費報告）の作成・編集
+    path(
+        "travel/<int:pk>/post-report/",
+        views.travel_post_report_edit,
+        name="travel_post_report_edit",
+    ),
+
+    path(
+        "travel/<int:pk>/post-report/review/",
+        views.travel_post_report_review,
+        name="travel_post_report_review",
+    ),
+    path(
+        "travel/<int:pk>/post-report/review/action/",
+        views.travel_post_report_review_action,
+        name="travel_post_report_review_action",
+    ),
+
+    path(
+        "travel/<int:pk>/post-report/submit/",
+        views.travel_post_report_submit,
+        name="travel_post_report_submit",
+    ),
+
+    path(
+        "travel/<int:pk>/post-report/attachment/<int:attachment_id>/open/",
+        views.travel_post_report_attachment_open,
+        name="travel_post_report_attachment_open",
+    ),
+    path(
+        "travel/<int:pk>/post-report/attachment/<int:attachment_id>/delete/",
+        views.travel_post_report_attachment_delete,
+        name="travel_post_report_attachment_delete",
+    ),
+
     path(
         "travel/<int:pk>/submit/",
         views.travel_order_submit,

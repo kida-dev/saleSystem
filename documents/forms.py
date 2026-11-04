@@ -6,6 +6,8 @@ from .models import (
     TravelAttachment,
     TravelClassAdjustment,
     TravelOrder,
+    TravelPostReport,
+    TravelPostReportAttachment,
 )
 
 
@@ -440,4 +442,90 @@ class TravelAttachmentForm(forms.ModelForm):
                 "ファイルを選択してください。"
             )
 
+        return file
+
+# ============================================================
+# 出張後の報告：行程・旅費報告と復命報告を同一フォームで入力
+# ============================================================
+class TravelPostReportForm(forms.ModelForm):
+    """旅行命令の承認後に作成する出張後報告フォーム。"""
+
+    class Meta:
+        model = TravelPostReport
+        fields = [
+            "departure_place", "departure_place_other",
+            "return_place", "return_place_other",
+            "outbound_toll_road", "outbound_general_road",
+            "inbound_toll_road", "inbound_general_road",
+            "outbound_distance_km", "inbound_distance_km",
+            "travel_distance_km",
+            "student_ride",
+            "school_account_amount", "extracurricular_amount",
+            "athletics_support_amount", "external_travel_amount",
+            "external_travel_source", "external_travel_received_date",
+            "travel_expense_notes", "report_content",
+        ]
+        widgets = {
+            "departure_place": forms.Select(attrs={"class": "form-control"}),
+            "departure_place_other": forms.TextInput(attrs={"class": "form-control", "placeholder": "出発地を入力"}),
+            "return_place": forms.Select(attrs={"class": "form-control"}),
+            "return_place_other": forms.TextInput(attrs={"class": "form-control", "placeholder": "帰着地を入力"}),
+            "outbound_toll_road": forms.CheckboxInput(),
+            "outbound_general_road": forms.CheckboxInput(),
+            "inbound_toll_road": forms.CheckboxInput(),
+            "inbound_general_road": forms.CheckboxInput(),
+            "outbound_distance_km": forms.NumberInput(attrs={"class": "form-control", "min": "0", "step": "0.1"}),
+            "inbound_distance_km": forms.NumberInput(attrs={"class": "form-control", "min": "0", "step": "0.1"}),
+            "travel_distance_km": forms.NumberInput(attrs={"class": "form-control", "min": "0", "step": "0.1"}),
+            "student_ride": forms.Select(attrs={"class": "form-control"}),
+            "school_account_amount": forms.NumberInput(attrs={"class": "form-control", "min": "0"}),
+            "extracurricular_amount": forms.NumberInput(attrs={"class": "form-control", "min": "0"}),
+            "athletics_support_amount": forms.NumberInput(attrs={"class": "form-control", "min": "0"}),
+            "external_travel_amount": forms.NumberInput(attrs={"class": "form-control", "min": "0"}),
+            "external_travel_source": forms.TextInput(attrs={"class": "form-control", "placeholder": "例：宮崎県○○協会"}),
+            "external_travel_received_date": forms.DateInput(attrs={"class": "form-control", "type": "date", "format": "%Y-%m-%d"}),
+            "travel_expense_notes": forms.Textarea(attrs={"class": "form-control", "rows": 3}),
+            "report_content": forms.Textarea(attrs={"class": "form-control", "rows": 10, "placeholder": "出張内容・報告事項・感想を入力してください"}),
+        }
+
+    def clean(self):
+        data = super().clean()
+        outbound = data.get("outbound_distance_km")
+        inbound = data.get("inbound_distance_km")
+        if outbound is not None and inbound is not None:
+            data["travel_distance_km"] = outbound + inbound
+        for place_field, other_field in (
+            ("departure_place", "departure_place_other"),
+            ("return_place", "return_place_other"),
+        ):
+            if data.get(place_field) == "other" and not (data.get(other_field) or "").strip():
+                self.add_error(other_field, "『その他』を選択した場合は場所を入力してください。")
+        if data.get("departure_place") != "other":
+            data["departure_place_other"] = ""
+        if data.get("return_place") != "other":
+            data["return_place_other"] = ""
+        return data
+
+
+class TravelPostReportAttachmentForm(forms.ModelForm):
+    """領収書・出張先からの旅費支給証明などの添付。"""
+
+    class Meta:
+        model = TravelPostReportAttachment
+        fields = ["file"]
+        widgets = {
+            "file": forms.ClearableFileInput(attrs={
+                "class": "form-control", "accept": ".pdf,.jpg,.jpeg,.png"
+            }),
+        }
+
+    def clean_file(self):
+        file = self.cleaned_data.get("file")
+        if not file:
+            return file
+        if file.size > 10 * 1024 * 1024:
+            raise forms.ValidationError("ファイルサイズは10MB以下にしてください。")
+        extension = file.name.rsplit(".", 1)[-1].lower() if "." in file.name else ""
+        if extension not in {"pdf", "jpg", "jpeg", "png"}:
+            raise forms.ValidationError("PDF、JPG、JPEG、PNG形式のファイルを選択してください。")
         return file

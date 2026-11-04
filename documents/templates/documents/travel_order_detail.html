@@ -1755,6 +1755,41 @@
     </section>
 
     <!-- =========================================================
+         出張後の報告（旅行命令承認後）
+    ========================================================== -->
+    {% if travel_order.status == "approved" %}
+    <section class="detail-section">
+        <div class="section-header">
+            <h2>10. 出張後の報告（行程・旅費／復命書）</h2>
+        </div>
+        <div class="section-body">
+            {% if travel_order.post_report %}
+                <p class="page-description" style="margin-bottom:14px;">
+                    報告書の状態：<strong>{{ travel_order.post_report.get_status_display }}</strong>
+                </p>
+            {% else %}
+                <p class="page-description" style="margin-bottom:14px;">
+                    出張後の行程・旅費と復命事項をまとめて入力できます。
+                </p>
+            {% endif %}
+
+            {% if travel_order.responsible_teacher.user_id == request.user.id %}
+                {% if not travel_order.post_report or travel_order.post_report.status == "draft" or travel_order.post_report.status == "returned" %}
+                    <a href="{% url 'documents:travel_post_report_edit' travel_order.pk %}"
+                       class="button button-primary">
+                        {% if travel_order.post_report %}出張後の報告を編集する{% else %}出張後の報告を作成する{% endif %}
+                    </a>
+                {% else %}
+                    <div class="empty-box">回覧中・承認済みの報告書は編集できません。</div>
+                {% endif %}
+            {% else %}
+                <div class="empty-box">報告書の作成・編集は出張者本人のみ可能です。</div>
+            {% endif %}
+        </div>
+    </section>
+    {% endif %}
+
+    <!-- =========================================================
          登録情報
     ========================================================== -->
 

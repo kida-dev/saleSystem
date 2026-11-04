@@ -10,6 +10,8 @@ from .forms import (
     TravelAttachmentForm,
     TravelClassAdjustmentForm,
     TravelOrderForm,
+    TravelPostReportForm,
+    TravelPostReportAttachmentForm,
 )
 from publicity.models import Teacher
 
@@ -20,6 +22,11 @@ from .models import (
     TravelClassAdjustment,
     TravelCompanion,
     TravelOrder,
+    TravelPostReport,
+    TravelPostReportApprovalStep,
+    TravelPostReportOfficeCheck,
+    TravelPostReportHistory,
+    TravelPostReportAttachment,
 )
 
 
@@ -1004,3 +1011,325 @@ def travel_order_review(request, pk):
             comment=comment if action == "returned" else "",
         )
     return redirect("documents:travel_order_detail", pk=pk)
+
+
+# ============================================================
+# 出張後報告：承認済み旅行命令から作成・下書き保存
+# ============================================================
+@login_required
+def travel_post_report_edit(request, pk):
+    travel_order = get_object_or_404(
+        TravelOrder.objects.select_related("responsible_teacher", "created_by"),
+        pk=pk,
+    )
+
+    # 旅行命令の承認完了後のみ作成可能
+    if travel_order.status != "approved":
+        return HttpResponseForbidden("旅行命令の承認完了後に作成できます。")
+
+    # 報告は出張者本人が作成する（管理職による代理提出は別途検討）
+    if travel_order.responsible_teacher.user_id != request.user.pk:
+        return HttpResponseForbidden("出張者本人のみ作成できます。")
+
+    report, _ = TravelPostReport.objects.get_or_create(travel_order=travel_order)
+    if report.status not in ("draft", "returned"):
+        return HttpResponseForbidden("回覧中・承認済みの報告は編集できません。")
+
+    if request.method == "POST":
+        form = TravelPostReportForm(request.POST, instance=report)
+        # 複数ファイルを個別に検証。エラーがあれば報告書も保存しない。
+        uploads = request.FILES.getlist("attachments")
+        upload_errors = []
+        validated_uploads = []
+        if len(uploads) > 10:
+            upload_errors.append("一度に添付できるファイルは10件までです。")
+        for upload in uploads[:10]:
+            attachment_form = TravelPostReportAttachmentForm(files={"file": upload})
+            if not attachment_form.is_valid():
+                upload_errors.extend(
+                    str(error) for errors in attachment_form.errors.values() for error in errors
+                )
+            else:
+                validated_uploads.append(upload)
+        if form.is_valid() and not upload_errors:
+            with transaction.atomic():
+                form.save()
+                for upload in validated_uploads:
+                    TravelPostReportAttachment.objects.create(
+                        report=report,
+                        file=upload,
+                        original_name=upload.name[:255],
+                        uploaded_by=request.user,
+                    )
+            return redirect("documents:travel_post_report_edit", pk=travel_order.pk)
+    else:
+        form = TravelPostReportForm(instance=report)
+        upload_errors = []
+
+    return render(
+        request,
+        "documents/travel_post_report_form.html",
+        {
+            "travel_order": travel_order,
+            "report": report,
+            "form": form,
+            "upload_errors": upload_errors,
+            "attachments": report.attachments.order_by("-uploaded_at"),
+        },
+    )
+
+
+@login_required
+def travel_post_report_attachment_open(request, pk, attachment_id):
+    order = get_object_or_404(TravelOrder.objects.select_related("responsible_teacher", "created_by"), pk=pk)
+    report = get_object_or_404(TravelPostReport, travel_order=order)
+    attachment = get_object_or_404(TravelPostReportAttachment, pk=attachment_id, report=report)
+    teacher = Teacher.objects.filter(user=request.user, is_active=True).first()
+    is_owner = (order.created_by_id == request.user.pk or order.responsible_teacher.user_id == request.user.pk)
+    is_reviewer = bool(teacher and (order.approval_steps.filter(approver=teacher).exists() or report.approval_steps.filter(approver=teacher).exists() or report.office_checks.filter(checker=teacher).exists()))
+    is_admin = request.user.is_superuser or bool(teacher and teacher.role == "system_admin")
+    if not (is_owner or is_reviewer or is_admin):
+        return HttpResponseForbidden("添付ファイルを閲覧する権限がありません。")
+    import mimetypes
+    import os
+    from django.utils.text import get_valid_filename
+    mime = mimetypes.guess_type(attachment.original_name or attachment.file.name)[0] or "application/octet-stream"
+    if mime not in ("application/pdf", "image/jpeg", "image/png"):
+        mime = "application/octet-stream"
+    response = FileResponse(attachment.file.open("rb"), content_type=mime, as_attachment=True, filename=get_valid_filename(os.path.basename(attachment.original_name or attachment.file.name)))
+    response["X-Content-Type-Options"] = "nosniff"
+    return response
+
+
+@login_required
+@require_POST
+def travel_post_report_attachment_delete(request, pk, attachment_id):
+    order = get_object_or_404(TravelOrder.objects.select_related("responsible_teacher"), pk=pk)
+    if order.responsible_teacher.user_id != request.user.pk:
+        return HttpResponseForbidden("出張者本人のみ削除できます。")
+    report = get_object_or_404(TravelPostReport, travel_order=order)
+    if report.status not in ("draft", "returned"):
+        return HttpResponseForbidden("回覧中・承認済みの添付資料は削除できません。")
+    attachment = get_object_or_404(TravelPostReportAttachment, pk=attachment_id, report=report)
+    # DBから先に削除。クラウド上の実ファイルは保存先の運用ポリシーに従い保持。
+    attachment.delete()
+    return redirect("documents:travel_post_report_edit", pk=pk)
+
+
+# 出張後報告の回覧開始：事務次長 → 事務長 → 教頭 → 教頭 → 校長
+@login_required
+@require_POST
+def travel_post_report_submit(request, pk):
+    order = get_object_or_404(
+        TravelOrder.objects.select_related("responsible_teacher"), pk=pk
+    )
+    if order.status != "approved" or order.responsible_teacher.user_id != request.user.pk:
+        return HttpResponseForbidden("この報告書を提出する権限がありません。")
+    if request.POST.get("submission_agreement") != "yes":
+        return HttpResponseForbidden("内容確認と提出への同意が必要です。")
+
+    # 既存の旅行命令と同じ職員番号を使用する。氏名の取り違えを防ぐため確認する。
+    route = [(5, "office"), (4, "office"), (3, "management"),
+             (2, "management"), (1, "management")]
+    teachers = list(Teacher.objects.filter(
+        employee_number__in=[number for number, _ in route], is_active=True
+    ))
+    by_number = {teacher.employee_number: teacher for teacher in teachers}
+    if len(by_number) != 5:
+        return HttpResponseForbidden("回覧者5名の教員登録を確認してください。")
+
+    with transaction.atomic():
+        report = get_object_or_404(
+            TravelPostReport.objects.select_for_update(), travel_order=order
+        )
+        if report.status not in ("draft", "returned"):
+            return HttpResponseForbidden("この報告書はすでに回覧中、または承認済みです。")
+        if not (report.report_content or "").strip():
+            return HttpResponseForbidden("復命事項を入力して下書き保存してから提出してください。")
+        # 前回の回覧記録は履歴に残し、承認ステップだけ再作成する。
+        report.office_checks.all().delete()
+        report.approval_steps.all().delete()
+        for index, (number, kind) in enumerate(route, start=1):
+            if kind == "office":
+                TravelPostReportOfficeCheck.objects.create(
+                    report=report, checker=by_number[number],
+                    step_order=index, status="pending" if index == 1 else "waiting",
+                )
+            else:
+                TravelPostReportApprovalStep.objects.create(
+                    report=report, approver=by_number[number],
+                    step_order=index, status="waiting",
+                )
+        report.status = "circulating"
+        report.submitted_by = request.user
+        report.submitted_at = timezone.now()
+        report.approved_at = None
+        report.save(update_fields=["status", "submitted_by", "submitted_at", "approved_at", "updated_at"])
+        TravelPostReportHistory.objects.create(
+            report=report, actor=request.user,
+            action="submitted", comment="本人確認・同意のうえ5段階回覧を開始",
+        )
+    return redirect("documents:travel_order_detail", pk=pk)
+
+
+# 出張後報告：事務2名→管理職3名の順次確認
+@login_required
+def travel_post_report_review(request, pk):
+    order = get_object_or_404(TravelOrder.objects.select_related("responsible_teacher", "created_by"), pk=pk)
+    report = get_object_or_404(TravelPostReport, travel_order=order)
+    teacher = Teacher.objects.filter(user=request.user, is_active=True).first()
+    office = list(report.office_checks.select_related("checker").order_by("step_order"))
+    management = list(report.approval_steps.select_related("approver").order_by("step_order"))
+    steps = sorted(
+        [{"order": s.step_order, "name": s.checker.name, "status": s.status, "date": s.checked_at, "kind": "office"} for s in office]
+        + [{"order": s.step_order, "name": s.approver.name, "status": s.status, "date": s.approved_at, "kind": "management"} for s in management],
+        key=lambda item: item["order"],
+    )
+    owner = order.created_by_id == request.user.pk or order.responsible_teacher.user_id == request.user.pk
+    reviewer = bool(teacher and any(s.checker_id == teacher.pk for s in office) or teacher and any(s.approver_id == teacher.pk for s in management))
+    admin = request.user.is_superuser or bool(teacher and teacher.role == "system_admin")
+    if not (owner or reviewer or admin):
+        return HttpResponseForbidden("この報告書を閲覧する権限がありません。")
+    can_review = bool(teacher and report.status == "circulating" and (
+        any(s.checker_id == teacher.pk and s.status == "pending" for s in office)
+        or any(s.approver_id == teacher.pk and s.status == "pending" for s in management)
+    ))
+    return render(request, "documents/travel_post_report_review.html", {
+        "travel_order": order, "report": report, "steps": steps,
+        "attachments": report.attachments.order_by("uploaded_at"),
+        "histories": report.histories.select_related("actor").order_by("created_at", "pk"),
+        "can_review": can_review,
+    })
+
+
+@login_required
+@require_POST
+def travel_post_report_review_action(request, pk):
+    action = request.POST.get("action")
+    comment = (request.POST.get("comment") or "").strip()
+    if action not in ("approve", "return"):
+        return HttpResponseForbidden("操作が正しくありません。")
+    if action == "return" and not comment:
+        return HttpResponseForbidden("差戻し理由を入力してください。")
+    teacher = Teacher.objects.filter(user=request.user, is_active=True).first()
+    if teacher is None:
+        return HttpResponseForbidden("教員アカウントが必要です。")
+    with transaction.atomic():
+        report = get_object_or_404(TravelPostReport.objects.select_for_update(), travel_order_id=pk)
+        if report.status != "circulating":
+            return HttpResponseForbidden("回覧中の報告書ではありません。")
+        office = list(report.office_checks.select_for_update().order_by("step_order"))
+        management = list(report.approval_steps.select_for_update().order_by("step_order"))
+        all_steps = sorted([(s.step_order, "office", s) for s in office] +
+                           [(s.step_order, "management", s) for s in management], key=lambda x: x[0])
+        if len(all_steps) != 5 or [s[0] for s in all_steps] != [1, 2, 3, 4, 5]:
+            return HttpResponseForbidden("回覧順序に問題があります。")
+        current = next(((i, kind, step) for i, (_, kind, step) in enumerate(all_steps) if step.status == "pending"), None)
+        if current is None:
+            return HttpResponseForbidden("確認待ちの担当者がいません。")
+        index, kind, step = current
+        assigned_id = step.checker_id if kind == "office" else step.approver_id
+        if assigned_id != teacher.pk:
+            return HttpResponseForbidden("現在の担当者のみ操作できます。")
+        now = timezone.now()
+        if action == "return":
+            if kind == "office":
+                # 事務確認モデルにはreturnedがないため、待機中に戻し報告書を差戻し状態にする。
+                step.status = "waiting"
+                step.save(update_fields=["status"])
+            else:
+                step.status = "returned"
+                step.returned_at = now
+                step.save(update_fields=["status", "returned_at"])
+            report.status = "returned"
+            report.save(update_fields=["status", "updated_at"])
+            TravelPostReportHistory.objects.create(report=report, actor=request.user,
+                action="returned", comment=f"{teacher.name}：{comment}")
+        else:
+            if kind == "office":
+                step.status = "checked"
+                step.checked_at = now
+                step.save(update_fields=["status", "checked_at"])
+            else:
+                step.status = "approved"
+                step.approved_at = now
+                step.save(update_fields=["status", "approved_at"])
+            TravelPostReportHistory.objects.create(report=report, actor=request.user,
+                action="office_checked" if kind == "office" else "approved",
+                comment=comment)
+            if index + 1 < len(all_steps):
+                next_step = all_steps[index + 1][2]
+                if next_step.status != "waiting":
+                    return HttpResponseForbidden("次の承認者の状態が正しくありません。")
+                next_step.status = "pending"
+                next_step.save(update_fields=["status"])
+            else:
+                report.status = "approved"
+                report.approved_at = now
+                report.save(update_fields=["status", "approved_at", "updated_at"])
+    return redirect("documents:travel_post_report_review", pk=pk)
+
+
+# ============================================================
+# 復命書一覧：本人・現在の確認担当者・管理者
+# ============================================================
+@login_required
+def travel_post_report_list(request):
+    from django.db.models import Q
+
+    teacher = Teacher.objects.filter(user=request.user, is_active=True).first()
+    is_admin = request.user.is_superuser or bool(
+        teacher and teacher.role == "system_admin"
+    )
+
+    base = (TravelPostReport.objects
+            .select_related("travel_order", "travel_order__responsible_teacher",
+                            "travel_order__created_by")
+            .prefetch_related("office_checks__checker", "approval_steps__approver")
+            .order_by("-travel_order__start_datetime", "-pk"))
+
+    own_reports = list(base.filter(
+        Q(travel_order__responsible_teacher__user=request.user)
+        | Q(travel_order__created_by=request.user)
+    ).distinct())
+
+    if teacher:
+        pending_reports = list(base.filter(status="circulating").filter(
+            Q(office_checks__checker=teacher, office_checks__status="pending")
+            | Q(approval_steps__approver=teacher, approval_steps__status="pending")
+        ).distinct())
+    else:
+        pending_reports = []
+
+    # 管理職・事務担当者は自分が回覧者となっている提出済み報告を参照できる。
+    if is_admin:
+        all_reports = list(base.exclude(status="draft"))
+    elif teacher:
+        all_reports = list(base.exclude(status="draft").filter(
+            Q(office_checks__checker=teacher) | Q(approval_steps__approver=teacher)
+        ).distinct())
+    else:
+        all_reports = []
+
+    for report in own_reports + pending_reports + all_reports:
+        report.progress_text = "未提出" if report.status == "draft" else (
+            "差戻し・修正待ち" if report.status == "returned" else (
+                "承認完了" if report.status == "approved" else "回覧状況を確認"
+            )
+        )
+        if report.status == "circulating":
+            for step in sorted(
+                list(report.office_checks.all()) + list(report.approval_steps.all()),
+                key=lambda item: item.step_order,
+            ):
+                if step.status == "pending":
+                    person = getattr(step, "checker", None) or getattr(step, "approver", None)
+                    report.progress_text = f"{person.name}の確認待ち"
+                    break
+
+    return render(request, "documents/travel_post_report_list.html", {
+        "own_reports": own_reports,
+        "pending_reports": pending_reports,
+        "all_reports": all_reports,
+        "is_admin": is_admin,
+    })
