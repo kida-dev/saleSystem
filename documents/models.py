@@ -553,6 +553,15 @@ class TravelPostReport(models.Model):
         ("other", "その他"),
     ]
 
+    VEHICLE_CHOICES = [
+        ("", "選択してください"),
+        ("private_car", "自家用車"),
+        ("company_car", "社用車（普通車）"),
+        ("small_bus", "小型バス"),
+        ("medium_bus", "中型バス"),
+        ("large_bus", "大型バス"),
+    ]
+
     travel_order = models.OneToOneField(
         TravelOrder, on_delete=models.PROTECT,
         related_name="post_report", verbose_name="旅行命令",
@@ -569,6 +578,13 @@ class TravelPostReport(models.Model):
     outbound_distance_km = models.DecimalField("往路距離（km）", max_digits=8, decimal_places=1, null=True, blank=True)
     inbound_distance_km = models.DecimalField("復路距離（km）", max_digits=8, decimal_places=1, null=True, blank=True)
     travel_distance_km = models.DecimalField("移動距離（km）", max_digits=8, decimal_places=1, null=True, blank=True)
+    outbound_vehicle = models.CharField("往路の車種", max_length=30, choices=VEHICLE_CHOICES, blank=True, default="")
+    inbound_vehicle = models.CharField("復路の車種", max_length=30, choices=VEHICLE_CHOICES, blank=True, default="")
+    accounting_distance_km = models.DecimalField("旅費算定対象距離（km）", max_digits=8, decimal_places=1, null=True, blank=True)
+    accounting_rate_yen = models.DecimalField("距離単価（円/km）", max_digits=10, decimal_places=2, null=True, blank=True)
+    accounting_allowance_yen = models.PositiveIntegerField("運転・送迎手当（円）", default=0)
+    accounting_saved_at = models.DateTimeField("事務計算保存日時", null=True, blank=True)
+    accounting_finalized_at = models.DateTimeField("事務長確認日時", null=True, blank=True)
     student_ride = models.CharField(
         "生徒の同乗", max_length=16, default="none",
         choices=[("none", "同乗なし"), ("outbound", "往路のみ"),

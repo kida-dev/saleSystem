@@ -61,6 +61,7 @@
             <div class="check">{{ form.outbound_general_road }}<label for="{{ form.outbound_general_road.id_for_label }}">一般道路</label></div>
           </div>
           <div><label for="{{ form.outbound_distance_km.id_for_label }}">往路の距離（km）</label>{{ form.outbound_distance_km }}<div class="errors">{{ form.outbound_distance_km.errors }}</div></div>
+          <div><label for="{{ form.outbound_vehicle.id_for_label }}">往路の車種</label>{{ form.outbound_vehicle }}<div class="errors">{{ form.outbound_vehicle.errors }}</div></div>
         </div>
       </div>
       <div class="field destination-panel">
@@ -76,6 +77,7 @@
             <div class="check">{{ form.inbound_general_road }}<label for="{{ form.inbound_general_road.id_for_label }}">一般道路</label></div>
           </div>
           <div><label for="{{ form.inbound_distance_km.id_for_label }}">復路の距離（km）</label>{{ form.inbound_distance_km }}<div class="errors">{{ form.inbound_distance_km.errors }}</div></div>
+          <div><label for="{{ form.inbound_vehicle.id_for_label }}">復路の車種</label>{{ form.inbound_vehicle }}<div class="errors">{{ form.inbound_vehicle.errors }}</div></div>
         </div>
       </div>
       <div class="field">
@@ -97,17 +99,11 @@
         <div class="errors">{{ form.student_ride.errors }}</div>
         <p class="muted">同乗なし・往路のみ・復路のみ・往復から選択してください。旅費の単価や支給額は自動計算せず、事務室が確認します。</p>
       </div>
-      <div class="grid">
-        <div class="field"><label for="{{ form.school_account_amount.id_for_label }}">{{ form.school_account_amount.label }}</label>{{ form.school_account_amount }}<div class="errors">{{ form.school_account_amount.errors }}</div></div>
-        <div class="field"><label for="{{ form.extracurricular_amount.id_for_label }}">{{ form.extracurricular_amount.label }}</label>{{ form.extracurricular_amount }}<div class="errors">{{ form.extracurricular_amount.errors }}</div></div>
-        <div class="field"><label for="{{ form.athletics_support_amount.id_for_label }}">{{ form.athletics_support_amount.label }}</label>{{ form.athletics_support_amount }}<div class="errors">{{ form.athletics_support_amount.errors }}</div></div>
-
-      </div>
+      <p class="muted">学校会計・課外活動費・体育後援会費などの金額は、提出後に事務室が計算・入力します。</p>
       <div class="field destination-panel" style="margin-top:12px">
         <strong>出張先の団体から受領した旅費</strong>
-        <p class="muted">支給がなければ0円のままで構いません。領収書や支給明細は下の添付資料欄から登録できます。</p>
+        <p class="muted">受領額は事務室が入力します。支給元・受領日と領収書などを登録してください。</p>
         <div class="grid">
-          <div><label for="{{ form.external_travel_amount.id_for_label }}">{{ form.external_travel_amount.label }}</label>{{ form.external_travel_amount }}<div class="errors">{{ form.external_travel_amount.errors }}</div></div>
           <div><label for="{{ form.external_travel_source.id_for_label }}">{{ form.external_travel_source.label }}</label>{{ form.external_travel_source }}<div class="errors">{{ form.external_travel_source.errors }}</div></div>
           <div><label for="{{ form.external_travel_received_date.id_for_label }}">{{ form.external_travel_received_date.label }}</label>{{ form.external_travel_received_date }}<div class="errors">{{ form.external_travel_received_date.errors }}</div></div>
         </div>
@@ -146,7 +142,7 @@
     <h2>4. 提出・回覧申請</h2>
     <p><a href="{% url 'documents:travel_post_report_review' travel_order.pk %}">回覧状況・提出内容を確認する</a></p>
     <p>下書きを保存した後、内容を確認して提出してください。提出後は編集できません。</p>
-    <p class="muted">回覧順：二原事務次長 → 宮地事務長 → 落合教頭 → 川崎教頭 → 竹元校長</p>
+    <p class="muted">回覧順：二原事務次長 → 宮路事務長 → 落合教頭 → 川崎教頭 → 竹元校長</p>
     <form method="post" action="{% url 'documents:travel_post_report_submit' travel_order.pk %}" onsubmit="return confirm('出張後報告を提出し、回覧を開始しますか？');">
       {% csrf_token %}
       <label class="check"><input type="checkbox" name="submission_agreement" value="yes" required> 入力内容と添付資料を確認し、提出に同意します。</label>

@@ -13,23 +13,45 @@
 </table></section>
 <section class="card"><h2>行程・旅費報告</h2><table>
 <tr><th>出発地</th><td>{{ report.get_departure_place_display }} {% if report.departure_place == 'other' %}（{{ report.departure_place_other }}）{% endif %}</td></tr>
+<tr><th>往路の車種</th><td>{{ report.get_outbound_vehicle_display|default:"未選択" }}</td></tr>
 <tr><th>往路</th><td>高速道路：{{ report.outbound_toll_road|yesno:"使用,未使用" }}／一般道路：{{ report.outbound_general_road|yesno:"使用,未使用" }}／{{ report.outbound_distance_km|default_if_none:"未入力" }} km</td></tr>
 <tr><th>目的地</th><td>{{ travel_order.destination_area }}／{{ travel_order.destination_name }}</td></tr>
+<tr><th>復路の車種</th><td>{{ report.get_inbound_vehicle_display|default:"未選択" }}</td></tr>
 <tr><th>復路</th><td>高速道路：{{ report.inbound_toll_road|yesno:"使用,未使用" }}／一般道路：{{ report.inbound_general_road|yesno:"使用,未使用" }}／{{ report.inbound_distance_km|default_if_none:"未入力" }} km</td></tr>
 <tr><th>帰着地</th><td>{{ report.get_return_place_display }} {% if report.return_place == 'other' %}（{{ report.return_place_other }}）{% endif %}</td></tr>
 <tr><th>総移動距離</th><td>{{ report.travel_distance_km|default_if_none:"未入力" }} km</td></tr>
 <tr><th>生徒の同乗</th><td>{{ report.get_student_ride_display }}</td></tr>
+{% if is_office_staff %}
+<tr><th>算定距離</th><td>{{ report.accounting_distance_km|default_if_none:"未計算" }} km</td></tr>
+<tr><th>距離単価</th><td>{{ report.accounting_rate_yen|default_if_none:"未入力" }} 円/km</td></tr>
+<tr><th>運転・送迎手当</th><td>{{ report.accounting_allowance_yen }} 円</td></tr>
 <tr><th>学校会計</th><td>{{ report.school_account_amount }} 円</td></tr>
 <tr><th>課外活動費</th><td>{{ report.extracurricular_amount }} 円</td></tr>
 <tr><th>体育後援会費</th><td>{{ report.athletics_support_amount }} 円</td></tr>
 <tr><th>出張先からの受領額</th><td>{{ report.external_travel_amount }} 円</td></tr>
+{% endif %}
 <tr><th>支給元・受領日</th><td>{{ report.external_travel_source|default:"なし" }} ／ {{ report.external_travel_received_date|date:"Y/m/d"|default:"未入力" }}</td></tr>
 <tr><th>備考</th><td>{{ report.travel_expense_notes|linebreaksbr|default:"なし" }}</td></tr>
 </table></section>
+{% if can_edit_accounting %}
+<section class="card"><h2>事務室専用：旅費計算・保存</h2>
+<p class="muted">事務次長・事務長のみ操作できます。保存しても承認は進みません。計算式：単価 × 算定距離 ＋ 手当。算定距離は申請者の総移動距離を初期表示し、必要に応じて修正できます。</p>
+<form method="post" action="{% url 'documents:travel_post_report_review_action' travel_order.pk %}">
+{% csrf_token %}<input type="hidden" name="action" value="save_account">
+<div class="actions" style="align-items:flex-end">
+<label>算定距離（km）<input name="accounting_distance_km" type="number" min="0" step="0.1" required value="{{ report.accounting_distance_km|default_if_none:report.travel_distance_km|default_if_none:'' }}"></label>
+<label>単価（円/km）<input name="accounting_rate_yen" type="number" min="0" step="0.01" required value="{{ report.accounting_rate_yen|default_if_none:'' }}"></label>
+<label>手当（円）<input name="accounting_allowance_yen" type="number" min="0" step="1" required value="{{ report.accounting_allowance_yen }}"></label>
+</div><div class="actions" style="margin-top:12px">
+<label>課外活動費（円）<input name="extracurricular_amount" type="number" min="0" step="1" required value="{{ report.extracurricular_amount }}"></label>
+<label>体育後援会費（円）<input name="athletics_support_amount" type="number" min="0" step="1" required value="{{ report.athletics_support_amount }}"></label>
+<label>出張先からの受領額（円）<input name="external_travel_amount" type="number" min="0" step="1" required value="{{ report.external_travel_amount }}"></label>
+</div><p><button class="btn" type="submit">旅費計算を保存する（承認はしない）</button></p></form></section>
+{% endif %}
 <section class="card"><h2>添付資料</h2><ul>{% for attachment in attachments %}<li><a href="{% url 'documents:travel_post_report_attachment_open' travel_order.pk attachment.pk %}">{{ attachment.original_name|default:attachment.file.name }}</a></li>{% empty %}<li>添付資料なし</li>{% endfor %}</ul></section>
 <section class="card"><h2>復命事項</h2><p style="white-space:pre-wrap;overflow-wrap:anywhere">{{ report.report_content }}</p></section>
 <section class="card"><h2>回覧状況（事務室 → 管理職）</h2><table><tr><th>順番・担当者</th><th>状態</th><th>確認日時</th></tr>{% for step in steps %}<tr><td>{{ step.order }}．{{ step.name }}</td><td>{% if step.status == 'checked' or step.status == 'approved' %}確認済{% elif step.status == 'pending' %}<strong>確認待ち</strong>{% elif step.status == 'returned' %}差戻し{% else %}待機中{% endif %}</td><td>{{ step.date|date:"Y/m/d H:i"|default:"—" }}</td></tr>{% endfor %}</table></section>
 <section class="card"><h2>操作履歴</h2><ul>{% for history in histories %}<li>{{ history.created_at|date:"Y/m/d H:i" }}／{{ history.actor }}／{{ history.action }}{% if history.comment %}：{{ history.comment }}{% endif %}</li>{% empty %}<li>履歴なし</li>{% endfor %}</ul></section>
 {% if can_review %}<section class="card"><h2>承認・差戻し</h2><p class="muted">担当者本人のみ操作できます。差戻しには理由が必要です。</p><form method="post" action="{% url 'documents:travel_post_report_review_action' travel_order.pk %}">{% csrf_token %}<label for="comment">コメント・差戻し理由</label><textarea id="comment" name="comment"></textarea><div class="actions"><button class="btn" type="submit" name="action" value="approve" onclick="return confirm('確認・承認して次の担当者に回しますか？')">確認・承認する</button><button class="btn danger" type="submit" name="action" value="return" onclick="if(!document.getElementById('comment').value.trim()){alert('差戻し理由を入力してください');return false;}return confirm('申請者へ差し戻しますか？')">差し戻す</button></div></form></section>{% endif %}
-<p><a href="{% url 'documents:travel_order_detail' travel_order.pk %}">旅行命令の詳細へ戻る</a></p>
+<p><a href="{% url 'documents:travel_post_report_list' %}">復命書一覧へ戻る</a></p>
 </main></body></html>

@@ -1,5 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
+from decimal import Decimal, InvalidOperation, ROUND_HALF_UP
 from django.http import FileResponse, HttpResponseForbidden
 from django.views.decorators.http import require_POST
 from django.shortcuts import get_object_or_404, redirect, render
@@ -1147,6 +1148,24 @@ def travel_post_report_submit(request, pk):
             return HttpResponseForbidden("この報告書はすでに回覧中、または承認済みです。")
         if not (report.report_content or "").strip():
             return HttpResponseForbidden("復命事項を入力して下書き保存してから提出してください。")
+        # 往路・復路の距離は提出時に必須
+        # 0kmは有効な入力として扱う
+        if (
+            report.outbound_distance_km is None
+            or report.inbound_distance_km is None
+        ):
+            return HttpResponseForbidden(
+                "往路・復路の距離を入力してから提出してください。"
+            )
+
+        # マイナス値は禁止
+        if (
+            report.outbound_distance_km < 0
+            or report.inbound_distance_km < 0
+        ):
+            return HttpResponseForbidden(
+                "距離には0以上の数値を入力してください。"
+            )
         # 前回の回覧記録は履歴に残し、承認ステップだけ再作成する。
         report.office_checks.all().delete()
         report.approval_steps.all().delete()
@@ -1165,7 +1184,19 @@ def travel_post_report_submit(request, pk):
         report.submitted_by = request.user
         report.submitted_at = timezone.now()
         report.approved_at = None
-        report.save(update_fields=["status", "submitted_by", "submitted_at", "approved_at", "updated_at"])
+        report.accounting_finalized_at = None
+        report.accounting_saved_at = None
+        report.accounting_distance_km = None
+        report.accounting_rate_yen = None
+        report.accounting_allowance_yen = 0
+        report.school_account_amount = 0
+        report.extracurricular_amount = 0
+        report.athletics_support_amount = 0
+        report.external_travel_amount = 0
+        report.save(update_fields=["status", "submitted_by", "submitted_at", "approved_at",
+            "accounting_finalized_at", "accounting_saved_at", "accounting_distance_km",
+            "accounting_rate_yen", "accounting_allowance_yen", "school_account_amount",
+            "extracurricular_amount", "athletics_support_amount", "external_travel_amount", "updated_at"])
         TravelPostReportHistory.objects.create(
             report=report, actor=request.user,
             action="submitted", comment="本人確認・同意のうえ5段階回覧を開始",
@@ -1174,7 +1205,7 @@ def travel_post_report_submit(request, pk):
             report=report, notification_type="review_request",
             recipient_teacher=by_number[5],
         )
-    return redirect("documents:travel_order_detail", pk=pk)
+    return redirect("documents:travel_post_report_list")
 
 
 # 出張後報告：事務2名→管理職3名の順次確認
@@ -1199,11 +1230,19 @@ def travel_post_report_review(request, pk):
         any(s.checker_id == teacher.pk and s.status == "pending" for s in office)
         or any(s.approver_id == teacher.pk and s.status == "pending" for s in management)
     ))
+    is_office_staff = bool(teacher and teacher.employee_number in (4, 5)
+                           and any(s.checker_id == teacher.pk for s in office))
+    # 事務長確認が終わると旅費は確定し、後続の管理職回覧では編集不可。
+    can_edit_accounting = bool(is_office_staff and report.status == "circulating"
+        and not report.accounting_finalized_at
+        and any(s.checker_id == teacher.pk and s.status == "pending" for s in office))
     return render(request, "documents/travel_post_report_review.html", {
         "travel_order": order, "report": report, "steps": steps,
         "attachments": report.attachments.order_by("uploaded_at"),
         "histories": report.histories.select_related("actor").order_by("created_at", "pk"),
         "can_review": can_review,
+        "is_office_staff": is_office_staff,
+        "can_edit_accounting": can_edit_accounting,
     })
 
 
@@ -1212,7 +1251,7 @@ def travel_post_report_review(request, pk):
 def travel_post_report_review_action(request, pk):
     action = request.POST.get("action")
     comment = (request.POST.get("comment") or "").strip()
-    if action not in ("approve", "return"):
+    if action not in ("approve", "return", "save_account"):
         return HttpResponseForbidden("操作が正しくありません。")
     if action == "return" and not comment:
         return HttpResponseForbidden("差戻し理由を入力してください。")
@@ -1237,6 +1276,44 @@ def travel_post_report_review_action(request, pk):
         if assigned_id != teacher.pk:
             return HttpResponseForbidden("現在の担当者のみ操作できます。")
         now = timezone.now()
+        if action == "save_account":
+            # 画面非表示だけでなく、サーバ側でも事務担当者・現在の回覧順を検証。
+            if kind != "office" or teacher.employee_number not in (4, 5) or report.accounting_finalized_at:
+                return HttpResponseForbidden("事務室の現在の担当者だけが旅費を保存できます。")
+            try:
+                distance = Decimal(request.POST["accounting_distance_km"])
+                rate = Decimal(request.POST["accounting_rate_yen"])
+                allowance = int(request.POST["accounting_allowance_yen"])
+                extracurricular = int(request.POST["extracurricular_amount"])
+                athletics = int(request.POST["athletics_support_amount"])
+                external = int(request.POST["external_travel_amount"])
+                if not distance.is_finite() or not rate.is_finite():
+                    raise ValueError()
+                if not (Decimal("0") <= distance <= Decimal("999999.9")) or distance.as_tuple().exponent < -1:
+                    raise ValueError()
+                if not (Decimal("0") <= rate <= Decimal("99999999.99")) or rate.as_tuple().exponent < -2:
+                    raise ValueError()
+                if any(not 0 <= x <= 2147483647 for x in (allowance, extracurricular, athletics, external)):
+                    raise ValueError()
+                total = (distance * rate + Decimal(allowance)).quantize(Decimal("1"), rounding=ROUND_HALF_UP)
+                if total > 2147483647:
+                    raise ValueError()
+            except (KeyError, ValueError, InvalidOperation, OverflowError):
+                return HttpResponseForbidden("金額・距離の入力値を確認してください。")
+            report.accounting_distance_km = distance
+            report.accounting_rate_yen = rate
+            report.accounting_allowance_yen = allowance
+            report.school_account_amount = int(total)
+            report.extracurricular_amount = extracurricular
+            report.athletics_support_amount = athletics
+            report.external_travel_amount = external
+            report.accounting_saved_at = now
+            report.save(update_fields=["accounting_distance_km", "accounting_rate_yen",
+                "accounting_allowance_yen", "school_account_amount", "extracurricular_amount",
+                "athletics_support_amount", "external_travel_amount", "accounting_saved_at", "updated_at"])
+            TravelPostReportHistory.objects.create(report=report, actor=request.user,
+                action="accounting_saved", comment="事務室で旅費計算を保存")
+            return redirect("documents:travel_post_report_review", pk=pk)
         if action == "return":
             if kind == "office":
                 # 事務確認モデルにはreturnedがないため、待機中に戻し報告書を差戻し状態にする。
@@ -1251,6 +1328,11 @@ def travel_post_report_review_action(request, pk):
             TravelPostReportHistory.objects.create(report=report, actor=request.user,
                 action="returned", comment=f"{teacher.name}：{comment}")
         else:
+            if kind == "office" and report.accounting_saved_at is None:
+                return HttpResponseForbidden("事務室で旅費計算を保存してから確認・承認してください。")
+            if kind == "office" and step.step_order == 2:
+                report.accounting_finalized_at = now
+                report.save(update_fields=["accounting_finalized_at", "updated_at"])
             if kind == "office":
                 step.status = "checked"
                 step.checked_at = now
