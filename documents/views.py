@@ -1492,21 +1492,30 @@ def travel_expense_settlement_action(request, pk):
         descriptions = request.POST.getlist("description")
         quantities = request.POST.getlist("quantity")
         prices = request.POST.getlist("unit_price")
+        amounts = request.POST.getlist("amount_yen")
         count = len(categories)
-        if not (1 <= count <= 40 and count == len(descriptions) == len(quantities) == len(prices)):
+        if not (1 <= count <= 40 and count == len(descriptions) == len(quantities) == len(prices) == len(amounts)):
             return HttpResponseBadRequest("明細は1〜40件で入力してください。")
         rows = []
         total = 0
         try:
-            for i, (category, description, q, price) in enumerate(zip(categories, descriptions, quantities, prices), start=1):
-                if category not in dict(TravelExpenseItem.CATEGORY_CHOICES) or not description.strip() or len(description) > 200:
+            for i, (category, description, q, price, raw_amount) in enumerate(zip(categories, descriptions, quantities, prices, amounts), start=1):
+                if category not in dict(TravelExpenseItem.CATEGORY_CHOICES) or len(description) > 200:
                     raise ValueError("項目が不正です")
-                quantity, unit_price = Decimal(q), Decimal(price)
-                if not quantity.is_finite() or not unit_price.is_finite() or not (0 <= quantity <= 9999999) or not (0 <= unit_price <= 99999999):
-                    raise ValueError("数値が範囲外です")
-                if quantity.as_tuple().exponent < -2 or unit_price.as_tuple().exponent < -2:
-                    raise ValueError("小数点以下は2桁までです")
-                amount = int((quantity * unit_price).quantize(Decimal("1"), rounding=ROUND_HALF_UP))
+                quantity = Decimal(q) if q.strip() else None
+                unit_price = Decimal(price) if price.strip() else None
+                for value, maximum in ((quantity, Decimal("9999999")), (unit_price, Decimal("99999999"))):
+                    if value is not None and (not value.is_finite() or value < 0 or value > maximum or value.as_tuple().exponent < -2):
+                        raise ValueError("数量・単価は0以上、小数点以下2桁までです")
+                if quantity is not None and unit_price is not None:
+                    amount = int((quantity * unit_price).quantize(Decimal("1"), rounding=ROUND_HALF_UP))
+                else:
+                    if not raw_amount.strip():
+                        raise ValueError("数量・単価を省略する場合は金額を入力してください")
+                    entered = Decimal(raw_amount)
+                    if not entered.is_finite() or entered != entered.to_integral_value() or entered < 0:
+                        raise ValueError("金額は0以上の整数で入力してください")
+                    amount = int(entered)
                 if amount > 2147483647:
                     raise ValueError("明細金額が大きすぎます")
                 total += amount

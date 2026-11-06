@@ -771,14 +771,16 @@ class TravelExpenseItem(models.Model):
         ("distance", "距離・ガソリン代"), ("toll", "高速道路代"),
         ("parking", "駐車場代"), ("lodging", "宿泊費"),
         ("transport", "公共交通費"), ("allowance", "日当・運転手当"),
+        ("daily_allowance", "日当"), ("transport_allowance", "交通手当"),
+        ("non_workday_allowance", "非勤務日手当"),
         ("other", "その他"),
     ]
     settlement = models.ForeignKey(TravelExpenseSettlement, on_delete=models.CASCADE, related_name="items")
     position = models.PositiveSmallIntegerField(default=1)
     category = models.CharField(max_length=24, choices=CATEGORY_CHOICES)
-    description = models.CharField("内容", max_length=200)
-    quantity = models.DecimalField("距離・数量", max_digits=9, decimal_places=2)
-    unit_price = models.DecimalField("単価", max_digits=10, decimal_places=2)
+    description = models.CharField("内容", max_length=200, blank=True)
+    quantity = models.DecimalField("距離・数量", max_digits=9, decimal_places=2, null=True, blank=True)
+    unit_price = models.DecimalField("単価", max_digits=10, decimal_places=2, null=True, blank=True)
     amount_yen = models.PositiveIntegerField("金額", default=0)
     class Meta:
         ordering = ["position", "pk"]
