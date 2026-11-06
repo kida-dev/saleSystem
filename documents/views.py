@@ -1,7 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
 from decimal import Decimal, InvalidOperation, ROUND_HALF_UP
-from django.http import FileResponse, HttpResponseForbidden
+from django.http import FileResponse, HttpResponseForbidden, HttpResponseBadRequest
 from django.views.decorators.http import require_POST
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
@@ -29,6 +29,7 @@ from .models import (
     TravelPostReportOfficeCheck,
     TravelPostReportHistory,
     TravelPostReportAttachment,
+    TravelExpenseSettlement, TravelExpenseItem, TravelExpenseHistory,
 )
 
 
@@ -1184,6 +1185,8 @@ def travel_post_report_submit(request, pk):
         report.submitted_by = request.user
         report.submitted_at = timezone.now()
         report.approved_at = None
+        # 再提出時は旧精算を未確定に戻す。旧明細は確認用に残し、再保存を必須とする。
+        TravelExpenseSettlement.objects.filter(report=report).update(saved_at=None, finalized_at=None, finalized_by=None)
         report.accounting_finalized_at = None
         report.accounting_saved_at = None
         report.accounting_distance_km = None
@@ -1233,9 +1236,7 @@ def travel_post_report_review(request, pk):
     is_office_staff = bool(teacher and teacher.employee_number in (4, 5)
                            and any(s.checker_id == teacher.pk for s in office))
     # 事務長確認が終わると旅費は確定し、後続の管理職回覧では編集不可。
-    can_edit_accounting = bool(is_office_staff and report.status == "circulating"
-        and not report.accounting_finalized_at
-        and any(s.checker_id == teacher.pk and s.status == "pending" for s in office))
+    can_edit_accounting = False
     return render(request, "documents/travel_post_report_review.html", {
         "travel_order": order, "report": report, "steps": steps,
         "attachments": report.attachments.order_by("uploaded_at"),
@@ -1243,6 +1244,7 @@ def travel_post_report_review(request, pk):
         "can_review": can_review,
         "is_office_staff": is_office_staff,
         "can_edit_accounting": can_edit_accounting,
+        "settlement_exists": TravelExpenseSettlement.objects.filter(report=report).exists() if is_office_staff else False,
     })
 
 
@@ -1251,7 +1253,7 @@ def travel_post_report_review(request, pk):
 def travel_post_report_review_action(request, pk):
     action = request.POST.get("action")
     comment = (request.POST.get("comment") or "").strip()
-    if action not in ("approve", "return", "save_account"):
+    if action not in ("approve", "return"):
         return HttpResponseForbidden("操作が正しくありません。")
     if action == "return" and not comment:
         return HttpResponseForbidden("差戻し理由を入力してください。")
@@ -1276,44 +1278,6 @@ def travel_post_report_review_action(request, pk):
         if assigned_id != teacher.pk:
             return HttpResponseForbidden("現在の担当者のみ操作できます。")
         now = timezone.now()
-        if action == "save_account":
-            # 画面非表示だけでなく、サーバ側でも事務担当者・現在の回覧順を検証。
-            if kind != "office" or teacher.employee_number not in (4, 5) or report.accounting_finalized_at:
-                return HttpResponseForbidden("事務室の現在の担当者だけが旅費を保存できます。")
-            try:
-                distance = Decimal(request.POST["accounting_distance_km"])
-                rate = Decimal(request.POST["accounting_rate_yen"])
-                allowance = int(request.POST["accounting_allowance_yen"])
-                extracurricular = int(request.POST["extracurricular_amount"])
-                athletics = int(request.POST["athletics_support_amount"])
-                external = int(request.POST["external_travel_amount"])
-                if not distance.is_finite() or not rate.is_finite():
-                    raise ValueError()
-                if not (Decimal("0") <= distance <= Decimal("999999.9")) or distance.as_tuple().exponent < -1:
-                    raise ValueError()
-                if not (Decimal("0") <= rate <= Decimal("99999999.99")) or rate.as_tuple().exponent < -2:
-                    raise ValueError()
-                if any(not 0 <= x <= 2147483647 for x in (allowance, extracurricular, athletics, external)):
-                    raise ValueError()
-                total = (distance * rate + Decimal(allowance)).quantize(Decimal("1"), rounding=ROUND_HALF_UP)
-                if total > 2147483647:
-                    raise ValueError()
-            except (KeyError, ValueError, InvalidOperation, OverflowError):
-                return HttpResponseForbidden("金額・距離の入力値を確認してください。")
-            report.accounting_distance_km = distance
-            report.accounting_rate_yen = rate
-            report.accounting_allowance_yen = allowance
-            report.school_account_amount = int(total)
-            report.extracurricular_amount = extracurricular
-            report.athletics_support_amount = athletics
-            report.external_travel_amount = external
-            report.accounting_saved_at = now
-            report.save(update_fields=["accounting_distance_km", "accounting_rate_yen",
-                "accounting_allowance_yen", "school_account_amount", "extracurricular_amount",
-                "athletics_support_amount", "external_travel_amount", "accounting_saved_at", "updated_at"])
-            TravelPostReportHistory.objects.create(report=report, actor=request.user,
-                action="accounting_saved", comment="事務室で旅費計算を保存")
-            return redirect("documents:travel_post_report_review", pk=pk)
         if action == "return":
             if kind == "office":
                 # 事務確認モデルにはreturnedがないため、待機中に戻し報告書を差戻し状態にする。
@@ -1328,11 +1292,13 @@ def travel_post_report_review_action(request, pk):
             TravelPostReportHistory.objects.create(report=report, actor=request.user,
                 action="returned", comment=f"{teacher.name}：{comment}")
         else:
-            if kind == "office" and report.accounting_saved_at is None:
-                return HttpResponseForbidden("事務室で旅費計算を保存してから確認・承認してください。")
-            if kind == "office" and step.step_order == 2:
-                report.accounting_finalized_at = now
-                report.save(update_fields=["accounting_finalized_at", "updated_at"])
+            if kind == "office":
+                settlement = TravelExpenseSettlement.objects.filter(report=report).first()
+                if not settlement or settlement.saved_at is None or not settlement.source or not settlement.payment_date:
+                    return HttpResponseForbidden("旅費精算ページで支出元・振込予定日・明細を保存してください。")
+                if step.step_order == 2 and settlement.finalized_at is None:
+                    return HttpResponseForbidden("事務長は旅費精算ページで会計確定してから承認してください。")
+
             if kind == "office":
                 step.status = "checked"
                 step.checked_at = now
@@ -1439,3 +1405,126 @@ def travel_post_report_list(request):
         "all_reports": all_reports,
         "is_admin": is_admin,
     })
+
+
+# ============================================================
+# 事務室専用・独立した旅費精算ページ
+# ============================================================
+def _expense_office_teacher(request, report):
+    teacher = Teacher.objects.filter(user=request.user, is_active=True, employee_number__in=(4, 5)).first()
+    if not teacher:
+        return None
+    if not report.office_checks.filter(checker=teacher).exists():
+        return None
+    return teacher
+
+
+@login_required
+def travel_expense_settlement(request, pk):
+    report = get_object_or_404(TravelPostReport.objects.select_related("travel_order", "travel_order__responsible_teacher"), travel_order_id=pk)
+    teacher = _expense_office_teacher(request, report)
+    if teacher is None:
+        return HttpResponseForbidden("事務室担当者のみ利用できます。")
+    settlement = TravelExpenseSettlement.objects.filter(report=report).first()
+    office_steps = list(report.office_checks.order_by("step_order"))
+    active = next((x for x in office_steps if x.status == "pending"), None)
+    can_edit = bool(report.status == "circulating" and active and active.checker_id == teacher.pk and not (settlement and settlement.finalized_at))
+    can_change_date = bool(settlement and report.status == "approved" and teacher.employee_number in (4, 5))
+    return render(request, "documents/travel_expense_settlement.html", {
+        "report": report, "order": report.travel_order, "settlement": settlement,
+        "items": settlement.items.all() if settlement else [],
+        "sources": TravelExpenseSettlement.SOURCE_CHOICES,
+        "categories": TravelExpenseItem.CATEGORY_CHOICES,
+        "can_edit": can_edit, "can_finalize": bool(can_edit and teacher.employee_number == 4 and settlement and settlement.saved_at),
+        "can_change_date": can_change_date,
+        "histories": settlement.histories.select_related("actor")[:20] if settlement else [],
+    })
+
+
+@login_required
+@require_POST
+def travel_expense_settlement_action(request, pk):
+    from datetime import date
+    from django.core.exceptions import ValidationError
+    from django.utils.dateparse import parse_date
+    action = request.POST.get("action")
+    if action not in ("save", "finalize", "change_date"):
+        return HttpResponseBadRequest("不正な操作です。")
+    with transaction.atomic():
+        report = get_object_or_404(TravelPostReport.objects.select_for_update(), travel_order_id=pk)
+        teacher = _expense_office_teacher(request, report)
+        if not teacher:
+            return HttpResponseForbidden("事務室担当者のみ操作できます。")
+        settlement, _ = TravelExpenseSettlement.objects.select_for_update().get_or_create(report=report)
+        active = report.office_checks.filter(status="pending", checker=teacher).exists()
+        editable = report.status == "circulating" and active and settlement.finalized_at is None
+        if action in ("save", "finalize") and not editable:
+            return HttpResponseForbidden("現在の担当者のみ保存・確定できます。")
+        if action == "change_date":
+            if report.status != "approved" or settlement.finalized_at is None:
+                return HttpResponseForbidden("最終承認後の確定済精算のみ日付変更できます。")
+            value = parse_date(request.POST.get("payment_date", ""))
+            if not value:
+                return HttpResponseBadRequest("正しい振込予定日を入力してください。")
+            old = settlement.payment_date
+            settlement.payment_date = value
+            settlement.save(update_fields=["payment_date"])
+            TravelExpenseHistory.objects.create(settlement=settlement, actor=request.user, action="payment_date_changed", detail=f"振込予定日：{old} → {value}（通知は別途実施してください）")
+            return redirect("documents:travel_expense_settlement", pk=pk)
+        if action == "finalize":
+            if teacher.employee_number != 4 or settlement.saved_at is None or not settlement.source or not settlement.payment_date:
+                return HttpResponseForbidden("事務長のみ、保存済み精算を確定できます。")
+            settlement.finalized_at = timezone.now()
+            settlement.finalized_by = request.user
+            settlement.save(update_fields=["finalized_at", "finalized_by"])
+            report.accounting_finalized_at = settlement.finalized_at
+            report.save(update_fields=["accounting_finalized_at", "updated_at"])
+            TravelExpenseHistory.objects.create(settlement=settlement, actor=request.user, action="finalized", detail=f"会計確定：{settlement.total_yen}円")
+            return redirect("documents:travel_expense_settlement", pk=pk)
+        source = request.POST.get("source", "")
+        source_other = request.POST.get("source_other", "").strip()[:200]
+        if source not in dict(TravelExpenseSettlement.SOURCE_CHOICES) or (source == "other" and not source_other):
+            return HttpResponseBadRequest("支出元を選択してください。その他は名称も必要です。")
+        payment_date = parse_date(request.POST.get("payment_date", ""))
+        if payment_date is None:
+            return HttpResponseBadRequest("振込予定日を入力してください。")
+        categories = request.POST.getlist("category")
+        descriptions = request.POST.getlist("description")
+        quantities = request.POST.getlist("quantity")
+        prices = request.POST.getlist("unit_price")
+        count = len(categories)
+        if not (1 <= count <= 40 and count == len(descriptions) == len(quantities) == len(prices)):
+            return HttpResponseBadRequest("明細は1〜40件で入力してください。")
+        rows = []
+        total = 0
+        try:
+            for i, (category, description, q, price) in enumerate(zip(categories, descriptions, quantities, prices), start=1):
+                if category not in dict(TravelExpenseItem.CATEGORY_CHOICES) or not description.strip() or len(description) > 200:
+                    raise ValueError("項目が不正です")
+                quantity, unit_price = Decimal(q), Decimal(price)
+                if not quantity.is_finite() or not unit_price.is_finite() or not (0 <= quantity <= 9999999) or not (0 <= unit_price <= 99999999):
+                    raise ValueError("数値が範囲外です")
+                if quantity.as_tuple().exponent < -2 or unit_price.as_tuple().exponent < -2:
+                    raise ValueError("小数点以下は2桁までです")
+                amount = int((quantity * unit_price).quantize(Decimal("1"), rounding=ROUND_HALF_UP))
+                if amount > 2147483647:
+                    raise ValueError("明細金額が大きすぎます")
+                total += amount
+                if total > 2147483647:
+                    raise ValueError("合計が大きすぎます")
+                rows.append(TravelExpenseItem(settlement=settlement, position=i, category=category, description=description.strip(), quantity=quantity, unit_price=unit_price, amount_yen=amount))
+        except (ValueError, InvalidOperation, OverflowError) as exc:
+            return HttpResponseBadRequest(f"明細の入力を確認してください：{exc}")
+        old_total = settlement.total_yen
+        settlement.source, settlement.source_other = source, source_other
+        settlement.payment_date, settlement.total_yen = payment_date, total
+        settlement.saved_at, settlement.saved_by = timezone.now(), request.user
+        settlement.save()
+        settlement.items.all().delete()
+        TravelExpenseItem.objects.bulk_create(rows)
+        # 旧表示との互換性を維持するが、計算の正本は精算モデルに置く。
+        report.school_account_amount = total
+        report.accounting_saved_at = settlement.saved_at
+        report.save(update_fields=["school_account_amount", "accounting_saved_at", "updated_at"])
+        TravelExpenseHistory.objects.create(settlement=settlement, actor=request.user, action="saved", detail=f"支出元：{settlement.get_source_display()}、金額：{old_total}円 → {total}円、明細{count}件")
+    return redirect("documents:travel_expense_settlement", pk=pk)

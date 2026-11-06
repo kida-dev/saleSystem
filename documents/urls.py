@@ -131,4 +131,14 @@ urlpatterns = [
         views.travel_order_submit,
         name="travel_order_submit",
     ),
+    path(
+        'travel/<int:pk>/expense/',
+        views.travel_expense_settlement,
+        name='travel_expense_settlement',
+    ),
+    path(
+        'travel/<int:pk>/expense/action/',
+        views.travel_expense_settlement_action,
+        name='travel_expense_settlement_action',
+    ),
 ]

@@ -740,3 +740,55 @@ class TravelPostReportNotification(models.Model):
         verbose_name = "復命書メール通知"
         verbose_name_plural = "復命書メール通知"
         ordering = ["-created_at"]
+
+
+# 事務室専用。復命書本体とは分離し、一般教員・管理職へのデータ露出を防ぐ。
+class TravelExpenseSettlement(models.Model):
+    SOURCE_CHOICES = [
+        ("main_extracurricular", "本会計：課外活動費"),
+        ("pta", "補助会計：PTA会費"),
+        ("school_support", "補助会計：学校後援会費"),
+        ("student_council", "補助会計：生徒会費"),
+        ("athletics", "補助会計：体育後援会費"),
+        ("other", "補助会計：その他"),
+    ]
+    report = models.OneToOneField(TravelPostReport, on_delete=models.PROTECT, related_name="expense_settlement")
+    source = models.CharField("支出元", max_length=32, choices=SOURCE_CHOICES, blank=True)
+    source_other = models.CharField("その他の支出元", max_length=200, blank=True)
+    payment_date = models.DateField("振込予定日", null=True, blank=True)
+    total_yen = models.PositiveIntegerField("支払予定額", default=0)
+    saved_at = models.DateTimeField(null=True, blank=True)
+    finalized_at = models.DateTimeField(null=True, blank=True)
+    saved_by = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.PROTECT, related_name="saved_travel_settlements")
+    finalized_by = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.PROTECT, related_name="finalized_travel_settlements")
+    class Meta:
+        verbose_name = "出張旅費精算"
+        verbose_name_plural = "出張旅費精算"
+
+
+class TravelExpenseItem(models.Model):
+    CATEGORY_CHOICES = [
+        ("distance", "距離・ガソリン代"), ("toll", "高速道路代"),
+        ("parking", "駐車場代"), ("lodging", "宿泊費"),
+        ("transport", "公共交通費"), ("allowance", "日当・運転手当"),
+        ("other", "その他"),
+    ]
+    settlement = models.ForeignKey(TravelExpenseSettlement, on_delete=models.CASCADE, related_name="items")
+    position = models.PositiveSmallIntegerField(default=1)
+    category = models.CharField(max_length=24, choices=CATEGORY_CHOICES)
+    description = models.CharField("内容", max_length=200)
+    quantity = models.DecimalField("距離・数量", max_digits=9, decimal_places=2)
+    unit_price = models.DecimalField("単価", max_digits=10, decimal_places=2)
+    amount_yen = models.PositiveIntegerField("金額", default=0)
+    class Meta:
+        ordering = ["position", "pk"]
+
+
+class TravelExpenseHistory(models.Model):
+    settlement = models.ForeignKey(TravelExpenseSettlement, on_delete=models.PROTECT, related_name="histories")
+    actor = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
+    action = models.CharField(max_length=30)
+    detail = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    class Meta:
+        ordering = ["-created_at", "-pk"]
