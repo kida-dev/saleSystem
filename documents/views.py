@@ -1423,19 +1423,23 @@ def _expense_office_teacher(request, report):
 def travel_expense_settlement(request, pk):
     report = get_object_or_404(TravelPostReport.objects.select_related("travel_order", "travel_order__responsible_teacher"), travel_order_id=pk)
     teacher = _expense_office_teacher(request, report)
-    if teacher is None:
+    # システム管理者（superuser）は閲覧のみ許可する。
+    # 保存・確定・振込日変更のPOST側は従来どおり事務担当者だけを許可する。
+    is_admin_readonly = request.user.is_superuser and teacher is None
+    if teacher is None and not is_admin_readonly:
         return HttpResponseForbidden("事務室担当者のみ利用できます。")
     settlement = TravelExpenseSettlement.objects.filter(report=report).first()
     office_steps = list(report.office_checks.order_by("step_order"))
     active = next((x for x in office_steps if x.status == "pending"), None)
-    can_edit = bool(report.status == "circulating" and active and active.checker_id == teacher.pk and not (settlement and settlement.finalized_at))
-    can_change_date = bool(settlement and report.status == "approved" and teacher.employee_number in (4, 5))
+    can_edit = bool(teacher and report.status == "circulating" and active and active.checker_id == teacher.pk and not (settlement and settlement.finalized_at))
+    can_change_date = bool(teacher and settlement and report.status == "approved" and teacher.employee_number in (4, 5))
     return render(request, "documents/travel_expense_settlement.html", {
         "report": report, "order": report.travel_order, "settlement": settlement,
         "items": settlement.items.all() if settlement else [],
         "sources": TravelExpenseSettlement.SOURCE_CHOICES,
         "categories": TravelExpenseItem.CATEGORY_CHOICES,
-        "can_edit": can_edit, "can_finalize": bool(can_edit and teacher.employee_number == 4 and settlement and settlement.saved_at),
+        "can_edit": can_edit, "can_finalize": bool(can_edit and teacher and teacher.employee_number == 4 and settlement and settlement.saved_at),
+        "is_admin_readonly": is_admin_readonly,
         "can_change_date": can_change_date,
         "histories": settlement.histories.select_related("actor")[:20] if settlement else [],
     })
